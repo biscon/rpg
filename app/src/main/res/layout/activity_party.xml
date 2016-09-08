@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/party_cl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/party_items_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:scrollbars="none"
+            />
+    </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/party_encounter_fab"
+        app:elevation="6dp"
+        android:layout_margin="16dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:srcCompat="@drawable/ic_done_white_24dp"
+        app:layout_anchor="@id/party_items_rv"
+        app:layout_anchorGravity="bottom|right"
+        />
+</android.support.design.widget.CoordinatorLayout>
