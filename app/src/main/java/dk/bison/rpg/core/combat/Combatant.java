@@ -24,4 +24,5 @@ public interface Combatant {
     List<Attack> getAttacks();
     Faction getFaction();
     AI getAI();
+    int getLevel();
 }

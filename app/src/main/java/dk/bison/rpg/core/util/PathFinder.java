@@ -117,7 +117,7 @@ public class PathFinder {
             }
             for (Coord vector : dirVectors) {
                 Coord dirPos = new Coord(selected_node.position.x + vector.x, selected_node.position.y + vector.y);
-                boolean passable = map.sample(dirPos.x, dirPos.y);
+                boolean passable = map.isPassable(dirPos.x, dirPos.y);
                 double cost = map.cost(dirPos.x, dirPos.y);
                 // can we go there?
                 if (passable) {

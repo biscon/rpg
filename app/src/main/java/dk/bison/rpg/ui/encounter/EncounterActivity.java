@@ -19,7 +19,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
 
         // obtain instance to the presenter
         presenter = PresentationManager.instance().presenter(this, EncounterPresenter.class);
-
+        presenter.setup();
         /*
         Monster m1 = MonsterFactory.makeMonster("Wolf");
         Monster m2 = MonsterFactory.makeMonster("Dire Wolf");

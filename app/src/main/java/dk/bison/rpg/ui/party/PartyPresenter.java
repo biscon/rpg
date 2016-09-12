@@ -1,19 +1,17 @@
 package dk.bison.rpg.ui.party;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.bison.rpg.AppState;
 import dk.bison.rpg.core.character.Character;
-import dk.bison.rpg.core.character.CharacterManager;
+import dk.bison.rpg.core.combat.Combatant;
+import dk.bison.rpg.core.combat.Party;
 import dk.bison.rpg.mvp.BasePresenter;
 import dk.bison.rpg.mvp.MvpEvent;
-import dk.bison.rpg.mvp.PresentationManager;
-import dk.bison.rpg.ui.character.CharacterCreateEvent;
 import dk.bison.rpg.ui.character.CharacterSelectEvent;
-import dk.bison.rpg.ui.character.ChooseCharacterMvpView;
 
 /**
  * Created by bison on 19-08-2016.
@@ -40,6 +38,9 @@ public class PartyPresenter extends BasePresenter<PartyMvpView> {
 
     public void onPartySelected()
     {
+        ArrayList<Combatant> combatants = new ArrayList<>();
+        combatants.addAll(characters);
+        AppState.currentParty = new Party(combatants);
         getMvpView().closeView();
     }
 

@@ -169,5 +169,10 @@ public class Monster implements Combatant {
         return ai;
     }
 
+    @Override
+    public int getLevel() {
+        return level;
+    }
+
 
 }
