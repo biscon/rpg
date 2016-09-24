@@ -16,6 +16,7 @@ import dk.bison.rpg.core.ai.AIFactory;
 import dk.bison.rpg.core.armor.Armor;
 import dk.bison.rpg.core.armor.ArmorFactory;
 import dk.bison.rpg.core.combat.Attack;
+import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.faction.Faction;
 import dk.bison.rpg.core.faction.FactionFactory;
@@ -38,6 +39,8 @@ public class Character implements Combatant {
     int XP = 0;
     int money;
     int initiative;
+    int position = CombatPosition.CENTER;
+    int distanceToCurrentTarget;
     List<Attack> attacks;
     Faction faction;
     AI ai;
@@ -379,5 +382,25 @@ public class Character implements Combatant {
             c.offHandWeapon = WeaponFactory.makeWeapon(chr.getString("offHandWeapon"));
         }
         return c;
+    }
+
+    @Override
+    public int getPosition() {
+        return position;
+    }
+
+    @Override
+    public void setPosition(int pos) {
+        position = pos;
+    }
+
+    @Override
+    public void setDistanceToCurrentTarget(int distance) {
+        distanceToCurrentTarget = distance;
+    }
+
+    @Override
+    public int getDistanceToCurrentTarget() {
+        return distanceToCurrentTarget;
     }
 }

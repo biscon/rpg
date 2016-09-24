@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.List;
 
 import dk.bison.rpg.core.combat.Attack;
+import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.Encounter;
 import dk.bison.rpg.core.combat.HitInfo;
@@ -21,12 +22,6 @@ public class SearchDestroyAI extends BaseAI {
 
     @Override
     public void performAction(Encounter encounter) {
-        performAttacks(encounter, combatant);
-    }
-
-    protected void performAttacks(Encounter encounter, Combatant c)
-    {
-        List<Attack> attacks = c.getAttacks();
         if(opponent == null)
             opponent = selectRandomTarget(encounter);
         if(opponent.isDead())
@@ -37,6 +32,28 @@ public class SearchDestroyAI extends BaseAI {
             Log.i(TAG, combatant.getName() + " does nothing this round.");
             return;
         }
+        Log.e(TAG, "combatant.pos = " + combatant.getPosition() + ", opponent.pos = " + opponent.getPosition());
+        int dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
+        Log.e(TAG, "Distance to selected opponent is " + dist + "m");
+        if(dist > CombatPosition.MELEE_DISTANCE)
+        {
+            Log.e(TAG, "Target is out of melee range, moving in for the kill");
+            performMoveTowardsOpponent(opponent);
+        }
+        else
+            performAttacks(encounter, combatant);
+        /*
+        dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
+        if(dist <= CombatPosition.MELEE_DISTANCE)
+        {
+            performAttacks(encounter, combatant);
+        }
+        */
+    }
+
+    protected void performAttacks(Encounter encounter, Combatant c)
+    {
+        List<Attack> attacks = c.getAttacks();
         for(int i=0; i < attacks.size(); i++)
         {
             Attack attack = attacks.get(i);
@@ -44,10 +61,10 @@ public class SearchDestroyAI extends BaseAI {
             if(opponent.isDead() && i < attacks.size()-1)
             {
                 Log.e(TAG, "opponent died while attacking, selecting new target for remaining attacks");
-                opponent = selectRandomTarget(encounter);
+                opponent = selectClosestTargetWithin(encounter, CombatPosition.MELEE_DISTANCE);
                 if(opponent == null)
                 {
-                    Log.e(TAG, "No valid enemies found, doing nothing this round");
+                    Log.e(TAG, "No valid enemies found within melee distance, doing nothing this round");
                     return;
                 }
             }

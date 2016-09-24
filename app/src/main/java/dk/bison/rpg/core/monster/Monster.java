@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 import dk.bison.rpg.core.combat.Attack;
+import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.Dice;
 import dk.bison.rpg.core.faction.Faction;
@@ -27,6 +28,8 @@ public class Monster implements Combatant {
     int maxHP;
     int HP;
     int level = 1;
+    int position = CombatPosition.CENTER;
+    int distanceToCurrentTarget;
     Weapon weapon;
     List<Attack> attacks;
     Dice dice = new Dice();
@@ -197,5 +200,25 @@ public class Monster implements Combatant {
         else {
             return String.format(Locale.US, "%s (%s)", name, template.getName());
         }
+    }
+
+    @Override
+    public int getPosition() {
+        return position;
+    }
+
+    @Override
+    public void setPosition(int pos) {
+        position = pos;
+    }
+
+    @Override
+    public void setDistanceToCurrentTarget(int distance) {
+        distanceToCurrentTarget = distance;
+    }
+
+    @Override
+    public int getDistanceToCurrentTarget() {
+        return distanceToCurrentTarget;
     }
 }

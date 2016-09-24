@@ -28,4 +28,8 @@ public interface Combatant {
     int getLevel();
     void resetHealth();
     String getNameWithTemplateName();
+    int getPosition();
+    void setPosition(int pos);
+    void setDistanceToCurrentTarget(int distance);
+    int getDistanceToCurrentTarget();
 }

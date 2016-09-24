@@ -5,11 +5,14 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import dk.bison.rpg.core.Dice;
 import dk.bison.rpg.core.combat.Attack;
+import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
+import dk.bison.rpg.core.combat.DistanceComparator;
 import dk.bison.rpg.core.combat.Encounter;
 import dk.bison.rpg.core.combat.HPComparator;
 import dk.bison.rpg.core.combat.HitInfo;
@@ -68,6 +71,71 @@ public abstract class BaseAI extends AI {
         return target;
     }
 
+    protected Combatant selectClosestTarget(Encounter encounter)
+    {
+        List<Combatant> combatants = encounter.getCombatants();
+        List<Combatant> enemies = new ArrayList<>();
+        Faction my_fac = combatant.getFaction();
+        for(Combatant c : combatants)
+        {
+            if(!c.isDead()) {
+                if (!my_fac.sameAs(c.getFaction())) {
+                    c.setDistanceToCurrentTarget(CombatPosition.distanceBetweenCombatants(combatant, c));
+                    enemies.add(c);
+                }
+            }
+        }
+        if(enemies.isEmpty())
+            return null;
+        Log.e(TAG, combatant.getName() + " has " + enemies.size() + " targets, selecting closest");
+        Collections.sort(enemies, new DistanceComparator());
+        Combatant target = enemies.get(0);
+        Log.e(TAG, combatant.getName() + " selected " + target.getName() + " as target. (distance = " + target.getDistanceToCurrentTarget() + ")");
+        return target;
+    }
+
+    protected Combatant selectClosestTargetWithin(Encounter encounter, int max_dist)
+    {
+        List<Combatant> combatants = encounter.getCombatants();
+        List<Combatant> enemies = new ArrayList<>();
+        Faction my_fac = combatant.getFaction();
+        for(Combatant c : combatants)
+        {
+            if(!c.isDead()) {
+                if (!my_fac.sameAs(c.getFaction())) {
+                    c.setDistanceToCurrentTarget(CombatPosition.distanceBetweenCombatants(combatant, c));
+                    enemies.add(c);
+                }
+            }
+        }
+        if(enemies.isEmpty())
+            return null;
+        Log.e(TAG, combatant.getName() + " has " + enemies.size() + " targets, selecting closest");
+        Collections.sort(enemies, new DistanceComparator());
+        Combatant target = enemies.get(0);
+        if(target.getDistanceToCurrentTarget() > max_dist)
+        {
+            Log.e(TAG, "No enemies found within distance " + max_dist);
+            return null;
+        }
+        Log.e(TAG, combatant.getName() + " selected " + target.getName() + " as target. (distance = " + target.getDistanceToCurrentTarget() + ")");
+        return target;
+    }
+
+    protected void performMoveTowardsOpponent(Combatant opponent)
+    {
+        int dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
+        if(opponent.getPosition() > combatant.getPosition())
+        {
+            combatant.setPosition(combatant.getPosition() + CombatPosition.MOVE_PER_TURN);
+        }
+        else
+        {
+            combatant.setPosition(combatant.getPosition() - CombatPosition.MOVE_PER_TURN);
+        }
+        emitMessage(CombatLogMessage.create().bold(combatant.getName()).normal(" moved towards ").bright(opponent.getName()).dark(String.format(Locale.US, " (%dm)", dist)));
+    }
+
     protected void attack(Combatant c, Combatant opponent, Attack attack)
     {
         if(opponent.isDead())
@@ -85,7 +153,7 @@ public abstract class BaseAI extends AI {
             int damage = rollDamage(c, attack, hit, attack.isRanged);
             CombatLogMessage msg = CombatLogMessage.create().bright(c.getName())
                     .normal(" hits " + opponent.getName()+ " for ")
-                    .bold(String.valueOf(damage)).red( " damage.").effect(CombatLogMessage.SLIDE_SCALE_FADE);
+                    .red(String.valueOf(damage) + " damage.").effect(CombatLogMessage.SLIDE_SCALE_FADE);
 
             Log.e(TAG, c.getName() + " hits " + opponent.getName() + " for " + damage + " damage. " + hittype + attack.toString());
             opponent.decreaseHP(damage);
