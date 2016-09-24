@@ -31,7 +31,7 @@ public class EnemyStatusView extends FrameLayout implements EnemyStatusMvpView {
     LinearLayout contentLl;
     ArgbEvaluator rgbEvaluator = new ArgbEvaluator();
     private static int deadColor = 0xFFB71C1C;
-    private static int maxHpColor = 0xFF558B2F;
+    private static int maxHpColor = 0xFFFFFFFF;
 
     public EnemyStatusView(Context context) {
         super(context);
@@ -92,7 +92,7 @@ public class EnemyStatusView extends FrameLayout implements EnemyStatusMvpView {
         hp_tv.setTextColor(col);
         hp_tv.setText(String.format(Locale.US, "%d", c.getHP()));
 
-        name_tv.setText(c.getName());
+        name_tv.setText(c.getNameWithTemplateName());
         name_tv.setTextColor(col);
         if(c.isDead()) {
             name_tv.setPaintFlags(name_tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);

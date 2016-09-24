@@ -3,6 +3,7 @@ package dk.bison.rpg.ui.encounter.combat_log;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.view.animation.PathInterpolatorCompat;
 import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
@@ -84,48 +85,23 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
         super.onDetachedFromWindow();
     }
 
-    public void showParty(Party party)
+    @Override
+    public void addDivider()
     {
-        contentLl.removeAllViews();
-        contentLl.addView(makeHeaderView());
-        for(Combatant c : party)
-        {
-            View char_v = makeCharacterView(c);
-            contentLl.addView(char_v);
-        }
+        int dp3 = (int) (3f * metrics.density);
+        View v = new View(getContext());
+        v.setBackgroundColor(0xff656565);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) metrics.density);
+        lp.setMargins(0, dp3, 0, dp3);
+        v.setLayoutParams(lp);
+        v.setAlpha(0f);
+        contentLl.addView(v);
+        v.animate().alpha(1f).setDuration(500).setInterpolator(new LinearOutSlowInInterpolator()).start();
+        scrollDown();
+
     }
 
-    private View makeCharacterView(final Combatant c) {
-        View v = LayoutInflater.from(this.getContext()).inflate(R.layout.viewholder_char_status, this, false);
-        TextView name_tv = ButterKnife.findById(v, R.id.name_tv);
-        TextView level_tv = ButterKnife.findById(v, R.id.level_tv);
-        TextView ac_tv = ButterKnife.findById(v, R.id.ac_tv);
-        TextView hp_tv = ButterKnife.findById(v, R.id.hp_tv);
-        name_tv.setText(c.getName());
-        level_tv.setText(String.format(Locale.US, "%d", c.getLevel()));
-        ac_tv.setText(String.format(Locale.US, "%d", c.getAC()));
-        hp_tv.setText(String.format(Locale.US, "%d", c.getHP()));
-        return v;
-    }
-
-    private View makeHeaderView() {
-        View v = LayoutInflater.from(this.getContext()).inflate(R.layout.viewholder_char_status, this, false);
-        TextView name_tv = ButterKnife.findById(v, R.id.name_tv);
-        TextView level_tv = ButterKnife.findById(v, R.id.level_tv);
-        TextView ac_tv = ButterKnife.findById(v, R.id.ac_tv);
-        TextView hp_tv = ButterKnife.findById(v, R.id.hp_tv);
-        name_tv.setText("");
-        name_tv.setTypeface(null, Typeface.BOLD);
-        level_tv.setText("LVL");
-        level_tv.setTypeface(null, Typeface.BOLD);
-        ac_tv.setText("AC");
-        ac_tv.setTypeface(null, Typeface.BOLD);
-        hp_tv.setText("HP");
-        hp_tv.setTypeface(null, Typeface.BOLD);
-        return v;
-    }
-
-    private void addEntry(SpannableStringBuilder sb) {
+    private void addEntry(SpannableStringBuilder sb, int effect) {
         FrameLayout fl = new FrameLayout(getContext());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         int dp4 = (int) (4f * metrics.density);
@@ -134,7 +110,6 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
         int dp16 = (int) (16f * metrics.density);
         lp.setMargins(0, 0, 0, 0);
         fl.setLayoutParams(lp);
-        fl.setAlpha(0.0f);
         fl.setPadding(dp16, dp4, dp16, dp4);
 
         TextView tv = new TextView(getContext());
@@ -145,21 +120,70 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
         tv.setTextColor(textColor);
         fl.addView(tv);
         contentLl.addView(fl);
-        //float x = 16 * metrics.density;
-        float x = 0;
-        float dist = (float) metrics.widthPixels - x;
-        fl.setX((float) metrics.widthPixels);
-        fl.setScaleY(4.0f);
-        //Interpolator customInterpolator = PathInterpolatorCompat.create(0.225f, 1.205f, 0.810f, -0.335f);
-        fl.animate().translationXBy(-dist).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
-        fl.animate().alpha(1f).setDuration(750).setInterpolator(new LinearInterpolator()).start();
-        fl.animate().scaleY(1).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
-        //fl.animate().rotationXBy(360).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+        switch(effect)
+        {
+            case CombatLogMessage.FADE:
+                setupFadeEffect(fl);
+                break;
+            case CombatLogMessage.SLIDE_SCALE_FADE:
+                setupSlideScaleFadeEffect(fl);
+                break;
+            case CombatLogMessage.ROTATE:
+                setupRotateEffect(fl);
+                break;
+            case CombatLogMessage.BOUNCE:
+                setupBounceEffect(fl);
+                break;
+            default:
+                setupFadeEffect(fl);
+                break;
+        }
+
         if(contentLl.getChildCount() > BACKLOG)
         {
             contentLl.removeViewAt(0);
         }
         scrollDown();
+    }
+
+    private void setupFadeEffect(View v)
+    {
+        v.setAlpha(0f);
+        v.animate().alpha(1f).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+    }
+
+    private void setupSlideScaleFadeEffect(View v)
+    {
+        float x = 0;
+        float dist = (float) metrics.widthPixels - x;
+        v.setX((float) metrics.widthPixels);
+        v.setScaleY(4.0f);
+        v.setAlpha(0.0f);
+        //Interpolator customInterpolator = PathInterpolatorCompat.create(0.225f, 1.205f, 0.810f, -0.335f);
+        v.animate().translationXBy(-dist).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+        v.animate().alpha(1f).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+        v.animate().scaleY(1).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+        //fl.animate().rotationXBy(360).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+    }
+
+    private void setupRotateEffect(View v)
+    {
+        v.setAlpha(0.0f);
+        v.setRotationX(-180);
+        //v.setScaleY(3.0f);
+        //Interpolator customInterpolator = PathInterpolatorCompat.create(0.225f, 1.205f, 0.810f, -0.335f);
+        v.animate().alpha(1f).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+        v.animate().rotationX(0).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+        //v.animate().scaleY(1).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+    }
+
+    private void setupBounceEffect(View v)
+    {
+        v.setAlpha(0.0f);
+        v.setScaleY(3.0f);
+        //Interpolator customInterpolator = PathInterpolatorCompat.create(0.225f, 1.205f, 0.810f, -0.335f);
+        v.animate().alpha(1f).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+        v.animate().scaleY(1).setDuration(1500).setInterpolator(new BounceInterpolator()).start();
     }
 
     /**
@@ -171,7 +195,10 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
         post(new Runnable() {
             @Override
             public void run() {
-                addEntry(msg.getSb());
+                if(msg.isDivider())
+                    addDivider();
+                else
+                    addEntry(msg.getSb(), msg.getEffect());
             }
         });
     }

@@ -72,7 +72,6 @@ public class AdvancedEncounter implements Encounter {
         round++;
     }
 
-    @Override
     public void attack(Combatant c, Combatant opponent)
     {
         String hittype;

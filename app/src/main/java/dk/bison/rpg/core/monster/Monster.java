@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.Combatant;
@@ -31,11 +32,13 @@ public class Monster implements Combatant {
     Dice dice = new Dice();
     Faction faction;
     AI ai;
+    String name;
 
 
-    public Monster(MonsterTemplate template, int level) {
+    public Monster(MonsterTemplate template, int level, String name) {
         this.template = template;
         this.level = level;
+        this.name = name;
         faction = FactionFactory.makeFaction(template.factionTemplate);
         parseAttacks();
         rollHP();
@@ -92,7 +95,9 @@ public class Monster implements Combatant {
 
     @Override
     public String getName() {
-        return template.name;
+        if(name == null)
+            return template.getName();
+        return name;
     }
 
     @Override
@@ -182,5 +187,15 @@ public class Monster implements Combatant {
     @Override
     public void resetHealth() {
         HP = maxHP;
+    }
+
+    @Override
+    public String getNameWithTemplateName() {
+        if(name == null) {
+            return template.getName();
+        }
+        else {
+            return String.format(Locale.US, "%s (%s)", name, template.getName());
+        }
     }
 }

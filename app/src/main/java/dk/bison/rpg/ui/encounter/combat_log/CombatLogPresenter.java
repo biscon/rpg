@@ -53,6 +53,12 @@ public class CombatLogPresenter extends BasePresenter<CombatLogMvpView> {
         super.detachView();
     }
 
+    public void addDivider()
+    {
+        if(isViewAttached())
+            getMvpView().addDivider();
+    }
+
     @Override
     public void onEvent(MvpEvent event) {
         if(event instanceof CombatLogMessage)

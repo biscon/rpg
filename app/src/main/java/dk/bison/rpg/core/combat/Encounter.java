@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface Encounter {
     List<Combatant> getCombatants();
-    void attack(Combatant c, Combatant opponent);
+    //void attack(Combatant c, Combatant opponent);
 }

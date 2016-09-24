@@ -27,4 +27,5 @@ public interface Combatant {
     AI getAI();
     int getLevel();
     void resetHealth();
+    String getNameWithTemplateName();
 }

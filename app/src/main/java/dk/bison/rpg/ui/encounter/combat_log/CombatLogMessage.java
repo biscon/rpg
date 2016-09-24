@@ -14,7 +14,17 @@ import dk.bison.rpg.mvp.MvpEvent;
  */
 
 public class CombatLogMessage implements MvpEvent {
+    public static final int FADE = 0;
+    public static final int SLIDE = 1;
+    public static final int BOUNCE = 2;
+    public static final int OVERSHOOT = 3;
+    public static final int ROTATE = 4;
+    public static final int SLIDE_SCALE_FADE = 5;
+
+    int effect = FADE;
     SpannableStringBuilder sb;
+    boolean divider = false;
+
 
     public CombatLogMessage() {
         sb = new SpannableStringBuilder();
@@ -24,6 +34,18 @@ public class CombatLogMessage implements MvpEvent {
     {
         CombatLogMessage msg = new CombatLogMessage();
         return msg;
+    }
+
+    public CombatLogMessage divider()
+    {
+        divider = true;
+        return this;
+    }
+
+    public CombatLogMessage effect(int fx)
+    {
+        effect = fx;
+        return this;
     }
 
     public CombatLogMessage normal(String txt)
@@ -110,5 +132,13 @@ public class CombatLogMessage implements MvpEvent {
     public SpannableStringBuilder getSb()
     {
         return sb;
+    }
+
+    public int getEffect() {
+        return effect;
+    }
+
+    public boolean isDivider() {
+        return divider;
     }
 }

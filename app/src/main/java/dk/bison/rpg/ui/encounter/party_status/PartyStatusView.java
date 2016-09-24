@@ -31,7 +31,7 @@ public class PartyStatusView extends FrameLayout implements PartyStatusMvpView {
     LinearLayout contentLl;
     ArgbEvaluator rgbEvaluator = new ArgbEvaluator();
     private static int deadColor = 0xFFB71C1C;
-    private static int maxHpColor = 0xFF558B2F;
+    private static int maxHpColor = 0xFFFFFFFF;
 
     public PartyStatusView(Context context) {
         super(context);

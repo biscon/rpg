@@ -9,7 +9,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:textSize="16dp"
+        android:textSize="14dp"
         android:fontFamily="sans-serif-light"
         android:text="Dire Wolf"/>
 

@@ -21,11 +21,11 @@ public class MonsterFactory {
         templates.put(name, new MonsterTemplate(name, AC, noAttacks, damage, XP, weaponTemplate, factionTemplate, aiClass));
     }
 
-    public static Monster makeMonster(String name, int level)
+    public static Monster makeMonster(String name, String template_name, int level)
     {
-        if(!templates.containsKey(name))
+        if(!templates.containsKey(template_name))
             return null;
-        Monster monster = new Monster(templates.get(name), level);
+        Monster monster = new Monster(templates.get(template_name), level, name);
 
         return monster;
     }

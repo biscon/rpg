@@ -56,4 +56,8 @@ public class MonsterTemplate {
     {
         return String.format(Locale.US, "%dd8", level);
     }
+
+    public String getName() {
+        return name;
+    }
 }

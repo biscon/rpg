@@ -71,7 +71,6 @@ public class BasicEncounter implements Encounter {
         round++;
     }
 
-    @Override
     public void attack(Combatant c, Combatant opponent)
     {
         String hittype;

@@ -2,6 +2,9 @@ package dk.bison.rpg.core.ai;
 
 import android.util.Log;
 
+import java.util.List;
+
+import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.Encounter;
 
@@ -10,18 +13,41 @@ import dk.bison.rpg.core.combat.Encounter;
  */
 public class WeakestPreyAI extends BaseAI {
     public static final String TAG = WeakestPreyAI.class.getSimpleName();
-    private Combatant target;
+    Combatant opponent;
 
     @Override
     public void performAction(Encounter encounter) {
-        // always select the weakest living target
-        target = selectWeakestTarget(encounter);
-        if(target == null)
+        performAttacks(encounter, combatant);
+    }
+
+    protected void performAttacks(Encounter encounter, Combatant c)
+    {
+        List<Attack> attacks = c.getAttacks();
+        if(opponent == null)
+            opponent = selectWeakestTarget(encounter);
+        if(opponent.isDead())
+            opponent = selectWeakestTarget(encounter);
+
+        if(opponent == null)
         {
             Log.i(TAG, combatant.getName() + " does nothing this round.");
             return;
         }
-        encounter.attack(combatant, target);
+        for(int i=0; i < attacks.size(); i++)
+        {
+            Attack attack = attacks.get(i);
+            attack(c, opponent, attack);
+            if(opponent.isDead() && i < attacks.size()-1)
+            {
+                Log.e(TAG, "opponent died while attacking, selecting new target for remaining attacks");
+                opponent = selectWeakestTarget(encounter);
+                if(opponent == null)
+                {
+                    Log.e(TAG, "No valid enemies found, doing nothing this round");
+                    return;
+                }
+            }
+        }
     }
 
 }

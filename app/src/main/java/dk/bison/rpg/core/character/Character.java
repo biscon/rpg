@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import dk.bison.rpg.core.Dice;
 import dk.bison.rpg.core.ai.AI;
@@ -121,6 +122,7 @@ public class Character implements Combatant {
         maxHP += con_bonus;
         if(maxHP < 1)
             maxHP = 1;
+        maxHP += 8;
         HP = maxHP;
     }
 
@@ -297,6 +299,11 @@ public class Character implements Combatant {
     @Override
     public void resetHealth() {
         HP = maxHP;
+    }
+
+    @Override
+    public String getNameWithTemplateName() {
+        return String.format(Locale.US, "%s (%s)", name, charClass.getName());
     }
 
     public int getXP() {
