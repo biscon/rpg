@@ -1,8 +1,11 @@
 package dk.bison.rpg.ui.encounter.enemy_status;
 
+import android.animation.ArgbEvaluator;
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -26,6 +29,9 @@ public class EnemyStatusView extends FrameLayout implements EnemyStatusMvpView {
     EnemyStatusPresenter presenter;
     ScrollView scrollView;
     LinearLayout contentLl;
+    ArgbEvaluator rgbEvaluator = new ArgbEvaluator();
+    private static int deadColor = 0xFFB71C1C;
+    private static int maxHpColor = 0xFF558B2F;
 
     public EnemyStatusView(Context context) {
         super(context);
@@ -72,10 +78,25 @@ public class EnemyStatusView extends FrameLayout implements EnemyStatusMvpView {
         TextView level_tv = ButterKnife.findById(v, R.id.level_tv);
         TextView ac_tv = ButterKnife.findById(v, R.id.ac_tv);
         TextView hp_tv = ButterKnife.findById(v, R.id.hp_tv);
-        name_tv.setText(c.getName());
+
         level_tv.setText(String.format(Locale.US, "%d", c.getLevel()));
         ac_tv.setText(String.format(Locale.US, "%d", c.getAC()));
+
+        float max_hp = (float) c.getMaxHP();
+        float cur_hp = (float) c.getHP();
+        float frac = 0;
+        if(cur_hp > 0)
+            frac = cur_hp / max_hp;
+        //Log.e(TAG, "max_hp = " + max_hp + ", cur_hp = " + cur_hp+ " frac = " + frac);
+        int col = (int) rgbEvaluator.evaluate(frac, deadColor, maxHpColor);
+        hp_tv.setTextColor(col);
         hp_tv.setText(String.format(Locale.US, "%d", c.getHP()));
+
+        name_tv.setText(c.getName());
+        name_tv.setTextColor(col);
+        if(c.isDead()) {
+            name_tv.setPaintFlags(name_tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
         return v;
     }
 

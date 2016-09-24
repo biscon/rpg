@@ -6,14 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".ui.encounter.EncounterActivity">
 
+    <Button
+        android:id="@+id/add_btn"
+        android:text="Next Round"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <!-- Combat log -->
-    <LinearLayout
+    <dk.bison.rpg.ui.encounter.combat_log.CombatLogView
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_weight="1"
+        android:background="@color/grey_850"
         android:layout_height="0dp">
 
-    </LinearLayout>
+    </dk.bison.rpg.ui.encounter.combat_log.CombatLogView>
 
     <!-- Enemies list -->
     <dk.bison.rpg.ui.encounter.enemy_status.EnemyStatusView

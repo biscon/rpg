@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#ff304040</color>
     <color name="colorAccent">#ff85e6b5</color>
     -->
+    <color name="colorBackground">#ff263238</color>
     <color name="colorPrimary">#ff455A64</color>
     <color name="colorPrimaryDark">#ff37474F</color>
     <color name="colorAccent">#ff0097A7</color>
@@ -15,5 +16,12 @@
     <color name="transparent">#0fff</color>
     <color name="white">#fff</color>
     <color name="white_10">#3affffff</color>
+    <color name="grey_100">#fff5f5f5</color>
+    <color name="grey_300">#ffe0e0e0</color>
+    <color name="grey_50">#fffafafa</color>
+    <color name="grey_600">#ff757575</color>
+    <color name="grey_800">#ff424242</color>
+    <color name="grey_850">#ff303030</color>
+    <color name="grey_900">#ff212121</color>
     <!-- <color name="windowBackgroundColor">#37474F</color> -->
 </resources>

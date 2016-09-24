@@ -4,8 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import dk.bison.rpg.AppState;
-import dk.bison.rpg.core.combat.Party;
 import dk.bison.rpg.mvp.BasePresenter;
+import dk.bison.rpg.mvp.MvpEvent;
+import dk.bison.rpg.ui.encounter.StatusUpdateEvent;
 
 /**
  * Created by bison on 19-08-2016.
@@ -29,5 +30,18 @@ public class EnemyStatusPresenter extends BasePresenter<EnemyStatusMvpView> {
     public void detachView() {
         Log.e(TAG, "detachView");
         super.detachView();
+    }
+
+    @Override
+    public void onEvent(MvpEvent event) {
+        if(event instanceof StatusUpdateEvent)
+        {
+            if(isViewAttached())
+            {
+                if(AppState.enemyParty != null)
+                    getMvpView().showParty(AppState.enemyParty);
+            }
+
+        }
     }
 }

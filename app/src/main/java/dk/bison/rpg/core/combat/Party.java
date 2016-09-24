@@ -34,4 +34,9 @@ public class Party implements Iterable<Combatant> {
     {
         combatants.remove(c);
     }
+
+    public List<Combatant> getCombatants()
+    {
+        return combatants;
+    }
 }

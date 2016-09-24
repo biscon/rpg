@@ -14,6 +14,7 @@ public interface Combatant {
     int rollInitiative();
     int getAC();
     int getHP();
+    int getMaxHP();
     void decreaseHP(int amount);
     void increaseHP(int amount);
     boolean isDead();
@@ -25,4 +26,5 @@ public interface Combatant {
     Faction getFaction();
     AI getAI();
     int getLevel();
+    void resetHealth();
 }

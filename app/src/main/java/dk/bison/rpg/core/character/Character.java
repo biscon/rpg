@@ -13,11 +13,13 @@ import dk.bison.rpg.core.Dice;
 import dk.bison.rpg.core.ai.AI;
 import dk.bison.rpg.core.ai.AIFactory;
 import dk.bison.rpg.core.armor.Armor;
+import dk.bison.rpg.core.armor.ArmorFactory;
 import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.faction.Faction;
 import dk.bison.rpg.core.faction.FactionFactory;
 import dk.bison.rpg.core.weapon.Weapon;
+import dk.bison.rpg.core.weapon.WeaponFactory;
 import dk.bison.rpg.core.weapon.WeaponTemplate;
 
 /**
@@ -198,6 +200,11 @@ public class Character implements Combatant {
         return HP;
     }
 
+    @Override
+    public int getMaxHP() {
+        return maxHP;
+    }
+
     public void decreaseHP(int amount)
     {
         HP -= amount;
@@ -287,6 +294,11 @@ public class Character implements Combatant {
         return level;
     }
 
+    @Override
+    public void resetHealth() {
+        HP = maxHP;
+    }
+
     public int getXP() {
         return XP;
     }
@@ -343,6 +355,22 @@ public class Character implements Combatant {
         c.stats = CharacterStats.fromJson(chr.getJSONObject("stats"));
         String char_class = chr.getString("charClass");
         c.charClass = CharacterClassFactory.makeClass(char_class);
+        if(chr.has("armor"))
+        {
+            c.armor = ArmorFactory.makeArmor(chr.getString("armor"));
+        }
+        if(chr.has("shield"))
+        {
+            c.shield = ArmorFactory.makeArmor(chr.getString("shield"));
+        }
+        if(chr.has("mainHandWeapon"))
+        {
+            c.mainHandWeapon = WeaponFactory.makeWeapon(chr.getString("mainHandWeapon"));
+        }
+        if(chr.has("offHandWeapon"))
+        {
+            c.offHandWeapon = WeaponFactory.makeWeapon(chr.getString("offHandWeapon"));
+        }
         return c;
     }
 }

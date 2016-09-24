@@ -1,15 +1,21 @@
 package dk.bison.rpg.ui.encounter;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
 import dk.bison.rpg.mvp.PresentationManager;
+import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
 
 public class EncounterActivity extends BaseActivity implements EncounterMvpView {
     public static final String TAG = EncounterActivity.class.getSimpleName();
     EncounterPresenter presenter;
+    @BindView(R.id.add_btn)
+    Button addBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,49 +26,22 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         // obtain instance to the presenter
         presenter = PresentationManager.instance().presenter(this, EncounterPresenter.class);
         presenter.setup();
-        /*
-        Monster m1 = MonsterFactory.makeMonster("Wolf");
-        Monster m2 = MonsterFactory.makeMonster("Dire Wolf");
-        Monster m3 = MonsterFactory.makeMonster("Wolf");
 
-        Character ch1 = new Character();
-        ch1.setName("Vanderbilt");
-        ch1.giveLevel();
-        ch1.giveLevel();
-        ch1.equipMainHand(WeaponFactory.makeWeapon("Two-handed Sword"));
-        ch1.setArmor(ArmorFactory.makeArmor("Chain Mail"));
-        ch1.equipShield(ArmorFactory.makeArmor("Shield"));
-        Log.d(TAG, ch1.toString());
-
-        Character ch2 = new Character();
-        ch2.setName("Goaloriented Carsten");
-        ch2.giveLevel();
-        ch2.giveLevel();
-        ch2.giveLevel();
-        ch2.setArmor(ArmorFactory.makeArmor("Leather Armor"));
-        ch2.equipMainHand(WeaponFactory.makeWeapon("Longsword"));
-        ch2.equipOffHand(WeaponFactory.makeWeapon("Dagger"));
-        Log.d(TAG, ch2.toString());
-
-        Character ch3 = new Character();
-        ch3.setName("Bue Lars");
-        ch3.giveLevel();
-        ch3.giveLevel();
-        ch3.equipMainHand(WeaponFactory.makeWeapon("Longbow"));
-        ch3.setArmor(ArmorFactory.makeArmor("Leather Armor"));
-        Log.d(TAG, ch3.toString());
-
-
-        BasicEncounter enc = new BasicEncounter();
-        enc.addCombatant(ch1);
-        enc.addCombatant(ch2);
-        enc.addCombatant(ch3);
-        enc.addCombatant(m1);
-        enc.addCombatant(m2);
-        enc.addCombatant(m3);
-
-        enc.fightToDead();
-        */
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*
+                CombatLogMessage msg = new CombatLogMessage();
+                msg.normal("normal").violent("violent").bold("bold").normal("normal").bright("bright");
+                PresentationManager.instance().publishEvent(msg);
+                */
+                presenter.executeRound();
+                if(presenter.isCombatDone())
+                {
+                    addBtn.setVisibility(View.GONE);
+                }
+            }
+        });
 
     }
 

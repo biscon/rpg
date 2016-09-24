@@ -119,6 +119,11 @@ public class Monster implements Combatant {
     }
 
     @Override
+    public int getMaxHP() {
+        return maxHP;
+    }
+
+    @Override
     public void decreaseHP(int amount) {
         HP -= amount;
         if(HP < 0)
@@ -174,5 +179,8 @@ public class Monster implements Combatant {
         return level;
     }
 
-
+    @Override
+    public void resetHealth() {
+        HP = maxHP;
+    }
 }
