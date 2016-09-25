@@ -23,8 +23,10 @@ import dk.bison.rpg.core.faction.Faction;
 import dk.bison.rpg.core.monster.Monster;
 import dk.bison.rpg.core.monster.MonsterFactory;
 import dk.bison.rpg.mvp.BasePresenter;
+import dk.bison.rpg.mvp.MvpEvent;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
+import dk.bison.rpg.ui.encounter.combat_log.RoundDoneEvent;
 import dk.bison.rpg.ui.encounter.enemy_status.EnemyStatusPresenter;
 import dk.bison.rpg.ui.menu.MenuMvpView;
 
@@ -100,6 +102,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             Log.e(TAG, "Combat is done, no more rounds to execute");
             return;
         }
+        getMvpView().hideNextRoundButton();
         if(round > 1)
             emitMessage(CombatLogMessage.create().divider());
         Log.e(TAG, "Executing round " + round);
@@ -131,14 +134,19 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             combatDone = true;
             emitMessage(CombatLogMessage.create().violent("All factions lost!").effect(CombatLogMessage.ROTATE));
             Log.e(TAG, "All factions lost!");
+            getMvpView().hideNextRoundButton();
         }
         else if(countLivingFactions() < 2)
         {
             combatDone = true;
             emitMessage(CombatLogMessage.create().bold("Faction ").violent(winningFaction.getName()).bold(" won the battle!").effect(CombatLogMessage.ROTATE));
             Log.e(TAG, "Faction " + winningFaction.getName() + " won the battle!");
+            getMvpView().hideNextRoundButton();
         }
-        round++;
+        else {
+            emitMessage(CombatLogMessage.create().roundDone());
+            round++;
+        }
     }
 
 
@@ -177,5 +185,14 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
 
     public boolean isCombatDone() {
         return combatDone;
+    }
+
+    @Override
+    public void onEvent(MvpEvent event) {
+        if(event instanceof RoundDoneEvent)
+        {
+            if(isViewAttached())
+                getMvpView().showNextRoundButton();
+        }
     }
 }

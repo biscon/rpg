@@ -195,8 +195,12 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
         post(new Runnable() {
             @Override
             public void run() {
-                if(msg.isDivider())
+                if(msg.isDivider()) {
                     addDivider();
+                }
+                else if(msg.isRoundDone()) {
+                    PresentationManager.instance().publishEvent(new RoundDoneEvent());
+                }
                 else
                     addEntry(msg.getSb(), msg.getEffect());
             }

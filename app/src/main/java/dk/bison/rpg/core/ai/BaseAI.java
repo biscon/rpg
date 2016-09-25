@@ -124,16 +124,28 @@ public abstract class BaseAI extends AI {
 
     protected void performMoveTowardsOpponent(Combatant opponent)
     {
-        int dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
+        int speed = CombatPosition.MOVE_PER_TURN + (2*combatant.getDEXBonus());
+        int diff = Math.abs(opponent.getPosition() - combatant.getPosition());
+        Log.e(TAG, String.format(Locale.US, "%s speed = %d", combatant.getName(), speed));
         if(opponent.getPosition() > combatant.getPosition())
         {
-            combatant.setPosition(combatant.getPosition() + CombatPosition.MOVE_PER_TURN);
+            if(diff < speed)
+                combatant.setPosition(combatant.getPosition() + diff);
+            else
+                combatant.setPosition(combatant.getPosition() + speed);
         }
         else
         {
-            combatant.setPosition(combatant.getPosition() - CombatPosition.MOVE_PER_TURN);
+            if(diff < speed)
+                combatant.setPosition(combatant.getPosition() - diff);
+            else
+                combatant.setPosition(combatant.getPosition() - speed);
         }
-        emitMessage(CombatLogMessage.create().bold(combatant.getName()).normal(" moved towards ").bright(opponent.getName()).dark(String.format(Locale.US, " (%dm)", dist)));
+        int dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
+        int meters = speed;
+        if(diff < speed)
+            meters = diff;
+        emitMessage(CombatLogMessage.create().bold(combatant.getName()).normal(" moved " + meters + " meters towards ").bright(opponent.getName()).dark(String.format(Locale.US, " (%dm)", dist)));
     }
 
     protected void attack(Combatant c, Combatant opponent, Attack attack)
@@ -143,7 +155,7 @@ public abstract class BaseAI extends AI {
             Log.e(TAG, "opponent is dead, opponent shouldnt be dead here");
         }
         String hittype;
-        HitInfo hit = rollToHit(c, opponent);
+        HitInfo hit = rollToHit(c, opponent, attack.isRanged);
         hittype = "";
         if(hit.type == HitInfo.CRITICAL_HIT || hit.type == HitInfo.CRITICAL_MISS)
             hittype = "(CRITICAL) ";
@@ -206,7 +218,7 @@ public abstract class BaseAI extends AI {
         return damage_roll;
     }
 
-    protected HitInfo rollToHit(Combatant chr, Combatant opponent)
+    protected HitInfo rollToHit(Combatant chr, Combatant opponent, boolean is_ranged)
     {
         int attack = dice.roll("1d20");
         if(attack == 1)
@@ -218,10 +230,15 @@ public abstract class BaseAI extends AI {
             return new HitInfo(HitInfo.CRITICAL_HIT);
         }
 
-        int str_bonus = chr.getSTRBonus();
+
+        int bonus = chr.getSTRBonus();
+        if(is_ranged)
+            bonus = chr.getDEXBonus();
+
         int atk_bonus = chr.getAttackBonus();
-        int total = attack + str_bonus + atk_bonus;
-        //Log.d(TAG, chr.getName() + " to hit is " + total + " opponent AC is " + opponent.getAC());
+        Log.e(TAG, "attack = " + attack + " bonus = " + bonus + " atk_bonus = " + atk_bonus);
+        int total = attack + bonus + atk_bonus;
+        Log.e(TAG, chr.getName() + " to hit is " + total + " opponent AC is " + opponent.getAC());
         if(total >= opponent.getAC())
         {
             return new HitInfo(HitInfo.HIT);

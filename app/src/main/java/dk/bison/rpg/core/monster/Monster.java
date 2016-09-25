@@ -78,6 +78,9 @@ public class Monster implements Combatant {
                 {
                     attack.name = weapon.getName();
                     attack.damage = weapon.getDamageDice();
+                    attack.range = weapon.getRange();
+                    if(weapon.isRanged())
+                        attack.isRanged = true;
                     attack.type = Attack.MONSTER;
                     attacks.add(attack);
                 }
@@ -85,6 +88,7 @@ public class Monster implements Combatant {
                     attack.name = name;
                     attack.damage = damage[i].trim();
                     attack.type = Attack.MONSTER;
+                    attack.isRanged = false;
                     attacks.add(attack);
                 }
             }
@@ -170,6 +174,32 @@ public class Monster implements Combatant {
     @Override
     public List<Attack> getAttacks() {
         return attacks;
+    }
+
+    @Override
+    public List<Attack> getRangedAttacks(int distance)
+    {
+        List<Attack> ranged_attacks = new ArrayList<>();
+        for(Attack attack : attacks)
+        {
+            if(attack.isRanged) {
+                if(attack.range >= distance)
+                    ranged_attacks.add(attack);
+            }
+        }
+        return ranged_attacks;
+    }
+
+    @Override
+    public List<Attack> getMeleeAttacks()
+    {
+        List<Attack> melee_attacks = new ArrayList<>();
+        for(Attack attack : attacks)
+        {
+            if(!attack.isRanged)
+                melee_attacks.add(attack);
+        }
+        return melee_attacks;
     }
 
     @Override

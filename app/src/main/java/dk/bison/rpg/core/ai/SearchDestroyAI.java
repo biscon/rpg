@@ -40,15 +40,16 @@ public class SearchDestroyAI extends BaseAI {
             Log.e(TAG, "Target is out of melee range, moving in for the kill");
             performMoveTowardsOpponent(opponent);
         }
+        /*
         else
             performAttacks(encounter, combatant);
-        /*
+            */
+
         dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
         if(dist <= CombatPosition.MELEE_DISTANCE)
         {
             performAttacks(encounter, combatant);
         }
-        */
     }
 
     protected void performAttacks(Encounter encounter, Combatant c)

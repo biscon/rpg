@@ -22,8 +22,8 @@ public class WeaponFactory {
         addTemplate("Shortsword", 6, WeaponTemplate.SIZE_S, 3, "1D6", 0);
         addTemplate("Longsword", 10, WeaponTemplate.SIZE_M, 4, "1D8", 0);
         addTemplate("Two-handed Sword", 18, WeaponTemplate.SIZE_L, 10, "1D10", 0);
-        addTemplate("Shortbow", 25, WeaponTemplate.SIZE_M, 2, "1D6", 4);
-        addTemplate("Longbow", 60, WeaponTemplate.SIZE_L, 3, "1D8", 6);
+        addTemplate("Shortbow", 25, WeaponTemplate.SIZE_M, 2, "1D6", 50);
+        addTemplate("Longbow", 60, WeaponTemplate.SIZE_L, 3, "1D8", 100);
     }
 
     private static void addTemplate(String name, int cost, int size, int weight, String damage, int range)

@@ -24,6 +24,7 @@ public class CombatLogMessage implements MvpEvent {
     int effect = FADE;
     SpannableStringBuilder sb;
     boolean divider = false;
+    boolean roundDone = false;
 
 
     public CombatLogMessage() {
@@ -34,6 +35,12 @@ public class CombatLogMessage implements MvpEvent {
     {
         CombatLogMessage msg = new CombatLogMessage();
         return msg;
+    }
+
+    public CombatLogMessage roundDone()
+    {
+        roundDone = true;
+        return this;
     }
 
     public CombatLogMessage divider()
@@ -141,4 +148,6 @@ public class CombatLogMessage implements MvpEvent {
     public boolean isDivider() {
         return divider;
     }
+
+    public boolean isRoundDone() { return roundDone; }
 }

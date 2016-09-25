@@ -52,7 +52,7 @@ public class Character implements Combatant {
 
     public Character() {
         faction = FactionFactory.makeFaction("Player");
-        ai = AIFactory.makeAI("WeakestPreyAI");
+        ai = AIFactory.makeAI("ClosestEnemyAI");
         ai.setCombatant(this);
         attacks = new ArrayList<>();
         charClass = CharacterClassFactory.makeClass("FighterClass");
@@ -82,6 +82,8 @@ public class Character implements Combatant {
             a.name = "fists";
             a.damage = "1d3";
             a.type = Attack.MAIN_HAND;
+            a.isRanged = false;
+            a.range = 0;
             attacks.add(a);
             return;
         }
@@ -95,8 +97,10 @@ public class Character implements Combatant {
                 a.type = Attack.TWO_HAND;
             else
                 a.type = Attack.MAIN_HAND;
-            if(mainHandWeapon.isRanged())
+            if(mainHandWeapon.isRanged()) {
                 a.isRanged = true;
+                a.range = mainHandWeapon.getRange();
+            }
             else
                 a.isRanged = false;
             attacks.add(a);
@@ -108,8 +112,10 @@ public class Character implements Combatant {
             a.name = offHandWeapon.getName();
             a.damage = offHandWeapon.getDamageDice();
             a.type = Attack.OFF_HAND;
-            if(offHandWeapon.isRanged())
+            if(offHandWeapon.isRanged()) {
                 a.isRanged = true;
+                a.range = offHandWeapon.getRange();
+            }
             else
                 a.isRanged = false;
             attacks.add(a);
@@ -158,6 +164,7 @@ public class Character implements Combatant {
         money = 10 * d.roll("3d6",0);
     }
 
+    @Override
     public int getAttackBonus()
     {
         return charClass.getAttackBonus(level);
@@ -168,6 +175,34 @@ public class Character implements Combatant {
         if(attacks.isEmpty())
             buildWeaponAttacks();
         return attacks;
+    }
+
+    @Override
+    public List<Attack> getRangedAttacks(int distance)
+    {
+        getAttacks();
+        List<Attack> ranged_attacks = new ArrayList<>();
+        for(Attack attack : attacks)
+        {
+            if(attack.isRanged) {
+                if(attack.range >= distance)
+                    ranged_attacks.add(attack);
+            }
+        }
+        return ranged_attacks;
+    }
+
+    @Override
+    public List<Attack> getMeleeAttacks()
+    {
+        getAttacks();
+        List<Attack> melee_attacks = new ArrayList<>();
+        for(Attack attack : attacks)
+        {
+            if(!attack.isRanged)
+                melee_attacks.add(attack);
+        }
+        return melee_attacks;
     }
 
     @Override

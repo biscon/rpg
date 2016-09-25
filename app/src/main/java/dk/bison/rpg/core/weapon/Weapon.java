@@ -24,6 +24,11 @@ public class Weapon {
         return template.size;
     }
 
+    public int getRange()
+    {
+        return template.range;
+    }
+
     public boolean isRanged()
     {
         if(template.range > 0)

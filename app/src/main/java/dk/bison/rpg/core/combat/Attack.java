@@ -11,6 +11,7 @@ public class Attack
     public String damage;
     public int type;
     public boolean isRanged;
+    public int range = 0;
 
     @Override
     public String toString() {

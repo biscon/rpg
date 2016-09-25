@@ -32,4 +32,6 @@ public interface Combatant {
     void setPosition(int pos);
     void setDistanceToCurrentTarget(int distance);
     int getDistanceToCurrentTarget();
+    List<Attack> getRangedAttacks(int distance);
+    List<Attack> getMeleeAttacks();
 }
