@@ -8,7 +8,7 @@ import dk.bison.rpg.mvp.MvpView;
 /**
  * Created by bison on 19-08-2016.
  */
-public interface CreateCharacterMvpView extends MvpView {
+public interface EditCharacterMvpView extends MvpView {
     void showStats(CharacterStats stats);
     void showClassLevelXp(String class_name, int level, int xp, int xp_next_level);
     void showHpAcAttackBonus(int hp, int ac, int atk_bonus);
@@ -16,4 +16,5 @@ public interface CreateCharacterMvpView extends MvpView {
     void showShield(Armor armor);
     void showMainhand(Weapon weapon);
     void showOffhand(Weapon weapon);
+    void showName(String name);
 }

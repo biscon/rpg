@@ -30,7 +30,7 @@ import dk.bison.rpg.core.weapon.WeaponTemplate;
 public class Character implements Combatant {
     public static final String TAG = Character.class.getSimpleName();
 
-    String name = "Default Dennis";
+    String name = "";
     CharacterStats stats;
     CharacterClass charClass;
     int maxHP;

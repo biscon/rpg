@@ -62,5 +62,10 @@ public class ChooseCharacterPresenter extends BasePresenter<ChooseCharacterMvpVi
             if(isViewAttached())
                 getMvpView().showCharacters(characters);
         }
+        if (event instanceof CharacterEditEvent) {
+            Log.e(TAG, "character edit event");
+            if(isViewAttached())
+                getMvpView().showCharacters(characters);
+        }
     }
 }

@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.character.CreateCharacterActivity"
+            android:name=".ui.character.EditCharacterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
         </activity>

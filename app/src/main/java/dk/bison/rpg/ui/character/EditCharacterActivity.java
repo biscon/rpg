@@ -1,7 +1,6 @@
 package dk.bison.rpg.ui.character;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -25,8 +24,8 @@ import dk.bison.rpg.core.weapon.Weapon;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.util.Snacktory;
 
-public class CreateCharacterActivity extends BaseActivity implements CreateCharacterMvpView {
-    public static final String TAG = CreateCharacterActivity.class.getSimpleName();
+public class EditCharacterActivity extends BaseActivity implements EditCharacterMvpView {
+    public static final String TAG = EditCharacterActivity.class.getSimpleName();
 
     @BindView(R.id.focus_thief)
     View focusThief;
@@ -98,18 +97,32 @@ public class CreateCharacterActivity extends BaseActivity implements CreateChara
     @BindView(R.id.create_char_create_btn)
     Button createBtn;
 
-    CreateCharacterPresenter presenter;
+    EditCharacterPresenter presenter;
+    boolean editMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_character);
         //setResult(RESULT_CANCELED);
+        if(getIntent() != null)
+        {
+            if(getIntent().getBooleanExtra("edit", false))
+                editMode = true;
+        }
+
+
         ButterKnife.bind(this);
-        getSupportActionBar().setTitle("Create Character");
+        if(!editMode)
+            getSupportActionBar().setTitle("Create Character");
+        else
+            getSupportActionBar().setTitle("Edit Character");
         // obtain instance to the presenter
-        presenter = PresentationManager.instance().presenter(this, CreateCharacterPresenter.class);
+        presenter = PresentationManager.instance().presenter(this, EditCharacterPresenter.class);
         presenter.reset();
+        if(editMode)
+            presenter.enableEditMode();
+
         focusThief.requestFocus();
 
         rerollBtn.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +142,7 @@ public class CreateCharacterActivity extends BaseActivity implements CreateChara
         armorLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.chooseArmor(CreateCharacterActivity.this, ArmorTemplate.CHEST);
+                presenter.chooseArmor(EditCharacterActivity.this, ArmorTemplate.CHEST);
             }
         });
         armorLl.setOnLongClickListener(new View.OnLongClickListener() {
@@ -143,7 +156,7 @@ public class CreateCharacterActivity extends BaseActivity implements CreateChara
         shieldLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.chooseShield(CreateCharacterActivity.this, ArmorTemplate.SHIELD);
+                presenter.chooseShield(EditCharacterActivity.this, ArmorTemplate.SHIELD);
             }
         });
         shieldLl.setOnLongClickListener(new View.OnLongClickListener() {
@@ -157,7 +170,7 @@ public class CreateCharacterActivity extends BaseActivity implements CreateChara
         mainHandLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.chooseWeapon(CreateCharacterActivity.this, Attack.MAIN_HAND);
+                presenter.chooseWeapon(EditCharacterActivity.this, Attack.MAIN_HAND);
             }
         });
         mainHandLl.setOnLongClickListener(new View.OnLongClickListener() {
@@ -171,7 +184,7 @@ public class CreateCharacterActivity extends BaseActivity implements CreateChara
         offHandLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.chooseWeapon(CreateCharacterActivity.this, Attack.OFF_HAND);
+                presenter.chooseWeapon(EditCharacterActivity.this, Attack.OFF_HAND);
             }
         });
         offHandLl.setOnLongClickListener(new View.OnLongClickListener() {
@@ -209,11 +222,16 @@ public class CreateCharacterActivity extends BaseActivity implements CreateChara
             }
         });
 
+        if(editMode)
+            createBtn.setText("Save");
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(validate()) {
-                    presenter.create(CreateCharacterActivity.this);
+                    if(!editMode)
+                        presenter.create(EditCharacterActivity.this);
+                    else
+                        presenter.save(EditCharacterActivity.this);
                     finish();
                 }
             }
@@ -317,6 +335,11 @@ public class CreateCharacterActivity extends BaseActivity implements CreateChara
             offHandNameTv.setText("None");
             offHandDmgTv.setText("N/A");
         }
+    }
+
+    @Override
+    public void showName(String name) {
+        nameEt.setText(name);
     }
 
 

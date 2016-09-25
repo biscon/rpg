@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +21,9 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dk.bison.rpg.AppState;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
-import dk.bison.rpg.core.armor.ArmorTemplate;
 import dk.bison.rpg.core.character.Character;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.util.Snacktory;
@@ -64,7 +62,7 @@ public class ChooseCharacterActivity extends BaseActivity implements ChooseChara
         createFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(ChooseCharacterActivity.this, CreateCharacterActivity.class);
+                Intent i = new Intent(ChooseCharacterActivity.this, EditCharacterActivity.class);
                 startActivity(i);
             }
         });
@@ -108,7 +106,8 @@ public class ChooseCharacterActivity extends BaseActivity implements ChooseChara
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Choose action");
-        menu.add(0, v.getId(), 0, "Delete");
+        menu.add(0, v.getId(), 0, "Edit");
+        menu.add(0, v.getId(), 1, "Delete");
 
     }
     @Override
@@ -118,6 +117,14 @@ public class ChooseCharacterActivity extends BaseActivity implements ChooseChara
             Character c = characters.get(item.getItemId());
             Snacktory.showMessage(coordinatorLayout, "Character '" + c.getName() + "' deleted", Snackbar.LENGTH_SHORT);
             presenter.deleteCharacter(ChooseCharacterActivity.this, c);
+            return true;
+        }
+        if (item.getTitle() == "Edit") {
+            Character c = characters.get(item.getItemId());
+            AppState.editorCharacter = c;
+            Intent i = new Intent(ChooseCharacterActivity.this, EditCharacterActivity.class);
+            i.putExtra("edit", true);
+            startActivity(i);
             return true;
         }
         return false;

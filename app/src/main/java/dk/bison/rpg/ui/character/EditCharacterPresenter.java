@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import dk.bison.rpg.AppState;
 import dk.bison.rpg.core.armor.ArmorFactory;
 import dk.bison.rpg.core.armor.ArmorTemplate;
 import dk.bison.rpg.core.character.Character;
@@ -26,9 +24,10 @@ import dk.bison.rpg.ui.weapon.WeaponChangeEvent;
 /**
  * Created by bison on 19-08-2016.
  */
-public class CreateCharacterPresenter extends BasePresenter<CreateCharacterMvpView> {
-    public static final String TAG = CreateCharacterPresenter.class.getSimpleName();
+public class EditCharacterPresenter extends BasePresenter<EditCharacterMvpView> {
+    public static final String TAG = EditCharacterPresenter.class.getSimpleName();
     Character character;
+    boolean editMode = false;
 
     @Override
     public void onCreate(Context context) {
@@ -36,7 +35,7 @@ public class CreateCharacterPresenter extends BasePresenter<CreateCharacterMvpVi
     }
 
     @Override
-    public void attachView(CreateCharacterMvpView mvpView) {
+    public void attachView(EditCharacterMvpView mvpView) {
         super.attachView(mvpView);
         updateView();
     }
@@ -48,6 +47,7 @@ public class CreateCharacterPresenter extends BasePresenter<CreateCharacterMvpVi
 
     private void updateView()
     {
+        getMvpView().showName(character.getName());
         getMvpView().showStats(character.getStats());
         int xp_next_level = character.getCharClass().getXPForLevel(character.getLevel()+1);
         getMvpView().showClassLevelXp(character.getCharClass().getName(), character.getLevel(), character.getXP(), xp_next_level);
@@ -61,6 +61,17 @@ public class CreateCharacterPresenter extends BasePresenter<CreateCharacterMvpVi
     public void reset()
     {
         character = new Character();
+    }
+
+    public void enableEditMode()
+    {
+        if(AppState.editorCharacter == null)
+        {
+            Log.e(TAG, "No editor character set, cannot enable edit mode");
+            return;
+        }
+        character = AppState.editorCharacter;
+        character.resetHealth();
     }
 
     public void rerollStats()
@@ -187,6 +198,12 @@ public class CreateCharacterPresenter extends BasePresenter<CreateCharacterMvpVi
         CharacterManager.instance().add(character);
         CharacterManager.instance().save(c);
         PresentationManager.instance().publishEvent(new CharacterCreateEvent(character));
+    }
+
+    public void save(Context c)
+    {
+        CharacterManager.instance().save(c);
+        PresentationManager.instance().publishEvent(new CharacterEditEvent(character));
     }
 
     @Override

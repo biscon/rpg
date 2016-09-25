@@ -3,20 +3,12 @@ package dk.bison.rpg.ui.weapon;
 import android.content.Context;
 import android.util.Log;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import dk.bison.rpg.core.armor.ACComparator;
-import dk.bison.rpg.core.armor.ArmorFactory;
-import dk.bison.rpg.core.armor.ArmorTemplate;
 import dk.bison.rpg.core.weapon.WeaponFactory;
 import dk.bison.rpg.core.weapon.WeaponTemplate;
 import dk.bison.rpg.mvp.BasePresenter;
 import dk.bison.rpg.mvp.PresentationManager;
-import dk.bison.rpg.ui.armor.ChooseArmorMvpView;
-import dk.bison.rpg.ui.character.CreateCharacterPresenter;
-import dk.bison.rpg.util.BroadcastReceiver;
 
 /**
  * Created by bison on 19-08-2016.

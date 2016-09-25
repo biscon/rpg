@@ -23,11 +23,13 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dk.bison.rpg.AppState;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
 import dk.bison.rpg.core.character.Character;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.character.ChooseCharacterActivity;
+import dk.bison.rpg.ui.character.EditCharacterActivity;
 import dk.bison.rpg.ui.encounter.EncounterActivity;
 import dk.bison.rpg.util.Snacktory;
 
@@ -144,7 +146,8 @@ public class PartyActivity extends BaseActivity implements PartyMvpView {
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("Choose action");
-        menu.add(0, v.getId(), 0, "Remove");
+        menu.add(0, v.getId(), 0, "Edit");
+        menu.add(0, v.getId(), 1, "Remove");
 
     }
     @Override
@@ -154,6 +157,14 @@ public class PartyActivity extends BaseActivity implements PartyMvpView {
             Character c = characters.get(item.getItemId());
             Snacktory.showMessage(coordinatorLayout, "Character '" + c.getName() + "' has been removed from party", Snackbar.LENGTH_SHORT);
             presenter.removeCharacter(c);
+            return true;
+        }
+        if (item.getTitle() == "Edit") {
+            Character c = characters.get(item.getItemId());
+            AppState.editorCharacter = c;
+            Intent i = new Intent(this, EditCharacterActivity.class);
+            i.putExtra("edit", true);
+            startActivity(i);
             return true;
         }
         return false;

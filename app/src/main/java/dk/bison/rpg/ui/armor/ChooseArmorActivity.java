@@ -8,11 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,10 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.bison.rpg.R;
 import dk.bison.rpg.core.armor.ArmorTemplate;
-import dk.bison.rpg.core.character.CharacterStats;
 import dk.bison.rpg.mvp.PresentationManager;
-import dk.bison.rpg.ui.character.CreateCharacterMvpView;
-import dk.bison.rpg.ui.character.CreateCharacterPresenter;
 
 public class ChooseArmorActivity extends AppCompatActivity implements ChooseArmorMvpView {
     public static final String TAG = ChooseArmorActivity.class.getSimpleName();

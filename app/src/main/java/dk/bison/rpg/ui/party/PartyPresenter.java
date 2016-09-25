@@ -1,6 +1,7 @@
 package dk.bison.rpg.ui.party;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.Party;
 import dk.bison.rpg.mvp.BasePresenter;
 import dk.bison.rpg.mvp.MvpEvent;
+import dk.bison.rpg.ui.character.CharacterEditEvent;
 import dk.bison.rpg.ui.character.CharacterSelectEvent;
 
 /**
@@ -72,6 +74,11 @@ public class PartyPresenter extends BasePresenter<PartyMvpView> {
             if(isViewAttached()) {
                 getMvpView().showCharacters(characters);
             }
+        }
+        if (event instanceof CharacterEditEvent) {
+            Log.e(TAG, "character edit event");
+            if(isViewAttached())
+                getMvpView().showCharacters(characters);
         }
     }
 }
