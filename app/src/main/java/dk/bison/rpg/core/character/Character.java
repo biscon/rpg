@@ -75,7 +75,7 @@ public class Character implements Combatant {
     {
         attacks.clear();
         /*
-            If unarmed character only has a weak fist attack
+            If unarmed, character only has a weak fist attack
          */
         if(offHandWeapon == null && mainHandWeapon == null) {
             Attack a = new Attack();

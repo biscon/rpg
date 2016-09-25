@@ -76,6 +76,11 @@ public class ClosestEnemyAI extends BaseAI {
         }
     }
 
+    @Override
+    public void reset() {
+        opponent = null;
+    }
+
     protected void performMeleeAttacks(Encounter encounter, Combatant c)
     {
         List<Attack> attacks = c.getMeleeAttacks();

@@ -207,12 +207,22 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
         });
     }
 
-    private void scrollDown()
+    public void scrollDown()
     {
         scrollView.post(new Runnable() {
             @Override
             public void run() {
                 scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+    }
+
+    public void scrollDownInstant()
+    {
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.scrollTo(0, scrollView.getChildAt(0).getHeight());
             }
         });
     }

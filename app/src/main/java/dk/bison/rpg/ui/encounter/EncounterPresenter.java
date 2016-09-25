@@ -82,6 +82,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         for(Combatant c : party)
         {
             c.resetHealth();
+            c.getAI().reset();
         }
         combatants.addAll(party.getCombatants());
     }

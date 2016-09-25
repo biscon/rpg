@@ -2,26 +2,36 @@ package dk.bison.rpg.ui.encounter;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
 import dk.bison.rpg.mvp.PresentationManager;
+import dk.bison.rpg.ui.encounter.combat_log.CombatLogView;
 
 public class EncounterActivity extends BaseActivity implements EncounterMvpView {
     public static final String TAG = EncounterActivity.class.getSimpleName();
     EncounterPresenter presenter;
     @BindView(R.id.next_round_btn)
     Button nextRoundBtn;
+    @BindView(R.id.log_clv)
+    CombatLogView logClv;
+    @BindView(R.id.tabs_tl)
+    TabLayout tabsTl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +62,10 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
                 presenter.executeRound();
             }
         });
+
+        tabsTl.addTab(tabsTl.newTab().setText("Status"));
+        tabsTl.addTab(tabsTl.newTab().setText("Map"));
+        tabsTl.setTabGravity(TabLayout.GRAVITY_FILL);
     }
 
     @Override
@@ -63,12 +77,37 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         //nextRoundBtn.clearAnimation();
         nextRoundBtn.setVisibility(View.VISIBLE);
         nextRoundBtn.setY(-nextRoundBtn.getHeight());
-        nextRoundBtn.animate().translationY(0).setDuration(1000).setInterpolator(new BounceInterpolator()).setListener(new AnimatorListenerAdapter() {
+        nextRoundBtn.animate().translationY(0).setDuration(350).setInterpolator(new LinearInterpolator()).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 nextRoundBtn.setVisibility(View.VISIBLE);
             }
-        }).start();
+        }).setUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            logClv.scrollDownInstant();
+        }
+    }).start();
+
+        final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) logClv.getLayoutParams();
+        ValueAnimator animator = ValueAnimator.ofInt(0, nextRoundBtn.getHeight());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator){
+                //logClv.setPadding(0, (int) valueAnimator.getAnimatedValue(), 0, 0);
+                lp.setMargins(0, (int) valueAnimator.getAnimatedValue(), 0, 0);
+                logClv.setLayoutParams(lp);
+                logClv.scrollDownInstant();
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                logClv.scrollDownInstant();
+            }
+        });
+        animator.setDuration(400);
+        animator.start();
     }
 
     @Override
@@ -78,12 +117,37 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
             return;
         Log.e(TAG, "Hiding next");
         //nextRoundBtn.clearAnimation();
-        nextRoundBtn.animate().translationY(-nextRoundBtn.getHeight()).setDuration(350).setInterpolator(new AccelerateInterpolator()).setListener(new AnimatorListenerAdapter() {
+        nextRoundBtn.animate().translationY(-nextRoundBtn.getHeight()).setDuration(350).setInterpolator(new LinearInterpolator()).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 nextRoundBtn.setVisibility(View.GONE);
             }
+        }).setUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                logClv.scrollDownInstant();
+            }
         }).start();
+
+        final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) logClv.getLayoutParams();
+        ValueAnimator animator = ValueAnimator.ofInt(nextRoundBtn.getHeight(), 0);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator){
+                //logClv.setPadding(0, (int) valueAnimator.getAnimatedValue(), 0, 0);
+                lp.setMargins(0, (int) valueAnimator.getAnimatedValue(), 0, 0);
+                logClv.setLayoutParams(lp);
+                logClv.scrollDownInstant();
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                logClv.scrollDownInstant();
+            }
+        });
+        animator.setDuration(400);
+        animator.start();
     }
 
     @Override

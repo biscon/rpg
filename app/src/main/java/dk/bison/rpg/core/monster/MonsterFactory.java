@@ -12,7 +12,7 @@ public class MonsterFactory {
     public static void init()
     {
         addTemplate("Wolf", 13, "1 bite / 1 scratch", "1d6 / 1d4", 75, null, "Wildlife", "SearchDestroyAI");
-        addTemplate("Dire Wolf", 14, "1 bite / 1 scratch", "2d4 / 1d6", 240, null, "Wildlife", "SearchDestroyAI");
+        addTemplate("Dire Wolf", 14, "1 bite / 2 scratch", "2d4 / 1d6", 240, null, "Wildlife", "SearchDestroyAI");
     }
 
     private static void addTemplate(String name, int AC, String noAttacks, String damage, int XP, String weaponTemplate,

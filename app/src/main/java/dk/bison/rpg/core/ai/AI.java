@@ -18,4 +18,6 @@ public abstract class AI {
     }
 
     public abstract void performAction(Encounter encounter);
+
+    public abstract void reset();
 }

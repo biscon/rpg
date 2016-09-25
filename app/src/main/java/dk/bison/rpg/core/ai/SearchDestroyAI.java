@@ -32,37 +32,90 @@ public class SearchDestroyAI extends BaseAI {
             Log.i(TAG, combatant.getName() + " does nothing this round.");
             return;
         }
+        List<Attack> melee_attacks = combatant.getMeleeAttacks();
         Log.e(TAG, "combatant.pos = " + combatant.getPosition() + ", opponent.pos = " + opponent.getPosition());
         int dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
         Log.e(TAG, "Distance to selected opponent is " + dist + "m");
+        boolean moved = false;
         if(dist > CombatPosition.MELEE_DISTANCE)
         {
-            Log.e(TAG, "Target is out of melee range, moving in for the kill");
-            performMoveTowardsOpponent(opponent);
+            List<Attack> ranged_attacks = combatant.getRangedAttacks(dist);
+            if(!ranged_attacks.isEmpty())
+            {
+                Log.e(TAG, "Target is within ranged range.");
+                performRangedAttacks(encounter, combatant, dist);
+            }
+            else {
+                Log.e(TAG, "Target is out of melee range, moving in for the kill");
+                moved = true;
+                performMoveTowardsOpponent(opponent);
+            }
         }
-        /*
-        else
-            performAttacks(encounter, combatant);
-            */
+        else {
+            Log.e(TAG, "Target is within melee range.");
+            if(!melee_attacks.isEmpty())
+                performMeleeAttacks(encounter, combatant);
+            else
+                performRangedAttacks(encounter, combatant, dist);
+        }
 
-        dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
-        if(dist <= CombatPosition.MELEE_DISTANCE)
-        {
-            performAttacks(encounter, combatant);
+        if(moved) {
+            dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
+            if (dist <= CombatPosition.MELEE_DISTANCE) {
+                Log.e(TAG, "Target is within melee range.");
+                if(!melee_attacks.isEmpty())
+                    performMeleeAttacks(encounter, combatant);
+                else
+                    performRangedAttacks(encounter, combatant, dist);
+            }
+            else
+            {
+                List<Attack> ranged_attacks = combatant.getRangedAttacks(dist);
+                if(!ranged_attacks.isEmpty())
+                {
+                    Log.e(TAG, "Target is within ranged range.");
+                    performRangedAttacks(encounter, combatant, dist);
+                }
+            }
         }
     }
 
-    protected void performAttacks(Encounter encounter, Combatant c)
+    @Override
+    public void reset() {
+        opponent = null;
+    }
+
+    protected void performMeleeAttacks(Encounter encounter, Combatant c)
     {
-        List<Attack> attacks = c.getAttacks();
+        List<Attack> attacks = c.getMeleeAttacks();
         for(int i=0; i < attacks.size(); i++)
         {
             Attack attack = attacks.get(i);
             attack(c, opponent, attack);
             if(opponent.isDead() && i < attacks.size()-1)
             {
-                Log.e(TAG, "opponent died while attacking, selecting new target for remaining attacks");
+                Log.e(TAG, "opponent died while attacking, selecting closest target within melee distance for remaining attacks");
                 opponent = selectClosestTargetWithin(encounter, CombatPosition.MELEE_DISTANCE);
+                if(opponent == null)
+                {
+                    Log.e(TAG, "No valid enemies found within melee distance, doing nothing this round");
+                    return;
+                }
+            }
+        }
+    }
+
+    protected void performRangedAttacks(Encounter encounter, Combatant c, int distance)
+    {
+        List<Attack> attacks = c.getRangedAttacks(distance);
+        for(int i=0; i < attacks.size(); i++)
+        {
+            Attack attack = attacks.get(i);
+            attack(c, opponent, attack);
+            if(opponent.isDead() && i < attacks.size()-1)
+            {
+                Log.e(TAG, "opponent died while attacking, selecting closest target within melee distance for remaining attacks");
+                opponent = selectClosestTargetWithin(encounter, distance);
                 if(opponent == null)
                 {
                     Log.e(TAG, "No valid enemies found within melee distance, doing nothing this round");

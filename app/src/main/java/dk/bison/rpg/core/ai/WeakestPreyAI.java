@@ -70,4 +70,8 @@ public class WeakestPreyAI extends BaseAI {
         }
     }
 
+    @Override
+    public void reset() {
+        opponent = null;
+    }
 }
