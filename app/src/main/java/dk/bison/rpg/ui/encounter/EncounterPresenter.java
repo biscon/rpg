@@ -67,12 +67,15 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         m2.setPosition(40);
         Monster m3 = MonsterFactory.makeMonster("Scratchy", "Wolf", 2);
         m3.setPosition(20);
+        Monster m4 = MonsterFactory.makeMonster("Slikkefanden", "Wolf", 3);
+        m4.setPosition(30);
         party.add(m1);
         party.add(m2);
         party.add(m3);
+        party.add(m4);
         AppState.enemyParty = party;
         for(Combatant c : AppState.currentParty)
-            c.setPosition(-25);
+            c.setPosition(-30);
         addParty(AppState.currentParty);
         addParty(AppState.enemyParty);
     }
