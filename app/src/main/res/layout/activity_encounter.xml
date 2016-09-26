@@ -44,7 +44,6 @@
 
         <FrameLayout
             android:id="@+id/tab_container"
-            android:animateLayoutChanges="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <!-- status tab -->

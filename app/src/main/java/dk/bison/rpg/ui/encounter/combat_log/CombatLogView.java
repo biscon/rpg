@@ -35,6 +35,7 @@ import dk.bison.rpg.R;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.Party;
 import dk.bison.rpg.mvp.PresentationManager;
+import dk.bison.rpg.ui.encounter.RoundDoneEvent;
 import dk.bison.rpg.ui.encounter.StatusUpdateEvent;
 
 /**
@@ -199,7 +200,7 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
                     addDivider();
                 }
                 else if(msg.isRoundDone()) {
-                    PresentationManager.instance().publishEvent(new RoundDoneEvent());
+                    PresentationManager.instance().publishEvent(new CombatLogIdleEvent());
                 }
                 else
                     addEntry(msg.getSb(), msg.getEffect());

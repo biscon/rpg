@@ -1,10 +1,15 @@
 package dk.bison.rpg.mvp;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import dk.bison.rpg.App;
 
 /**
  * Created by bison on 13-08-2016.
@@ -101,12 +106,31 @@ public class PresentationManager {
         }
     }
 
-    public void publishEvent(MvpEvent event)
+    /**
+     * If we're not on the ui thread then post on the ui thread instead of just running.
+     * Makes the event mechanism safe to call from other threads.. somewhat...
+     * @param event
+     */
+    public void publishEvent(final MvpEvent event)
     {
-        for(Iterator<Map.Entry<Class, Presenter>> it = presenters.entrySet().iterator(); it.hasNext(); )
-        {
-            Map.Entry<Class, Presenter> entry = it.next();
-            entry.getValue().onEvent(event);
+        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            for(Iterator<Map.Entry<Class, Presenter>> it = presenters.entrySet().iterator(); it.hasNext(); )
+            {
+                Map.Entry<Class, Presenter> entry = it.next();
+                entry.getValue().onEvent(event);
+            }
+        } else {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    //Log.d("UI thread", "I am the UI thread");
+                    for(Iterator<Map.Entry<Class, Presenter>> it = presenters.entrySet().iterator(); it.hasNext(); )
+                    {
+                        Map.Entry<Class, Presenter> entry = it.next();
+                        entry.getValue().onEvent(event);
+                    }
+                }
+            });
         }
     }
 }

@@ -65,15 +65,13 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
                 msg.normal("normal").violent("violent").bold("bold").normal("normal").bright("bright");
                 PresentationManager.instance().publishEvent(msg);
                 */
-                presenter.executeRound();
+                presenter.startNextRound();
             }
         });
-
         nextRoundBtn.post(new Runnable() {
             @Override
             public void run() {
                 nextRoundBtn.setVisibility(View.GONE);
-                presenter.executeRound();
             }
         });
 
@@ -107,10 +105,11 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
 
             }
         });
+
+        presenter.startCombat();
     }
 
-    @Override
-    public void showNextRoundButton()
+    private void showNextRoundButton()
     {
         if(nextRoundBtn.getVisibility() == View.VISIBLE)
             return;
@@ -151,8 +150,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         animator.start();
     }
 
-    @Override
-    public void hideNextRoundButton()
+    private void hideNextRoundButton()
     {
         if(nextRoundBtn.getVisibility() != View.VISIBLE)
             return;
@@ -191,8 +189,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         animator.start();
     }
 
-    @Override
-    public void updateMapView(List<Combatant> combatants) {
+    private void updateMapView(List<Combatant> combatants) {
         mapView.drawMap(combatants);
     }
 
@@ -209,4 +206,33 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
     }
 
 
+    @Override
+    public void postShowNextRoundButton() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showNextRoundButton();
+            }
+        });
+    }
+
+    @Override
+    public void postHideNextRoundButton() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                hideNextRoundButton();
+            }
+        });
+    }
+
+    @Override
+    public void postUpdateMapView(final List<Combatant> combatants) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateMapView(combatants);
+            }
+        });
+    }
 }

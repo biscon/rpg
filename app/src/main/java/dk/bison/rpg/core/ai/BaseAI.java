@@ -18,6 +18,7 @@ import dk.bison.rpg.core.combat.HPComparator;
 import dk.bison.rpg.core.combat.HitInfo;
 import dk.bison.rpg.core.faction.Faction;
 import dk.bison.rpg.mvp.PresentationManager;
+import dk.bison.rpg.ui.encounter.MapUpdateEvent;
 import dk.bison.rpg.ui.encounter.StatusUpdateEvent;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
 
@@ -146,6 +147,7 @@ public abstract class BaseAI extends AI {
         if(diff < speed)
             meters = diff;
         emitMessage(CombatLogMessage.create().bold(combatant.getName()).normal(" moved " + meters + " meters towards ").bright(opponent.getName()).dark(String.format(Locale.US, " (%dm)", dist)));
+        PresentationManager.instance().publishEvent(new MapUpdateEvent());
     }
 
     protected void attack(Combatant c, Combatant opponent, Attack attack)

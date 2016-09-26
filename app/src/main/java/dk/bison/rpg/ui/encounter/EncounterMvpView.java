@@ -9,8 +9,7 @@ import dk.bison.rpg.mvp.MvpView;
  * Created by bison on 19-08-2016.
  */
 public interface EncounterMvpView extends MvpView {
-    void showNextRoundButton();
-    void hideNextRoundButton();
-    void updateMapView(List<Combatant> combatants);
-
+    void postShowNextRoundButton();
+    void postHideNextRoundButton();
+    void postUpdateMapView(List<Combatant> combatants);
 }
