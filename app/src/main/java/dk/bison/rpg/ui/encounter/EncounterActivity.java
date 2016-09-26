@@ -14,17 +14,25 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
+import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogView;
 
 public class EncounterActivity extends BaseActivity implements EncounterMvpView {
     public static final String TAG = EncounterActivity.class.getSimpleName();
+
+    public static final int STATUS_TAB = 0;
+    public static final int MAP_TAB = 1;
+
     EncounterPresenter presenter;
     @BindView(R.id.next_round_btn)
     Button nextRoundBtn;
@@ -32,6 +40,12 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
     CombatLogView logClv;
     @BindView(R.id.tabs_tl)
     TabLayout tabsTl;
+    @BindView(R.id.status_tab)
+    LinearLayout statusTabLl;
+    @BindView(R.id.map_tab)
+    LinearLayout mapTabLl;
+    @BindView(R.id.map_view)
+    EncounterMapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +80,33 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         tabsTl.addTab(tabsTl.newTab().setText("Status"));
         tabsTl.addTab(tabsTl.newTab().setText("Map"));
         tabsTl.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        tabsTl.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch(tab.getPosition())
+                {
+                    case STATUS_TAB:
+                        statusTabLl.setVisibility(View.VISIBLE);
+                        mapTabLl.setVisibility(View.GONE);
+                        break;
+                    case MAP_TAB:
+                        statusTabLl.setVisibility(View.GONE);
+                        mapTabLl.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     @Override
@@ -151,6 +192,11 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
     }
 
     @Override
+    public void updateMapView(List<Combatant> combatants) {
+        mapView.drawMap(combatants);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         presenter.attachView(this);
@@ -161,4 +207,6 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         presenter.detachView();
         super.onPause();
     }
+
+
 }

@@ -1,5 +1,8 @@
 package dk.bison.rpg.ui.encounter;
 
+import java.util.List;
+
+import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.mvp.MvpView;
 
 /**
@@ -8,5 +11,6 @@ import dk.bison.rpg.mvp.MvpView;
 public interface EncounterMvpView extends MvpView {
     void showNextRoundButton();
     void hideNextRoundButton();
+    void updateMapView(List<Combatant> combatants);
 
 }

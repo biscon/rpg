@@ -72,7 +72,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         party.add(m3);
         AppState.enemyParty = party;
         for(Combatant c : AppState.currentParty)
-            c.setPosition(-10);
+            c.setPosition(-25);
         addParty(AppState.currentParty);
         addParty(AppState.enemyParty);
     }
@@ -104,6 +104,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             return;
         }
         getMvpView().hideNextRoundButton();
+        getMvpView().updateMapView(combatants);
         if(round > 1)
             emitMessage(CombatLogMessage.create().divider());
         Log.e(TAG, "Executing round " + round);
@@ -148,6 +149,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             emitMessage(CombatLogMessage.create().roundDone());
             round++;
         }
+        getMvpView().updateMapView(combatants);
     }
 
 
