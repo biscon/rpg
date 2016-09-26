@@ -131,14 +131,14 @@ public abstract class BaseAI extends AI {
         if(opponent.getPosition() > combatant.getPosition())
         {
             if(diff < speed)
-                combatant.setPosition(combatant.getPosition() + diff);
+                combatant.setPosition(combatant.getPosition() + diff-1);
             else
                 combatant.setPosition(combatant.getPosition() + speed);
         }
         else
         {
             if(diff < speed)
-                combatant.setPosition(combatant.getPosition() - diff);
+                combatant.setPosition(combatant.getPosition() - diff+1);
             else
                 combatant.setPosition(combatant.getPosition() - speed);
         }
