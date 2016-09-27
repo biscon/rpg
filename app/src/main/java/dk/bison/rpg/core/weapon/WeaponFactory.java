@@ -17,18 +17,18 @@ public class WeaponFactory {
 
     public static void init()
     {
-        addTemplate("Dagger", 2, WeaponTemplate.SIZE_S, 1, "1D4", 0);
-        addTemplate("Battle Axe", 7, WeaponTemplate.SIZE_M, 7, "1D8", 0);
-        addTemplate("Shortsword", 6, WeaponTemplate.SIZE_S, 3, "1D6", 0);
-        addTemplate("Longsword", 10, WeaponTemplate.SIZE_M, 4, "1D8", 0);
-        addTemplate("Two-handed Sword", 18, WeaponTemplate.SIZE_L, 10, "1D10", 0);
-        addTemplate("Shortbow", 25, WeaponTemplate.SIZE_M, 2, "1D6", 50);
-        addTemplate("Longbow", 60, WeaponTemplate.SIZE_L, 3, "1D8", 100);
+        addTemplate("Dagger", 2, WeaponTemplate.SIZE_S, 1, "1D4", 0, "sharp");
+        addTemplate("Battle Axe", 7, WeaponTemplate.SIZE_M, 7, "1D8", 0, "sharp");
+        addTemplate("Shortsword", 6, WeaponTemplate.SIZE_S, 3, "1D6", 0, "sharp");
+        addTemplate("Longsword", 10, WeaponTemplate.SIZE_M, 4, "1D8", 0, "sharp");
+        addTemplate("Two-handed Sword", 18, WeaponTemplate.SIZE_L, 10, "1D10", 0, "sharp");
+        addTemplate("Shortbow", 25, WeaponTemplate.SIZE_M, 2, "1D6", 50, "guns");
+        addTemplate("Longbow", 60, WeaponTemplate.SIZE_L, 3, "1D8", 100, "guns");
     }
 
-    private static void addTemplate(String name, int cost, int size, int weight, String damage, int range)
+    private static void addTemplate(String name, int cost, int size, int weight, String damage, int range, String category)
     {
-        templates.put(name, new WeaponTemplate(name, cost, size, weight, damage, range));
+        templates.put(name, new WeaponTemplate(name, cost, size, weight, damage, range, category));
     }
 
     public static Weapon makeWeapon(String name)

@@ -14,14 +14,16 @@ public class WeaponTemplate {
     int weight;
     String damage;
     int range;
+    String category;
 
-    public WeaponTemplate(String name, int cost, int size, int weight, String damage, int range) {
+    public WeaponTemplate(String name, int cost, int size, int weight, String damage, int range, String category) {
         this.name = name;
         this.cost = cost;
         this.size = size;
         this.weight = weight;
         this.damage = damage;
         this.range = range;
+        this.category = category;
     }
 
     public String getName() {
