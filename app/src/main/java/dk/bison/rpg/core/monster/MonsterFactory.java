@@ -11,14 +11,14 @@ public class MonsterFactory {
 
     public static void init()
     {
-        addTemplate("Wolf", 13, "1 bite / 1 scratch", "1d6 / 1d4", 75, null, "Wildlife", "SearchDestroyAI");
-        addTemplate("Dire Wolf", 14, "1 bite / 2 scratch", "2d4 / 1d6", 240, null, "Wildlife", "SearchDestroyAI");
+        addTemplate("Wolf", 13, "1 bite / 1 scratch", "1d6 / 1d4", 75, null, "Wildlife", "SearchDestroyAI", "CreatureGrammar");
+        addTemplate("Dire Wolf", 14, "1 bite / 2 scratch", "2d4 / 1d6", 240, null, "Wildlife", "SearchDestroyAI", "CreatureGrammar");
     }
 
     private static void addTemplate(String name, int AC, String noAttacks, String damage, int XP, String weaponTemplate,
-                                    String factionTemplate, String aiClass)
+                                    String factionTemplate, String aiClass, String grammarClass)
     {
-        templates.put(name, new MonsterTemplate(name, AC, noAttacks, damage, XP, weaponTemplate, factionTemplate, aiClass));
+        templates.put(name, new MonsterTemplate(name, AC, noAttacks, damage, XP, weaponTemplate, factionTemplate, aiClass, grammarClass));
     }
 
     public static Monster makeMonster(String name, String template_name, int level)

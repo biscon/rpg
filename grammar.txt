@@ -1,0 +1,56 @@
+<Name> Attacks and hits %name for %d points of damage
+
+if not dead punctuation mark, else death text:
+
+reducing him/her/it into a thin red paste.
+
+The(if creature) %name blazes away at %opponent but miss
+
+Enemies (with dire versions):
+
+voice sample: "eh chulo, want to party?"
+
+Fists (hit):
+
+%name Brutalizes %opponent for % points of damage.
+Pommels
+Beats
+Roundhouse kicks
+Viciously beats
+
+Fists (miss)
+jabs at 
+
+Guns:
+Blazes away at %opponent for % points of damage. / but miss.
+
+
+Furries
+=======
+Hurling passive/aggressive insults (and rocks) at you 
+You decide to teach them what aggressive/aggressive mean.
+
+Hippies
+=======
+%d dirty hippies appear at %d meters claiming you can't like.. own property and stuff.
+However you can. But thats because you're not a penniless hippie, like them.
+
+
+Commies
+=======
+%d comrades appear
+crushing their bodies into what looks a bloody oversized steak. Takeout for Putin.
+
+Pimps
+=====
+Fiddling with their bling and constantly readjusting their several days unwashed cumstained sweatpants.
+%no Pimps appear at %m shouting foulmouthed insults at your party.
+
+Hoes
+====
+Hoes appear at %meters talking smack and hollarin' at you. You decide to teach them a lesson in basic manners..
+
+
+Hipsters
+========
+Trickling their stupid oversized beards and repeating dank tired old memes to eachother, %d Hipsters appear at %d meters. The sight of their ungroomed faces fills you with an equal amount of bloodthirst and disgust.

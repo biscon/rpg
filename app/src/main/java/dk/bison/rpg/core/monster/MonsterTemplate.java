@@ -14,9 +14,10 @@ public class MonsterTemplate {
     String weaponTemplate;
     String factionTemplate;
     String aiClass;
+    String grammarClass;
 
     public MonsterTemplate(String name, int AC, String noAttacks, String damage, int XP, String weaponTemplate,
-                           String factionTemplate, String aiClass) {
+                           String factionTemplate, String aiClass, String grammarClass) {
         this.name = name;
         this.AC = AC;
         this.noAttacks = noAttacks;
@@ -25,6 +26,7 @@ public class MonsterTemplate {
         this.weaponTemplate = weaponTemplate;
         this.factionTemplate = factionTemplate;
         this.aiClass = aiClass;
+        this.grammarClass = grammarClass;
     }
 
     public int getAttackBonus(int level)

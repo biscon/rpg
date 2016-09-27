@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
@@ -15,6 +16,8 @@ import dk.bison.rpg.core.faction.FactionFactory;
 import dk.bison.rpg.core.StringUtil;
 import dk.bison.rpg.core.ai.AI;
 import dk.bison.rpg.core.ai.AIFactory;
+import dk.bison.rpg.core.grammar.Grammar;
+import dk.bison.rpg.core.grammar.GrammarFactory;
 import dk.bison.rpg.core.weapon.Weapon;
 import dk.bison.rpg.core.weapon.WeaponFactory;
 
@@ -36,6 +39,8 @@ public class Monster implements Combatant {
     Faction faction;
     AI ai;
     String name;
+    Grammar grammar;
+    char gender = Gender.NEUTRAL;
 
 
     public Monster(MonsterTemplate template, int level, String name) {
@@ -45,6 +50,7 @@ public class Monster implements Combatant {
         faction = FactionFactory.makeFaction(template.factionTemplate);
         parseAttacks();
         rollHP();
+        grammar = GrammarFactory.make(template.grammarClass);
         ai = AIFactory.makeAI(template.aiClass);
         ai.setCombatant(this);
         if(template.weaponTemplate != null)
@@ -200,6 +206,33 @@ public class Monster implements Combatant {
                 melee_attacks.add(attack);
         }
         return melee_attacks;
+    }
+
+    @Override
+    public Grammar getGrammar() {
+        return grammar;
+    }
+
+    @Override
+    public char getGender() {
+        return gender;
+    }
+
+    @Override
+    public void setGender(char gender) {
+        this.gender = gender;
+        switch(gender)
+        {
+            case Gender.MALE:
+                grammar = GrammarFactory.make("MaleGrammar");
+                break;
+            case Gender.FEMALE:
+                grammar = GrammarFactory.make("FemaleGrammar");
+                break;
+            case Gender.NEUTRAL:
+                grammar = GrammarFactory.make("CreatureGrammar");
+                break;
+        }
     }
 
     @Override

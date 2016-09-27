@@ -132,15 +132,23 @@ public abstract class BaseAI extends AI {
         {
             if(diff < speed)
                 combatant.setPosition(combatant.getPosition() + diff-1);
-            else
-                combatant.setPosition(combatant.getPosition() + speed);
+            else {
+                if(combatant.getPosition()+speed == opponent.getPosition())
+                    combatant.setPosition(combatant.getPosition() + speed-1);
+                else
+                    combatant.setPosition(combatant.getPosition() + speed);
+            }
         }
         else
         {
             if(diff < speed)
                 combatant.setPosition(combatant.getPosition() - diff+1);
-            else
-                combatant.setPosition(combatant.getPosition() - speed);
+            else {
+                if(combatant.getPosition()-speed == opponent.getPosition())
+                    combatant.setPosition(combatant.getPosition() - speed+1);
+                else
+                    combatant.setPosition(combatant.getPosition() - speed);
+            }
         }
         int dist = CombatPosition.distanceBetweenCombatants(combatant, opponent);
         int meters = speed;

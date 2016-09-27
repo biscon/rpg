@@ -4,6 +4,7 @@ import java.util.List;
 
 import dk.bison.rpg.core.ai.AI;
 import dk.bison.rpg.core.faction.Faction;
+import dk.bison.rpg.core.grammar.Grammar;
 
 /**
  * Created by bison on 17-08-2016.
@@ -34,4 +35,7 @@ public interface Combatant {
     int getDistanceToCurrentTarget();
     List<Attack> getRangedAttacks(int distance);
     List<Attack> getMeleeAttacks();
+    Grammar getGrammar();
+    char getGender();
+    void setGender(char gender);
 }

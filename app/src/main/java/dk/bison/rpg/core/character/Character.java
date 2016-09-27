@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 import dk.bison.rpg.core.Dice;
+import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.ai.AI;
 import dk.bison.rpg.core.ai.AIFactory;
 import dk.bison.rpg.core.armor.Armor;
@@ -20,6 +21,8 @@ import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.faction.Faction;
 import dk.bison.rpg.core.faction.FactionFactory;
+import dk.bison.rpg.core.grammar.Grammar;
+import dk.bison.rpg.core.grammar.GrammarFactory;
 import dk.bison.rpg.core.weapon.Weapon;
 import dk.bison.rpg.core.weapon.WeaponFactory;
 import dk.bison.rpg.core.weapon.WeaponTemplate;
@@ -49,8 +52,12 @@ public class Character implements Combatant {
     private Armor shield;
     private Weapon mainHandWeapon;
     private Weapon offHandWeapon;
+    Grammar grammar;
+
+    private char gender = Gender.MALE;
 
     public Character() {
+        grammar = GrammarFactory.make("MaleGrammar");
         faction = FactionFactory.makeFaction("Player");
         ai = AIFactory.makeAI("ClosestEnemyAI");
         ai.setCombatant(this);
@@ -203,6 +210,33 @@ public class Character implements Combatant {
                 melee_attacks.add(attack);
         }
         return melee_attacks;
+    }
+
+    @Override
+    public Grammar getGrammar() {
+        return grammar;
+    }
+
+    @Override
+    public char getGender() {
+        return gender;
+    }
+
+    @Override
+    public void setGender(char gender) {
+        this.gender = gender;
+        switch(gender)
+        {
+            case Gender.MALE:
+                grammar = GrammarFactory.make("MaleGrammar");
+                break;
+            case Gender.FEMALE:
+                grammar = GrammarFactory.make("FemaleGrammar");
+                break;
+            case Gender.NEUTRAL:
+                grammar = GrammarFactory.make("CreatureGrammar");
+                break;
+        }
     }
 
     @Override

@@ -1,0 +1,51 @@
+{
+  "categories": {
+    "unarmed" : {
+      "hit" : [
+        {
+          "text" : "#name# brutalizes #opponent_name# for #dmg# points of damage",
+          "death_postfix" : "putting and end to #possessive# days on earth"
+        },
+        {
+          "text" : "#name# pommels #opponent_name# for #dmg# points of damage",
+          "death_postfix" : "killing #object#"
+        },
+        {
+          "text" : "#name# Viciously beats #opponent_name# for #dmg# points of damage",
+          "death_postfix" : "sending #object# one a one way trip to hell"
+        }
+      ],
+      "miss" : [
+        {
+          "text" : "#name# jabs at #opponent_name# and miss"
+        },
+        {
+          "text" : "#name# attemps to hit #opponent_name# but miss"
+        }
+      ],
+      "crit" : [
+        {
+          "text" : "#name# get rid of %opponents remaining teeth with a swift punch for %points of damage.",
+          "death_postfix" : "killing #object#"
+        },
+        {
+          "text" : "#name# delivers a bone crunching jab to #opponent_name#s ribs for #dmg# of damage",
+          "death_postfix" : "Making #object# him drown in a pool of #possessive# own blood"
+        }
+      ],
+      "fail" : [
+        {
+          "text" : "#name# is everywhere at once but completely fails to even slightly hurt #opponent_name#"
+        },
+        {
+          "text" : "#name# loses #object# balance and falls flat on #possessive# ass"
+        }
+      ]
+    },
+    "guns" : {
+
+    },
+    "sharp" : {},
+    "blunt" : {}
+  }
+}
