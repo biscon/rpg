@@ -44,6 +44,10 @@
   "guns" : {
     "hit" : [
       {
+        "text" : "#name# shoots at #enemy_name# and hit #enemy_obj# for #dmg# points of damage",
+        "death_postfix" : "#enemy_name# bleeds to death from #enemy_pos# wounds"
+      },
+      {
         "text" : "#name# aims at #enemy_name# and put a cap in #enemy_pos# ass for #dmg# points of damage",
         "death_postfix" : "Erasing #enemy_name# from existence"
       }
@@ -61,7 +65,7 @@
     ],
     "fail" : [
       {
-        "text" : "#name# gun jam, making #enemy_name#'s job easy"
+        "text" : "#name# gun jams"
       }
     ]
   },
@@ -79,13 +83,13 @@
     ],
     "crit" : [
       {
-        "text" : "#name# forcefully stab at #enemy_name# and hit #enemy_obj# for #points# of damage",
+        "text" : "#name# forcefully stab at #enemy_name# and hit #enemy_obj# for #dmg# points of damage",
         "death_postfix" : "leaving #enemy_obj# dead in a pool of #enemy_pos# own blood"
       }
     ],
     "fail" : [
       {
-        "text" : "#name# fumbles and drops #pos# weapon by accident, making #enemy_name#s job easy"
+        "text" : "#name# fumbles and drops #pos# weapon by accident, making #enemy_name#'s job easy"
       }
     ]
   },
