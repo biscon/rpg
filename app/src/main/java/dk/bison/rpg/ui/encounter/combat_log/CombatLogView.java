@@ -132,6 +132,12 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
             case CombatLogMessage.ROTATE:
                 setupRotateEffect(fl);
                 break;
+            case CombatLogMessage.SLIDE:
+                setupSlideFadeEffect(fl);
+                break;
+            case CombatLogMessage.OVERSHOOT:
+                setupOvershootEffect(fl);
+                break;
             case CombatLogMessage.BOUNCE:
                 setupBounceEffect(fl);
                 break;
@@ -164,6 +170,30 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
         v.animate().translationXBy(-dist).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
         v.animate().alpha(1f).setDuration(750).setInterpolator(new LinearInterpolator()).start();
         v.animate().scaleY(1).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+        //fl.animate().rotationXBy(360).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+    }
+
+    private void setupSlideFadeEffect(View v)
+    {
+        float x = 0;
+        float dist = (float) metrics.widthPixels - x;
+        v.setX((float) metrics.widthPixels);
+        v.setAlpha(0.0f);
+        //Interpolator customInterpolator = PathInterpolatorCompat.create(0.225f, 1.205f, 0.810f, -0.335f);
+        v.animate().translationXBy(-dist).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+        v.animate().alpha(1f).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+        //fl.animate().rotationXBy(360).setDuration(750).setInterpolator(new LinearInterpolator()).start();
+    }
+
+    private void setupOvershootEffect(View v)
+    {
+        float x = 0;
+        float dist = (float) metrics.widthPixels - x;
+        v.setX((float) metrics.widthPixels);
+        v.setAlpha(0.0f);
+        //Interpolator customInterpolator = PathInterpolatorCompat.create(0.225f, 1.205f, 0.810f, -0.335f);
+        v.animate().translationXBy(-dist).setDuration(500).setInterpolator(new OvershootInterpolator()).start();
+        v.animate().alpha(1f).setDuration(750).setInterpolator(new LinearInterpolator()).start();
         //fl.animate().rotationXBy(360).setDuration(750).setInterpolator(new LinearInterpolator()).start();
     }
 

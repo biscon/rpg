@@ -69,6 +69,17 @@ public class CombatLogMessage implements MvpEvent {
         return this;
     }
 
+    public CombatLogMessage markNormal(String txt)
+    {
+        final ForegroundColorSpan normalCs = new ForegroundColorSpan(0xffe0e0e0);
+        String buf = sb.toString();
+        int start = buf.indexOf(txt);
+        if(start == -1)
+            return this;
+        sb.setSpan(normalCs, start, start + txt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return this;
+    }
+
     public CombatLogMessage bright(String txt)
     {
         final ForegroundColorSpan normalCs = new ForegroundColorSpan(0xffffffff);
@@ -85,7 +96,7 @@ public class CombatLogMessage implements MvpEvent {
 
     public CombatLogMessage dark(String txt)
     {
-        final ForegroundColorSpan normalCs = new ForegroundColorSpan(0xff757575);
+        final ForegroundColorSpan normalCs = new ForegroundColorSpan(0xffc5c5c5);
         int start = 0;
         if(sb.length() > 0)
             start = sb.length();
@@ -118,6 +129,17 @@ public class CombatLogMessage implements MvpEvent {
         int end = start+txt.length();
         final ForegroundColorSpan redCs = new ForegroundColorSpan(0xffFF0000);
         sb.setSpan(redCs, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return this;
+    }
+
+    public CombatLogMessage markRed(String txt)
+    {
+        final ForegroundColorSpan normalCs = new ForegroundColorSpan(0xffFF0000);
+        String buf = sb.toString();
+        int start = buf.indexOf(txt);
+        if(start == -1)
+            return this;
+        sb.setSpan(normalCs, start, start + txt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return this;
     }
 

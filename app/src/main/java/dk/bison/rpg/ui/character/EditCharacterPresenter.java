@@ -143,7 +143,7 @@ public class EditCharacterPresenter extends BasePresenter<EditCharacterMvpView> 
         if(template != null) {
             character.equipMainHand(WeaponFactory.makeWeapon(template.getName()));
             // size L and ranged weapons unequip offhand
-            if(template.getSize() == WeaponTemplate.SIZE_L || template.getRange() > 0) {
+            if(template.getSize() == WeaponTemplate.SIZE_L) {
                 character.equipOffHand(null);
                 character.setShield(null);
             }
@@ -164,17 +164,17 @@ public class EditCharacterPresenter extends BasePresenter<EditCharacterMvpView> 
             boolean mh_okay = false;
             if(mh_wep != null)
             {
-                if(mh_wep.getSize() == WeaponTemplate.SIZE_S || mh_wep.getSize() == WeaponTemplate.SIZE_M && !mh_wep.isRanged())
+                if(mh_wep.getSize() == WeaponTemplate.SIZE_S || mh_wep.getSize() == WeaponTemplate.SIZE_M)
                     mh_okay = true;
             }
             else
                 mh_okay = true;
             /*
-                Only equip small, medium and no ranged weapons in offhand
+                Only equip small, medium weapons in offhand
              */
             if((template.getSize() == WeaponTemplate.SIZE_M
                     || template.getSize() == WeaponTemplate.SIZE_S)
-                    && template.getRange() == 0 && mh_okay)
+                    && mh_okay)
             {
                 character.setShield(null);
                 character.equipOffHand(WeaponFactory.makeWeapon(template.getName()));

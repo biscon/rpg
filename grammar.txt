@@ -6,7 +6,6 @@ reducing him/her/it into a thin red paste.
 
 The(if creature) %name blazes away at %opponent but miss
 
-Enemies (with dire versions):
 
 voice sample: "eh chulo, want to party?"
 
@@ -18,12 +17,31 @@ Beats
 Roundhouse kicks
 Viciously beats
 
-Fists (miss)
-jabs at 
+Fists (miss):
+jabs at %opponent but miss.
+attemps to hit %opponent but miss.
+
+Fists (crit):
+
+%name get rid of %opponents remaining teeth with a swift punch for %points of damage.
+%name delivers a bonecrunching jab to %opponents ribs for %points of damage, making %him puke blood.
+
+Fists (crit fail):
+%name is everywhere at once but completely fails to even slightly hurt %opponent.
+%name loses %her balance and falls flat on %her ass
+
 
 Guns:
 Blazes away at %opponent for % points of damage. / but miss.
+Sends a burst of hot lead towards %opponent and hits for %d points of damage
 
+Sharp
+Stab in the eye
+
+Blunt
+
+
+Enemies (with dire versions):
 
 Furries
 =======

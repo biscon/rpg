@@ -15,6 +15,7 @@ public class MonsterTemplate {
     String factionTemplate;
     String aiClass;
     String grammarClass;
+    String category;
 
     public MonsterTemplate(String name, int AC, String noAttacks, String damage, int XP, String weaponTemplate,
                            String factionTemplate, String aiClass, String grammarClass) {

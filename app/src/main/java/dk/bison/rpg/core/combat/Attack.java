@@ -12,6 +12,7 @@ public class Attack
     public int type;
     public boolean isRanged;
     public int range = 0;
+    public String combatTextCategory = "unarmed";
 
     @Override
     public String toString() {

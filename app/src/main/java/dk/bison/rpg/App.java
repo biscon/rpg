@@ -5,6 +5,7 @@ import android.content.Context;
 
 import dk.bison.rpg.core.armor.ArmorFactory;
 import dk.bison.rpg.core.character.CharacterManager;
+import dk.bison.rpg.core.combat.CombatCategoryManager;
 import dk.bison.rpg.core.faction.FactionFactory;
 import dk.bison.rpg.core.monster.MonsterFactory;
 import dk.bison.rpg.core.weapon.WeaponFactory;
@@ -32,6 +33,7 @@ public class App extends Application {
         WeaponFactory.init();
         MonsterFactory.init();
         CharacterManager.instance().load(this);
+        CombatCategoryManager.instance().load(this);
     }
 
     public static App instance()

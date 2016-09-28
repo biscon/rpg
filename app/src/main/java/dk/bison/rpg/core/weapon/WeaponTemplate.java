@@ -50,6 +50,10 @@ public class WeaponTemplate {
         return range;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     public String getSizeAsString()
     {
         switch(size)

@@ -85,6 +85,7 @@ public class Monster implements Combatant {
                     attack.name = weapon.getName();
                     attack.damage = weapon.getDamageDice();
                     attack.range = weapon.getRange();
+                    attack.combatTextCategory = weapon.getTemplate().getCategory();
                     if(weapon.isRanged())
                         attack.isRanged = true;
                     attack.type = Attack.MONSTER;
@@ -95,6 +96,7 @@ public class Monster implements Combatant {
                     attack.damage = damage[i].trim();
                     attack.type = Attack.MONSTER;
                     attack.isRanged = false;
+                    attack.combatTextCategory = name;
                     attacks.add(attack);
                 }
             }
@@ -102,7 +104,7 @@ public class Monster implements Combatant {
         Log.i(TAG, "Monster has the following attacks:");
         for(Attack a : attacks)
         {
-            Log.i(TAG, "  " + a.name + " - " + a.damage);
+            Log.e(TAG, "  " + a.name + " - " + a.damage + " (txt cat=" + a.combatTextCategory + ")");
         }
     }
 

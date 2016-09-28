@@ -10,7 +10,10 @@ import java.util.Random;
 
 import dk.bison.rpg.core.Dice;
 import dk.bison.rpg.core.combat.Attack;
+import dk.bison.rpg.core.combat.CombatCategory;
+import dk.bison.rpg.core.combat.CombatCategoryManager;
 import dk.bison.rpg.core.combat.CombatPosition;
+import dk.bison.rpg.core.combat.CombatText;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.DistanceComparator;
 import dk.bison.rpg.core.combat.Encounter;
@@ -154,8 +157,57 @@ public abstract class BaseAI extends AI {
         int meters = speed;
         if(diff < speed)
             meters = diff;
-        emitMessage(CombatLogMessage.create().bold(combatant.getName()).normal(" moved " + meters + " meters towards ").bright(opponent.getName()).dark(String.format(Locale.US, " (%dm)", dist)));
+        emitMessage(CombatLogMessage.create().bright(combatant.getName()).dark(" moved " + meters + " meters towards ").normal(opponent.getName()).dark(String.format(Locale.US, " (%dm)", dist)));
         PresentationManager.instance().publishEvent(new MapUpdateEvent());
+    }
+
+    protected void emitCombatLogMessage(Combatant c, Combatant opponent, Attack attack, HitInfo hit, int dmg)
+    {
+        CombatCategory combat_cat = CombatCategoryManager.instance().getCategoryMap().get(attack.combatTextCategory);
+        switch(hit.type)
+        {
+            case HitInfo.HIT:
+                emitRandomText(combat_cat.getHit(), c, opponent, attack, hit, dmg);
+                break;
+            case HitInfo.MISS:
+                emitRandomText(combat_cat.getMiss(), c, opponent, attack, hit, dmg);
+                break;
+            case HitInfo.CRITICAL_HIT:
+                emitRandomText(combat_cat.getCrit(), c, opponent, attack, hit, dmg);
+                break;
+            case HitInfo.CRITICAL_MISS:
+                emitRandomText(combat_cat.getFail(), c, opponent, attack, hit, dmg);
+                break;
+        }
+                /*
+                .bright(c.getName())
+                .normal(" hits " + opponent.getName()+ " for ")
+                .red(String.valueOf(dmg) + " damage.").effect(CombatLogMessage.SLIDE_SCALE_FADE);
+                */
+    }
+
+    protected void emitRandomText(List<CombatText> texts, Combatant c, Combatant opponent, Attack attack, HitInfo hit, int dmg)
+    {
+        Random r = new Random();
+        int i = r.nextInt(texts.size());
+        CombatText ct = texts.get(i);
+        String txt = ct.getText(c, opponent, dmg);
+        int fx = CombatLogMessage.FADE;
+        if(hit.type == HitInfo.HIT && !attack.isRanged)
+            fx = CombatLogMessage.SLIDE;
+        if(hit.type == HitInfo.HIT && attack.isRanged)
+            fx = CombatLogMessage.OVERSHOOT;
+        if(hit.type == HitInfo.CRITICAL_HIT)
+            fx = CombatLogMessage.SLIDE_SCALE_FADE;
+        CombatLogMessage msg = CombatLogMessage.create().dark(txt + ".").effect(fx);
+        msg.markNormal(c.getName()).markRed(opponent.getName());
+        emitMessage(msg);
+        if((hit.type == HitInfo.HIT || hit.type == HitInfo.CRITICAL_HIT) && opponent.isDead())
+        {
+            txt = ct.getDeathPostfix(c, opponent, dmg);
+            msg = CombatLogMessage.create().violent(txt + ".").effect(CombatLogMessage.BOUNCE);
+            emitMessage(msg);
+        }
     }
 
     protected void attack(Combatant c, Combatant opponent, Attack attack)
@@ -173,28 +225,26 @@ public abstract class BaseAI extends AI {
         if(hit.type == HitInfo.HIT || hit.type == HitInfo.CRITICAL_HIT)
         {
             int damage = rollDamage(c, attack, hit, attack.isRanged);
-            CombatLogMessage msg = CombatLogMessage.create().bright(c.getName())
-                    .normal(" hits " + opponent.getName()+ " for ")
-                    .red(String.valueOf(damage) + " damage.").effect(CombatLogMessage.SLIDE_SCALE_FADE);
-
-            Log.e(TAG, c.getName() + " hits " + opponent.getName() + " for " + damage + " damage. " + hittype + attack.toString());
             opponent.decreaseHP(damage);
 
+            emitCombatLogMessage(c, opponent, attack, hit, damage);
+            Log.e(TAG, c.getName() + " hits " + opponent.getName() + " for " + damage + " damage. " + hittype + attack.toString());
             PresentationManager.instance().publishEvent(new StatusUpdateEvent());
 
             Log.i(TAG, opponent.getName() + " has " + opponent.getHP() + " hitpoints left.");
+            /*
             msg.normal(" " + opponent.getName() + " has ").bold(String.valueOf(opponent.getHP())).normal(" hitpoints left. ");
             msg.dark(hittype + attack.toString());
-            emitMessage(msg);
+            */
             if(opponent.isDead()) {
                 Log.e(TAG, opponent.getName() + " dies.");
-                emitMessage(CombatLogMessage.create().bright(opponent.getName()).violent(" dies!!!").effect(CombatLogMessage.BOUNCE));
+                //emitMessage(CombatLogMessage.create().bright(opponent.getName()).violent(" dies!!!").effect(CombatLogMessage.BOUNCE));
             }
         }
         else
         {
+            emitCombatLogMessage(c, opponent, attack, hit, 0);
             Log.i(TAG, c.getName() + " fails to hit " + opponent.getName() + " " + hittype + attack.toString());
-            emitMessage(CombatLogMessage.create().bright(c.getName()).red(" fails").normal(" to hit ").bold(opponent.getName()));
         }
     }
 

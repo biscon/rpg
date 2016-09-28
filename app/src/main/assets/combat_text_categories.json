@@ -1,0 +1,168 @@
+{
+  "unarmed" : {
+    "hit" : [
+      {
+        "text" : "#name# brutalizes #enemy_name# for #dmg# points of damage",
+        "death_postfix" : "putting an end to #enemy_pos# days on earth"
+      },
+      {
+        "text" : "#name# pommels #enemy_name# for #dmg# points of damage",
+        "death_postfix" : "killing #enemy_obj#"
+      },
+      {
+        "text" : "#name# viciously beats #enemy_name# for #dmg# points of damage",
+        "death_postfix" : "sending #enemy_obj# one a one way trip to hell"
+      }
+    ],
+    "miss" : [
+      {
+        "text" : "#name# jabs at #enemy_name# and miss"
+      },
+      {
+        "text" : "#name# attemps to hit #enemy_name# but miss"
+      }
+    ],
+    "crit" : [
+      {
+        "text" : "#name# get rid of #enemy_name#s remaining teeth with a swift punch for #dmg# points of damage.",
+        "death_postfix" : "killing #obj#"
+      },
+      {
+        "text" : "#name# delivers a bone crunching jab to #enemy_name#s ribs for #dmg# of damage",
+        "death_postfix" : "Making #enemy_obj# drown in a pool of #enemy_pos# own blood"
+      }
+    ],
+    "fail" : [
+      {
+        "text" : "#name# is everywhere at once but completely fails to even slightly hurt #enemy_name#"
+      },
+      {
+        "text" : "#name# loses #obj# balance and falls flat on #pos# ass"
+      }
+    ]
+  },
+  "guns" : {
+    "hit" : [
+      {
+        "text" : "#name# aims at #enemy_name# and put a cap in #enemy_pos# ass for #dmg# points of damage",
+        "death_postfix" : "putting an end to #enemy_pos# days on earth"
+      }
+    ],
+    "miss" : [
+      {
+        "text" : "#name# blazes away at #enemy_name# and miss"
+      }
+    ],
+    "crit" : [
+      {
+        "text" : "#name# carefully aim at #enemy_name# and fires hitting #enemy_obj# for #dmg# of damage",
+        "death_postfix" : "#enemy_name* explodes in a fine mist of blood"
+      }
+    ],
+    "fail" : [
+      {
+        "text" : "#name# gun jam, making #enemy_name#s job easy"
+      }
+    ]
+  },
+  "sharp" : {
+    "hit" : [
+      {
+        "text" : "#name# swings at #enemy_name# hitting #enemy_obj# for #dmg# points of damage",
+        "death_postfix" : "killing #enemy_obj# in the process"
+      }
+    ],
+    "miss" : [
+      {
+        "text" : "#name# swings at #enemy_name# and miss"
+      }
+    ],
+    "crit" : [
+      {
+        "text" : "#name# forcefully stab at #enemy_name# and hit #enemy_obj# for #points# of damage",
+        "death_postfix" : "leaving #enemy_obj# dead in a pool of #enemy_pos# own blood"
+      }
+    ],
+    "fail" : [
+      {
+        "text" : "#name# fumbles and drops #pos# weapon by accident, making #enemy_name#s job easy"
+      }
+    ]
+  },
+  "blunt" : {
+    "hit" : [
+      {
+        "text" : "#name# lands a blow on #enemy_name# for #dmg# points of damage",
+        "death_postfix" : "#enemy_name# has drawn #enemy_pos# last breath"
+      }
+    ],
+    "miss" : [
+      {
+        "text" : "#name# takes a swing at #enemy_name# and miss"
+      }
+    ],
+    "crit" : [
+      {
+        "text" : "#name# bear-jew #enemy_name# repeatedly for #dmg# points of damage",
+        "death_postfix" : "leaving #enemy_obj# dead in a pool of #enemy_pos# own blood"
+      },
+      {
+        "text" : "#name# beats #enemy_name# into a bloody pulp for #dmg# points of damage",
+        "death_postfix" : "leaving #enemy_obj# dead, face down in a pool of #enemy_pos# own blood"
+      }
+    ],
+    "fail" : [
+      {
+        "text" : "#name# stops to ponder at #pos# life for a moment and completely forget to attack before the opportunity is wasted"
+      }
+    ]
+  },
+  "bite" : {
+    "hit" : [
+      {
+        "text" : "#name# bites #enemy_name# for #dmg# points of damage",
+        "death_postfix" : "putting an end to #enemy_pos# days on earth"
+      }
+    ],
+    "miss" : [
+      {
+        "text" : "#name# snaps at #enemy_name# but miss"
+      }
+    ],
+    "crit" : [
+      {
+        "text" : "#name# viciously chew on #enemy_name# repeatedly for #dmg# points of damage",
+        "death_postfix" : "leaving #enemy_obj# dead in a pool of #enemy_pos# own blood"
+      }
+    ],
+    "fail" : [
+      {
+        "text" : "#name# stops to ponder at #pos# life for a moment and completely forget to attack before the opportunity is wasted"
+      }
+    ]
+  },
+  "scratch" : {
+    "hit" : [
+      {
+        "text" : "#name# scratches #enemy_name# for #dmg# points of damage",
+        "death_postfix" : "putting an end to #enemy_pos# days on earth"
+      }
+    ],
+    "miss" : [
+      {
+        "text" : "#name# scratches at #enemy_name# but miss"
+      }
+    ],
+    "crit" : [
+      {
+        "text" : "#name# feriously scratch on #enemy_name# like #enemy_sub# was a lottery ticket for #dmg# points of damage",
+        "death_postfix" : "leaving #enemy_obj# dead in a pool of #enemy_pos# own blood"
+      }
+    ],
+    "fail" : [
+      {
+        "text" : "#name# stops to ponder at #pos# life for a moment and completely forget to attack before the opportunity is wasted"
+      }
+    ]
+  }
+}
