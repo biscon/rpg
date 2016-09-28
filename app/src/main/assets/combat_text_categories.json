@@ -45,7 +45,7 @@
     "hit" : [
       {
         "text" : "#name# aims at #enemy_name# and put a cap in #enemy_pos# ass for #dmg# points of damage",
-        "death_postfix" : "putting an end to #enemy_pos# days on earth"
+        "death_postfix" : "Erasing #enemy_name# from existence"
       }
     ],
     "miss" : [
@@ -55,13 +55,13 @@
     ],
     "crit" : [
       {
-        "text" : "#name# carefully aim at #enemy_name# and fires hitting #enemy_obj# for #dmg# of damage",
+        "text" : "#name# carefully aim at #enemy_name# and fires hitting #enemy_obj# for #dmg# points of damage",
         "death_postfix" : "#enemy_name* explodes in a fine mist of blood"
       }
     ],
     "fail" : [
       {
-        "text" : "#name# gun jam, making #enemy_name#s job easy"
+        "text" : "#name# gun jam, making #enemy_name#'s job easy"
       }
     ]
   },
@@ -104,7 +104,7 @@
     "crit" : [
       {
         "text" : "#name# bear-jew #enemy_name# repeatedly for #dmg# points of damage",
-        "death_postfix" : "leaving #enemy_obj# dead in a pool of #enemy_pos# own blood"
+        "death_postfix" : "leaving #enemy_obj#'s dead cold eyes staring in surprise at the sky"
       },
       {
         "text" : "#name# beats #enemy_name# into a bloody pulp for #dmg# points of damage",
@@ -120,8 +120,8 @@
   "bite" : {
     "hit" : [
       {
-        "text" : "#name# bites #enemy_name# for #dmg# points of damage",
-        "death_postfix" : "putting an end to #enemy_pos# days on earth"
+        "text" : "#name# bites #enemy_name# for #dmg# points of damage, om nom!",
+        "death_postfix" : "and feasts on #enemy_pos# bloody remains"
       }
     ],
     "miss" : [
@@ -132,7 +132,7 @@
     "crit" : [
       {
         "text" : "#name# viciously chew on #enemy_name# repeatedly for #dmg# points of damage",
-        "death_postfix" : "leaving #enemy_obj# dead in a pool of #enemy_pos# own blood"
+        "death_postfix" : "Blood and chunks of meat flies everywhere, a vicious snarl and a crunching sound is the last sound #enemy_name# hear"
       }
     ],
     "fail" : [
@@ -156,7 +156,7 @@
     "crit" : [
       {
         "text" : "#name# feriously scratch on #enemy_name# like #enemy_sub# was a lottery ticket for #dmg# points of damage",
-        "death_postfix" : "leaving #enemy_obj# dead in a pool of #enemy_pos# own blood"
+        "death_postfix" : "#name# drags #enemy_name#'s corpse away, saving it for later"
       }
     ],
     "fail" : [
