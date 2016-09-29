@@ -10,10 +10,12 @@ import android.content.Context;
 public class BasePresenter<T extends MvpView> implements Presenter<T> {
 
     private T mMvpView;
+    protected Class<?> presenterClass;
 
     @Override
     public void attachView(T mvpView) {
         mMvpView = mvpView;
+        PresentationManager.instance().deliverPendingEventsOnAttach(presenterClass);
     }
 
     @Override
@@ -32,6 +34,11 @@ public class BasePresenter<T extends MvpView> implements Presenter<T> {
     @Override
     public void onEvent(MvpEvent event) {
 
+    }
+
+    @Override
+    public void setPresenterClass(Class<?> cls) {
+        presenterClass = cls;
     }
 
     public boolean isViewAttached() {

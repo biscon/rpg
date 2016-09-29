@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 import dk.bison.rpg.App;
@@ -27,10 +28,12 @@ public class PresentationManager {
     public static final String TAG = PresentationManager.class.getSimpleName();
     static PresentationManager instance;
     Map<Class, Presenter> presenters;
+    LinkedList<MvpPendingEvent> pendingEvents;
 
     private PresentationManager()
     {
         presenters = new HashMap<>();
+        pendingEvents = new LinkedList<>();
     }
 
     public static PresentationManager instance()
@@ -58,11 +61,41 @@ public class PresentationManager {
         try {
             T p = cls.newInstance();
             presenters.put(cls, p);
+            p.setPresenterClass(cls);
             p.onCreate(context);
+            deliverPendingEvents(cls);
             return p;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public void deliverPendingEvents(Class<?> cls) {
+        Iterator<MvpPendingEvent> it = pendingEvents.iterator();
+        while(it.hasNext())
+        {
+            MvpPendingEvent p_evt = it.next();
+            if(p_evt.target_cls == cls && p_evt.hasFlag(MvpPendingEvent.DELIVER_ON_CREATE))
+            {
+                Log.e(TAG, "Delivering pending event on create to " + cls.getSimpleName());
+                publishEvent(cls, p_evt.event);
+                it.remove();
+            }
+        }
+    }
+
+    public void deliverPendingEventsOnAttach(Class<?> cls) {
+        Iterator<MvpPendingEvent> it = pendingEvents.iterator();
+        while(it.hasNext())
+        {
+            MvpPendingEvent p_evt = it.next();
+            if(p_evt.target_cls == cls && p_evt.hasFlag(MvpPendingEvent.DELIVER_ON_ATTACH))
+            {
+                Log.e(TAG, "Delivering pending event on attach to " + cls.getSimpleName());
+                publishEvent(cls, p_evt.event);
+                it.remove();
+            }
         }
     }
 
@@ -98,11 +131,24 @@ public class PresentationManager {
         }
     }
 
-    public void publishEvent(Class<?> target_cls, MvpEvent event)
+    public void publishEvent(final Class<?> target_cls, final MvpEvent event)
     {
-        if(presenters.containsKey(target_cls))
-        {
-            presenters.get(target_cls).onEvent(event);
+        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            if(presenters.containsKey(target_cls))
+            {
+                presenters.get(target_cls).onEvent(event);
+            }
+        } else {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    //Log.d("UI thread", "I am the UI thread");
+                    if(presenters.containsKey(target_cls))
+                    {
+                        presenters.get(target_cls).onEvent(event);
+                    }
+                }
+            });
         }
     }
 
@@ -129,6 +175,34 @@ public class PresentationManager {
                         Map.Entry<Class, Presenter> entry = it.next();
                         entry.getValue().onEvent(event);
                     }
+                }
+            });
+        }
+    }
+
+    private void publishPendingEvent(final MvpPendingEvent event)
+    {
+        // if the presenter is running, publish immediately
+        if(presenters.containsKey(event.target_cls))
+        {
+            presenters.get(event.target_cls).onEvent(event.event);
+            return;
+        } // else save it for later delivery
+        else
+        {
+            pendingEvents.add(event);
+        }
+    }
+
+    public void publishEvent(final MvpPendingEvent event) {
+        // wrapped in delicious thread safety
+        if (Looper.getMainLooper().getThread() == Thread.currentThread()) {
+            publishPendingEvent(event);
+        } else {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    publishPendingEvent(event);
                 }
             });
         }

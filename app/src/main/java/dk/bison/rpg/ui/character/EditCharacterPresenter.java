@@ -27,11 +27,12 @@ import dk.bison.rpg.ui.weapon.WeaponChangeEvent;
 public class EditCharacterPresenter extends BasePresenter<EditCharacterMvpView> {
     public static final String TAG = EditCharacterPresenter.class.getSimpleName();
     Character character;
+    String title = "Create Character";
     boolean editMode = false;
 
     @Override
     public void onCreate(Context context) {
-        character = new Character();
+        reset();
     }
 
     @Override
@@ -47,6 +48,8 @@ public class EditCharacterPresenter extends BasePresenter<EditCharacterMvpView> 
 
     private void updateView()
     {
+        getMvpView().setTitle(title);
+        getMvpView().setEditMode(editMode);
         getMvpView().showName(character.getName());
         getMvpView().showStats(character.getStats());
         int xp_next_level = character.getCharClass().getXPForLevel(character.getLevel()+1);
@@ -60,19 +63,12 @@ public class EditCharacterPresenter extends BasePresenter<EditCharacterMvpView> 
 
     public void reset()
     {
+        Log.e(TAG, "resetting character");
         character = new Character();
+        title = "Create Character";
+        editMode = false;
     }
 
-    public void enableEditMode()
-    {
-        if(AppState.editorCharacter == null)
-        {
-            Log.e(TAG, "No editor character set, cannot enable edit mode");
-            return;
-        }
-        character = AppState.editorCharacter;
-        character.resetHealth();
-    }
 
     public void rerollStats()
     {
@@ -226,6 +222,24 @@ public class EditCharacterPresenter extends BasePresenter<EditCharacterMvpView> 
             if(wc_event.slot == Attack.OFF_HAND)
             {
                 setOffhand(wc_event.weapon);
+            }
+        }
+        if(event instanceof CharacterEditEvent)
+        {
+            Log.e(TAG, "Receiving CharacterEditEvent");
+            editMode = true;
+            CharacterEditEvent ce_event = (CharacterEditEvent) event;
+            if(ce_event.character != null) {
+                character = ce_event.character;
+                character.resetHealth();
+                title = character.getName();
+            }
+            else
+            {
+                reset();
+            }
+            if(isViewAttached()) {
+                updateView();
             }
         }
     }

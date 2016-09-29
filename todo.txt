@@ -3,6 +3,7 @@
 - Implement another class
 - add the ability to set gender to the character creator
 - skills, saving throws
+- BaseCombatant (make Character and Monster derive from it and remove duplicate functionality)
 
 Done
 ====

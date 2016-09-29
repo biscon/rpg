@@ -27,9 +27,12 @@ import dk.bison.rpg.AppState;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
 import dk.bison.rpg.core.character.Character;
+import dk.bison.rpg.mvp.MvpPendingEvent;
 import dk.bison.rpg.mvp.PresentationManager;
+import dk.bison.rpg.ui.character.CharacterEditEvent;
 import dk.bison.rpg.ui.character.ChooseCharacterActivity;
 import dk.bison.rpg.ui.character.EditCharacterActivity;
+import dk.bison.rpg.ui.character.EditCharacterPresenter;
 import dk.bison.rpg.ui.encounter.EncounterActivity;
 import dk.bison.rpg.util.Snacktory;
 
@@ -161,9 +164,9 @@ public class PartyActivity extends BaseActivity implements PartyMvpView {
         }
         if (item.getTitle() == "Edit") {
             Character c = characters.get(item.getItemId());
-            AppState.editorCharacter = c;
+            CharacterEditEvent event = new CharacterEditEvent(c);
+            PresentationManager.instance().publishEvent(new MvpPendingEvent(EditCharacterPresenter.class, event, MvpPendingEvent.DELIVER_ON_CREATE));
             Intent i = new Intent(this, EditCharacterActivity.class);
-            i.putExtra("edit", true);
             startActivity(i);
             return true;
         }

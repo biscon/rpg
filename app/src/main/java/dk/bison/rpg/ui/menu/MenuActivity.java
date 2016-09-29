@@ -9,8 +9,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
+import dk.bison.rpg.mvp.MvpPendingEvent;
 import dk.bison.rpg.mvp.PresentationManager;
+import dk.bison.rpg.ui.character.CharacterEditEvent;
 import dk.bison.rpg.ui.character.EditCharacterActivity;
+import dk.bison.rpg.ui.character.EditCharacterPresenter;
 import dk.bison.rpg.ui.party.PartyActivity;
 
 public class MenuActivity extends BaseActivity implements MenuMvpView {
@@ -33,6 +36,8 @@ public class MenuActivity extends BaseActivity implements MenuMvpView {
         createCharBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CharacterEditEvent event = new CharacterEditEvent(null);
+                PresentationManager.instance().publishEvent(new MvpPendingEvent(EditCharacterPresenter.class, event, MvpPendingEvent.DELIVER_ON_ATTACH));
                 Intent i = new Intent(MenuActivity.this, EditCharacterActivity.class);
                 startActivity(i);
             }

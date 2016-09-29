@@ -17,4 +17,6 @@ public interface EditCharacterMvpView extends MvpView {
     void showMainhand(Weapon weapon);
     void showOffhand(Weapon weapon);
     void showName(String name);
+    void setTitle(String title);
+    void setEditMode(boolean edit_mode);
 }

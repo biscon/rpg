@@ -9,5 +9,4 @@ import dk.bison.rpg.core.character.Character;
 public class AppState {
     public static Party currentParty;
     public static Party enemyParty;
-    public static Character editorCharacter;
 }

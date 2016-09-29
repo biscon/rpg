@@ -199,8 +199,11 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         party.add(m3);
         party.add(m4);
         AppState.enemyParty = party;
-        for(Combatant c : AppState.currentParty)
-            c.setPosition(-30);
+        int pos = -30;
+        for(Combatant c : AppState.currentParty) {
+            c.setPosition(pos);
+            pos -= 2;
+        }
         addParty(AppState.currentParty);
         addParty(AppState.enemyParty);
     }

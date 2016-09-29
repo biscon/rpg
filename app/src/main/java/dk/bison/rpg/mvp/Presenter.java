@@ -32,4 +32,6 @@ public interface Presenter<V extends MvpView> {
     void onDestroy();
 
     void onEvent(MvpEvent event);
+
+    void setPresenterClass(Class<?> cls);
 }

@@ -98,30 +98,18 @@ public class EditCharacterActivity extends BaseActivity implements EditCharacter
     Button createBtn;
 
     EditCharacterPresenter presenter;
-    boolean editMode = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_character);
-        //setResult(RESULT_CANCELED);
-        if(getIntent() != null)
-        {
-            if(getIntent().getBooleanExtra("edit", false))
-                editMode = true;
-        }
 
-
-        ButterKnife.bind(this);
-        if(!editMode)
-            getSupportActionBar().setTitle("Create Character");
-        else
-            getSupportActionBar().setTitle("Edit Character");
         // obtain instance to the presenter
         presenter = PresentationManager.instance().presenter(this, EditCharacterPresenter.class);
-        presenter.reset();
-        if(editMode)
-            presenter.enableEditMode();
+        //presenter.reset();
+
+        ButterKnife.bind(this);
 
         focusThief.requestFocus();
 
@@ -219,21 +207,6 @@ public class EditCharacterActivity extends BaseActivity implements EditCharacter
                     return true;
                 }
                 return false;
-            }
-        });
-
-        if(editMode)
-            createBtn.setText("Save");
-        createBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(validate()) {
-                    if(!editMode)
-                        presenter.create(EditCharacterActivity.this);
-                    else
-                        presenter.save(EditCharacterActivity.this);
-                    finish();
-                }
             }
         });
     }
@@ -340,6 +313,31 @@ public class EditCharacterActivity extends BaseActivity implements EditCharacter
     @Override
     public void showName(String name) {
         nameEt.setText(name);
+    }
+
+    @Override
+    public void setTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void setEditMode(final boolean edit_mode) {
+        if(edit_mode)
+            createBtn.setText("Save");
+        else
+            createBtn.setText("Create");
+        createBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(validate()) {
+                    if(!edit_mode)
+                        presenter.create(EditCharacterActivity.this);
+                    else
+                        presenter.save(EditCharacterActivity.this);
+                    finish();
+                }
+            }
+        });
     }
 
 
