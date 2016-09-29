@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import dk.bison.rpg.mvp.BasePresenter;
 import dk.bison.rpg.mvp.MvpEvent;
@@ -15,41 +16,36 @@ import dk.bison.rpg.mvp.MvpEvent;
 /**
  * Created by bison on 19-08-2016.
  */
-public class CombatLogPresenter extends BasePresenter<CombatLogMvpView> {
+public class CombatLogPresenter extends BasePresenter<CombatLogMvpView> implements Runnable {
     public static final String TAG = CombatLogPresenter.class.getSimpleName();
-    private ConcurrentLinkedQueue<CombatLogMessage> messageQueue;
-    private TimerTask timerTask;
-    private Timer timer;
+    private LinkedBlockingQueue<CombatLogMessage> messageQueue;
+    Thread thread;
+    boolean shouldTerminate = false;
 
     @Override
     public void onCreate(Context context) {
-        messageQueue = new ConcurrentLinkedQueue<>();
+        messageQueue = new LinkedBlockingQueue<>();
     }
 
     @Override
     public void attachView(CombatLogMvpView mvpView) {
         super.attachView(mvpView);
         Log.e(TAG, "attachView");
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                //Log.i(TAG, "timer task running");
-                if(!messageQueue.isEmpty())
-                {
-                    if(isViewAttached())
-                        getMvpView().postMessage(messageQueue.remove());
-                }
-            }
-        };
-        timer = new Timer(true);
-        timer.scheduleAtFixedRate(timerTask, 0, 500);
+        shouldTerminate = false;
+        thread = new Thread(this);
+        thread.start();
     }
 
     @Override
     public void detachView() {
         Log.e(TAG, "detachView");
-        timer.cancel();
-        timer.purge();
+        shouldTerminate = true;
+        messageQueue.add(new CombatLogMessage());
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         super.detachView();
     }
 
@@ -69,5 +65,44 @@ public class CombatLogPresenter extends BasePresenter<CombatLogMvpView> {
                 getMvpView().postMessage((CombatLogMessage) event);
                 */
         }
+    }
+
+    static long lastMsgTime = 0;
+    @Override
+    public void run() {
+        Log.e(TAG, "CombatLog thread started, going to sleep waiting for messages... zZzz");
+        while(!shouldTerminate) {
+            try {
+                CombatLogMessage msg = messageQueue.take();
+                if(shouldTerminate) {
+                    break;
+                }
+                if(isViewAttached()) {
+                    getMvpView().postMessage(msg);
+                    // the combat round message is just to show next round ui at the right time, dont wait for it
+                    // just show the fucker
+                    if(msg.isRoundDone())
+                    {
+                        lastMsgTime = System.currentTimeMillis();
+                        continue;
+                    }
+                }
+                if(lastMsgTime > 0)
+                {
+                    long diff = System.currentTimeMillis() - lastMsgTime;
+                    if(diff < 900) // if less than a second has passed since last msg, sleep till a second has passed, roughly
+                    {
+                        Log.e(TAG, "Sleeping for " + String.valueOf(1000-diff) + " ms to delay messages");
+                        Thread.sleep(1000-diff);
+                    }
+                }
+                lastMsgTime = System.currentTimeMillis();
+                //Thread.sleep(1000);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.e(TAG, "CombatLog thread terminating.");
     }
 }

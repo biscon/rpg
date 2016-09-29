@@ -202,10 +202,16 @@ public abstract class BaseAI extends AI {
         CombatLogMessage msg = CombatLogMessage.create().dark(txt + ".").effect(fx);
         msg.markNormal(c.getName()).markRed(opponent.getName());
         emitMessage(msg);
-        if((hit.type == HitInfo.HIT || hit.type == HitInfo.CRITICAL_HIT) && opponent.isDead())
+        if((hit.type == HitInfo.CRITICAL_HIT) && opponent.isDead())
         {
             txt = ct.getDeathPostfix(c, opponent, dmg);
             msg = CombatLogMessage.create().violent(txt + ".").effect(CombatLogMessage.BOUNCE);
+            emitMessage(msg);
+        }
+        else if((hit.type == HitInfo.HIT) && opponent.isDead())
+        {
+            txt = ct.getDeathPostfix(c, opponent, dmg);
+            msg = CombatLogMessage.create().red(txt + ".").effect(CombatLogMessage.BOUNCE);
             emitMessage(msg);
         }
     }
