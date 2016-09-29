@@ -1,5 +1,6 @@
 package dk.bison.rpg.ui.encounter;
 
+import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -30,6 +31,9 @@ public class EncounterMapView extends View {
     int mapMin = -50;
     int mapMax = 50;
     float [] widths = new float[10];
+    private static int deadColor = 0xFFB71C1C;
+    private static int maxHpColor = 0xFFFFFFFF;
+    ArgbEvaluator rgbEvaluator = new ArgbEvaluator();
 
     public EncounterMapView(Context context) {
         super(context);
@@ -103,6 +107,14 @@ public class EncounterMapView extends View {
         for(int i=0; i < combatants.size(); i++)
         {
             Combatant c = combatants.get(i);
+            float max_hp = (float) c.getMaxHP();
+            float cur_hp = (float) c.getHP();
+            float frac = 0;
+            if(cur_hp > 0)
+                frac = cur_hp / max_hp;
+            //Log.e(TAG, "max_hp = " + max_hp + ", cur_hp = " + cur_hp+ " frac = " + frac);
+            int col = (int) rgbEvaluator.evaluate(frac, deadColor, maxHpColor);
+            labelPaint2.setColor(col);
             if(c.isDead())
                 continue;
             float x = (float) Util.reMapDouble(-50, 50, 0, (double) getWidth(), (double) c.getPosition());
