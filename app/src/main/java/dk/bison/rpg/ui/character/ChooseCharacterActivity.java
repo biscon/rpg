@@ -63,6 +63,8 @@ public class ChooseCharacterActivity extends BaseActivity implements ChooseChara
         createFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CharacterEditEvent event = new CharacterEditEvent(null);
+                PresentationManager.instance().publishEvent(new MvpPendingEvent(EditCharacterPresenter.class, event, MvpPendingEvent.DELIVER_ON_CREATE));
                 Intent i = new Intent(ChooseCharacterActivity.this, EditCharacterActivity.class);
                 startActivity(i);
             }
