@@ -6,19 +6,19 @@
 
     <item android:state_enabled="false">
         <shape android:shape="rectangle">
-            <corners android:radius="16dp" />
+            <corners android:radius="@dimen/corner_radius" />
             <solid android:width="1dp" android:color="@color/colorBtnInactive"/>
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <corners android:radius="16dp" />
+            <corners android:radius="@dimen/corner_radius" />
             <solid android:width="1dp" android:color="@color/colorPrimary"/>
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="16dp" />
+            <corners android:radius="@dimen/corner_radius" />
             <solid android:width="1dp" android:color="@color/colorAccent"/>
         </shape>
     </item>

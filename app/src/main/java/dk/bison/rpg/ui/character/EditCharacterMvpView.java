@@ -19,4 +19,5 @@ public interface EditCharacterMvpView extends MvpView {
     void showName(String name);
     void setTitle(String title);
     void setEditMode(boolean edit_mode);
+    void setGender(char gender);
 }

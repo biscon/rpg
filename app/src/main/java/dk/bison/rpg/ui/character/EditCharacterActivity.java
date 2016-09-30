@@ -1,13 +1,17 @@
 package dk.bison.rpg.ui.character;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -16,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
+import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.armor.Armor;
 import dk.bison.rpg.core.armor.ArmorTemplate;
 import dk.bison.rpg.core.character.CharacterStats;
@@ -26,6 +31,10 @@ import dk.bison.rpg.util.Snacktory;
 
 public class EditCharacterActivity extends BaseActivity implements EditCharacterMvpView {
     public static final String TAG = EditCharacterActivity.class.getSimpleName();
+    public static final int CHAR_TAB = 0;
+    public static final int STATS_TAB = 1;
+    public static final int ARMOR_TAB = 2;
+    public static final int WEAPON_TAB = 3;
 
     @BindView(R.id.focus_thief)
     View focusThief;
@@ -97,13 +106,50 @@ public class EditCharacterActivity extends BaseActivity implements EditCharacter
     @BindView(R.id.create_char_create_btn)
     Button createBtn;
 
+    @BindView(R.id.tabs_tl)
+    TabLayout tabsTl;
+
+    @BindView(R.id.char_tab)
+    ScrollView charTab;
+    @BindView(R.id.stats_tab)
+    ScrollView statsTab;
+    @BindView(R.id.armor_tab)
+    ScrollView armorTab;
+    @BindView(R.id.weapon_tab)
+    ScrollView weaponTab;
+
+    @BindView(R.id.male_rb)
+    RadioButton maleRb;
+
+    @BindView(R.id.female_rb)
+    RadioButton femaleRb;
+
     EditCharacterPresenter presenter;
 
+    View.OnClickListener genderClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // Is the button now checked?
+            boolean checked = ((RadioButton) view).isChecked();
+
+            // Check which radio button was clicked
+            switch(view.getId()) {
+                case R.id.male_rb:
+                    if (checked)
+                        presenter.setGender(Gender.MALE);
+                        break;
+                case R.id.female_rb:
+                    if (checked)
+                        presenter.setGender(Gender.FEMALE);
+                        break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_character);
+        setContentView(R.layout.activity_edit_character);
 
         // obtain instance to the presenter
         presenter = PresentationManager.instance().presenter(this, EditCharacterPresenter.class);
@@ -207,6 +253,57 @@ public class EditCharacterActivity extends BaseActivity implements EditCharacter
                     return true;
                 }
                 return false;
+            }
+        });
+
+        maleRb.setOnClickListener(genderClickListener);
+        femaleRb.setOnClickListener(genderClickListener);
+
+        tabsTl.addTab(tabsTl.newTab().setText("Char"));
+        tabsTl.addTab(tabsTl.newTab().setText("Stats"));
+        tabsTl.addTab(tabsTl.newTab().setText("Armor"));
+        tabsTl.addTab(tabsTl.newTab().setText("Weapon"));
+
+        tabsTl.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch(tab.getPosition())
+                {
+                    case CHAR_TAB:
+                        charTab.setVisibility(View.VISIBLE);
+                        statsTab.setVisibility(View.GONE);
+                        armorTab.setVisibility(View.GONE);
+                        weaponTab.setVisibility(View.GONE);
+                        break;
+                    case STATS_TAB:
+                        charTab.setVisibility(View.GONE);
+                        statsTab.setVisibility(View.VISIBLE);
+                        armorTab.setVisibility(View.GONE);
+                        weaponTab.setVisibility(View.GONE);
+                        break;
+                    case ARMOR_TAB:
+                        charTab.setVisibility(View.GONE);
+                        statsTab.setVisibility(View.GONE);
+                        armorTab.setVisibility(View.VISIBLE);
+                        weaponTab.setVisibility(View.GONE);
+                        break;
+                    case WEAPON_TAB:
+                        charTab.setVisibility(View.GONE);
+                        statsTab.setVisibility(View.GONE);
+                        armorTab.setVisibility(View.GONE);
+                        weaponTab.setVisibility(View.VISIBLE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
     }
@@ -338,6 +435,28 @@ public class EditCharacterActivity extends BaseActivity implements EditCharacter
                 }
             }
         });
+    }
+
+    @Override
+    public void setGender(char gender) {
+        Log.e(TAG, "getting " + gender);
+        switch(gender)
+        {
+            case Gender.MALE:
+                Log.e(TAG, "Checking male");
+                maleRb.setChecked(true);
+                femaleRb.setChecked(false);
+                break;
+            case Gender.FEMALE:
+                Log.e(TAG, "Checking female");
+                maleRb.setChecked(false);
+                femaleRb.setChecked(true);
+                break;
+            default:
+                Log.e(TAG, "Checking default");
+                maleRb.setChecked(true);
+                femaleRb.setChecked(false);
+        }
     }
 
 

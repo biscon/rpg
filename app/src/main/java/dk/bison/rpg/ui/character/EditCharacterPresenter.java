@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import dk.bison.rpg.AppState;
+import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.armor.ArmorFactory;
 import dk.bison.rpg.core.armor.ArmorTemplate;
 import dk.bison.rpg.core.character.Character;
@@ -51,6 +52,7 @@ public class EditCharacterPresenter extends BasePresenter<EditCharacterMvpView> 
         getMvpView().setTitle(title);
         getMvpView().setEditMode(editMode);
         getMvpView().showName(character.getName());
+        getMvpView().setGender(character.getGender());
         getMvpView().showStats(character.getStats());
         int xp_next_level = character.getCharClass().getXPForLevel(character.getLevel()+1);
         getMvpView().showClassLevelXp(character.getCharClass().getName(), character.getLevel(), character.getXP(), xp_next_level);
@@ -187,6 +189,11 @@ public class EditCharacterPresenter extends BasePresenter<EditCharacterMvpView> 
         name = name.trim();
         character.setName(name);
         Log.d(TAG, "Name changed to " + name);
+    }
+
+    public void setGender(char gender)
+    {
+        character.setGender(gender);
     }
 
     public void create(Context c)

@@ -1,8 +1,8 @@
 - Add human control (as AI class so some allies can be player controlled and some AI controlled)
 - Implement another class
-- add the ability to set gender to the character creator
 - skills, saving throws
 - BaseCombatant (make Character and Monster derive from it and remove duplicate functionality)
+- Swearwolves (gotta have them)
 
 Done
 ====
@@ -10,3 +10,5 @@ Done
 - Used blocking queue for combat log instead of timerthread to avoid timing stalls
 - Added queuePendingEvent to PresentationManager
 - Added health color shading to names on glorious 1D map
+- add the ability to set gender to the character creator
+- refactored character editor UI into tabs for less clutter

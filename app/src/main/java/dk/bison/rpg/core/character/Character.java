@@ -408,6 +408,8 @@ public class Character implements Combatant {
     public JSONObject toJson() throws JSONException {
         JSONObject chr = new JSONObject();
         chr.put("name", name);
+        String str_g = ""+gender;
+        chr.put("gender", str_g);
         chr.put("maxHP", maxHP);
         chr.put("HP", HP);
         chr.put("level", level);
@@ -429,6 +431,9 @@ public class Character implements Combatant {
     public static Character fromJson(JSONObject chr) throws JSONException {
         Character c = new Character();
         c.name = chr.getString("name");
+        char g = chr.getString("gender").charAt(0);
+        Log.e(TAG, "Read gender as " + g + " from json");
+        c.setGender(g);
         c.maxHP = chr.getInt("maxHP");
         c.HP = chr.getInt("HP");
         c.level = chr.getInt("level");

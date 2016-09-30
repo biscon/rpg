@@ -7,7 +7,7 @@
     <!-- color isn't drawn for mask-item-->
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
-            <corners android:radius="16dp" />
+            <corners android:radius="@dimen/corner_radius" />
             <solid android:color="@color/black" />
         </shape>
     </item>
@@ -15,7 +15,7 @@
         <shape android:shape="rectangle">
             <solid android:color="@color/colorPrimary" />
             <stroke android:color="@color/colorPrimaryDark" android:width="1dp" />
-            <corners android:radius="16dp" />
+            <corners android:radius="@dimen/corner_radius" />
         </shape>
     </item>
 
