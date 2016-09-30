@@ -11,7 +11,8 @@ public class MonsterFactory {
 
     public static void init()
     {
-        addTemplate("Wolf", 13, "1 bite / 1 scratch", "1d6 / 1d4", 75, null, "Wildlife", "SearchDestroyAI", "CreatureGrammar");
+        addTemplate("Wolf", 13, "1 bite / 1 scratch", "1d6 / 1d4", 75, null, "Wildlife", "ClosestEnemyAI", "CreatureGrammar");
+        addTemplate("Swearwolf", 13, "2 bite", "1d6", 120, null, "Wildlife", "ClosestEnemyAI", "CreatureGrammar");
         addTemplate("Dire Wolf", 14, "1 bite / 2 scratch", "2d4 / 1d6", 240, null, "Wildlife", "SearchDestroyAI", "CreatureGrammar");
     }
 

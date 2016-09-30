@@ -60,7 +60,7 @@
     "crit" : [
       {
         "text" : "#name# carefully aim at #enemy_name# and fires hitting #enemy_obj# for #dmg# points of damage",
-        "death_postfix" : "#enemy_name* explodes in a fine mist of blood"
+        "death_postfix" : "#enemy_name# explodes in a fine mist of blood"
       }
     ],
     "fail" : [

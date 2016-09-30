@@ -13,6 +13,7 @@ import java.util.TimerTask;
 
 import dk.bison.rpg.AppState;
 import dk.bison.rpg.core.Dice;
+import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.ai.AI;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.Encounter;
@@ -188,12 +189,13 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         Party party = new Party();
         Monster m1 = MonsterFactory.makeMonster("Cuddles", "Wolf", 2);
         m1.setPosition(10);
-        Monster m2 = MonsterFactory.makeMonster(null, "Dire Wolf", 2);
-        m2.setPosition(40);
-        Monster m3 = MonsterFactory.makeMonster("Scratchy", "Wolf", 2);
+        Monster m2 = MonsterFactory.makeMonster(null, "Swearwolf", 2);
+        m2.setPosition(15);
+        Monster m3 = MonsterFactory.makeMonster("Scratchy", "Dire Wolf", 2);
         m3.setPosition(20);
-        Monster m4 = MonsterFactory.makeMonster("Slikkefanden", "Wolf", 3);
-        m4.setPosition(30);
+        Monster m4 = MonsterFactory.makeMonster("Slikkefanden", "Wolf", 2);
+        m4.setGender(Gender.MALE);
+        m4.setPosition(25);
         party.add(m1);
         party.add(m2);
         party.add(m3);
