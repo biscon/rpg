@@ -28,6 +28,7 @@ import dk.bison.rpg.mvp.MvpEvent;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogIdleEvent;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
+import dk.bison.rpg.ui.encounter.player_control.PlayerAttackStartedEvent;
 import dk.bison.rpg.ui.encounter.player_control.PlayerControlPresenter;
 import dk.bison.rpg.ui.encounter.player_control.PlayerInputRequestEvent;
 import dk.bison.rpg.ui.encounter.player_control.PlayerInputResponseEvent;
@@ -128,7 +129,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
                 {
                     Log.e(TAG, c.getName() + " is player controlled, waiting for input.");
                     waitingOnChar = c;
-                    PresentationManager.instance().publishEvent(new PlayerInputRequestEvent(c));
+                    PresentationManager.instance().publishEvent(new PlayerInputRequestEvent(c, this));
                     return;
                 }
                 else {
@@ -320,7 +321,8 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         }
         if(event instanceof CombatLogIdleEvent)
         {
-            getMvpView().postShowNextRoundButton();
+            if(isViewAttached())
+                getMvpView().postShowNextRoundButton();
         }
         if(event instanceof PlayerInputResponseEvent)
         {
@@ -332,6 +334,11 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         {
             if(isViewAttached())
                 getMvpView().gotoTab(EncounterActivity.MAP_TAB);
+        }
+        if(event instanceof PlayerAttackStartedEvent)
+        {
+            if(isViewAttached())
+                getMvpView().gotoTab(EncounterActivity.STATUS_TAB);
         }
     }
 }

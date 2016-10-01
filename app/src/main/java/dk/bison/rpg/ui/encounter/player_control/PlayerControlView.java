@@ -14,11 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.bison.rpg.R;
+import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.mvp.PresentationManager;
 
@@ -44,14 +46,20 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
     LinearLayout actionView;
     @BindView(R.id.pcv_move_view)
     LinearLayout moveView;
+    @BindView(R.id.pcv_attack_view)
+    LinearLayout attackView;
     @BindView(R.id.pcv_move_sb)
     SeekBar moveSb;
     @BindView(R.id.pcv_move_exec_btn)
     Button execMoveBtn;
     @BindView(R.id.pcv_move_info_tv)
     TextView moveInfoTv;
+    @BindView(R.id.pcv_attack_target_tv)
+    TextView targetTv;
 
     Combatant combatant;
+    Combatant target;
+    List<Combatant> combatants;
     int curDistance = 0;
 
     public PlayerControlView(Context context) {
@@ -76,7 +84,7 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
         doNothingBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.doNothing();
+                presenter.endTurn();
             }
         });
 
@@ -84,6 +92,13 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
             @Override
             public void onClick(View v) {
                 presenter.gotoMove();
+            }
+        });
+
+        attackBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.gotoAttack();
             }
         });
 
@@ -183,6 +198,7 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
         PresentationManager.instance().publishEvent(new PlayerMoveInfoEvent(null, 0));
         actionView.setVisibility(View.VISIBLE);
         moveView.setVisibility(View.GONE);
+        attackView.setVisibility(View.GONE);
         nameTv.setText(combatant.getName() + " wants to");
     }
 
@@ -190,6 +206,7 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
     public void showMoveView()
     {
         actionView.setVisibility(View.GONE);
+        attackView.setVisibility(View.GONE);
         moveView.setVisibility(View.VISIBLE);
         int speed = combatant.getAI().getSpeed();
         moveSb.setMax(2*speed);
@@ -203,12 +220,46 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
         PresentationManager.instance().publishEvent(new PlayerMoveInfoEvent(null, 0));
         actionView.setVisibility(View.GONE);
         moveView.setVisibility(View.GONE);
+        attackView.setVisibility(View.VISIBLE);
+        setTarget(target);
+    }
+
+    @Override
+    public void setMoveEnabled(boolean enabled) {
+        moveBtn.setEnabled(enabled);
+        if(enabled)
+            moveBtn.setBackgroundResource(R.drawable.ripple_accent);
+        else
+            moveBtn.setBackgroundResource(R.drawable.ripple_trans);
+    }
+
+    @Override
+    public void setAttackEnabled(boolean enabled) {
+        attackBtn.setEnabled(enabled);
+        if(enabled)
+            attackBtn.setBackgroundResource(R.drawable.ripple_accent);
+        else
+            attackBtn.setBackgroundResource(R.drawable.ripple_trans);
+    }
+
+    @Override
+    public void setTarget(Combatant target) {
+        this.target = target;
+        if(target == null)
+            targetTv.setText("Target: Please select from list");
+        else
+            targetTv.setText(String.format(Locale.US, "Target: %s (%d/%d HP) at %dm", target.getName(), target.getHP(), target.getMaxHP(), CombatPosition.distanceBetweenCombatants(combatant, target)));
     }
 
     @Override
     public void showCombatant(Combatant c) {
         combatant = c;
         showActionView();
+    }
+
+    @Override
+    public void setCombatants(List<Combatant> combatants) {
+        this.combatants = combatants;
     }
 
 

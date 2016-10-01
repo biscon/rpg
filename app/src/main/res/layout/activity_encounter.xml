@@ -46,14 +46,14 @@
                         android:padding="@dimen/activity_margin">
                         <Button
                             android:id="@+id/pcv_attack_btn"
-                            style="@style/ButtonStyleAccentSquare"
+                            style="@style/ButtonStyleAccent"
                             android:visibility="visible"
                             android:text="Attack"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                         <Button
                             android:id="@+id/pcv_move_btn"
-                            style="@style/ButtonStyleAccentSquare"
+                            style="@style/ButtonStyleAccent"
                             android:layout_marginTop="8dp"
                             android:visibility="visible"
                             android:text="Move"
@@ -61,7 +61,7 @@
                             android:layout_height="wrap_content" />
                         <Button
                             android:id="@+id/pcv_do_nothing_btn"
-                            style="@style/ButtonStyleAccentSquare"
+                            style="@style/ButtonStyleAccent"
                             android:layout_marginTop="8dp"
                             android:visibility="visible"
                             android:text="End turn"
@@ -70,9 +70,37 @@
                     </LinearLayout>
                 </ScrollView>
             </LinearLayout>
+            <!-- Attack view -->
+            <LinearLayout
+                android:id="@+id/pcv_attack_view"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/activity_margin">
+                        <TextView
+                            android:id="@+id/pcv_attack_target_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_white"
+                            android:textSize="14dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="Target: Select target from status list"/>
+
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
             <!-- Move view -->
             <LinearLayout
                 android:id="@+id/pcv_move_view"
+                tools:visibility="gone"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -101,10 +129,11 @@
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentTop="true"
                             android:layout_marginTop="32dp"
+                            android:thumb="@drawable/thumb_image"
                             android:max="40"/>
                         <Button
                             android:id="@+id/pcv_move_exec_btn"
-                            style="@style/ButtonStyleAccentSquare"
+                            style="@style/ButtonStyleAccent"
                             android:layout_marginTop="32dp"
                             android:text="Move"
                             android:layout_width="match_parent"

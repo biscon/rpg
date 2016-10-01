@@ -65,10 +65,42 @@ public class EnemyStatusView extends FrameLayout implements EnemyStatusMvpView {
     {
         contentLl.removeAllViews();
         contentLl.addView(makeHeaderView());
-        for(Combatant c : party)
+        for(final Combatant c : party)
         {
             View char_v = makeCharacterView(c);
             contentLl.addView(char_v);
+            char_v.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.setSelected(!v.isSelected());
+                    if(v.isSelected())
+                        PresentationManager.instance().publishEvent(new EnemySelectedEvent(c));
+                    clearSelectedExcept(v);
+                }
+            });
+        }
+    }
+
+    private void clearSelectedExcept(View sel_v)
+    {
+        boolean is_one_selected = false;
+        for(int i = 1; i < contentLl.getChildCount(); i++)
+        {
+            View v = contentLl.getChildAt(i);
+            if(v != sel_v)
+                v.setSelected(false);
+            if(v.isSelected()) {
+                is_one_selected = true;
+                v.setBackgroundResource(R.color.colorPrimary);
+            }
+            else
+            {
+                v.setBackgroundResource(android.R.color.transparent);
+            }
+        }
+        if(!is_one_selected)
+        {
+            PresentationManager.instance().publishEvent(new EnemySelectedEvent(null));
         }
     }
 
