@@ -26,6 +26,7 @@ public class EncounterMapView extends View {
     Paint labelPaint2;
     Paint friendlyPaint;
     Paint enemyPaint;
+    Paint movePaint;
     List<Combatant> combatants;
     DisplayMetrics metrics;
     int mapMin = -50;
@@ -34,6 +35,9 @@ public class EncounterMapView extends View {
     private static int deadColor = 0xFFB71C1C;
     private static int maxHpColor = 0xFFFFFFFF;
     ArgbEvaluator rgbEvaluator = new ArgbEvaluator();
+    boolean displayMove = false;
+    Combatant movingCombatant;
+    int moveDistance;
 
     public EncounterMapView(Context context) {
         super(context);
@@ -66,12 +70,32 @@ public class EncounterMapView extends View {
         friendlyPaint.setColor(0xA000AA00);
         enemyPaint = new Paint();
         enemyPaint.setColor(0xA0AA0000);
+
+        movePaint = new Paint();
+        movePaint.setStrokeWidth(2*metrics.density);
+        movePaint.setColor(0xAAEF6C00);
     }
 
     public void drawMap(List<Combatant> combatants)
     {
         this.combatants = combatants;
         invalidate();
+    }
+
+    public void displayMove(Combatant c, int distance)
+    {
+        displayMove = true;
+        movingCombatant = c;
+        moveDistance = distance;
+        postInvalidate();
+    }
+
+    public void clearMove()
+    {
+        displayMove = false;
+        movingCombatant = null;
+        moveDistance = 0;
+        postInvalidate();
     }
 
     @Override
@@ -130,6 +154,14 @@ public class EncounterMapView extends View {
                 canvas.drawText(c.getName(), x - (labelPaint.measureText(c.getName())/2), middle + (35 * metrics.density) + labelPaint.getTextSize() + (enemy_index*(labelPaint.getTextSize()+spacing)), labelPaint2);
                 enemy_index++;
             }
+        }
+        // draw gotoMove
+        if(displayMove)
+        {
+            float start_x = (float) Util.reMapDouble(-50, 50, 0, (double) getWidth(), (double) movingCombatant.getPosition());
+            float end_x = (float) Util.reMapDouble(-50, 50, 0, (double) getWidth(), (double) (movingCombatant.getPosition()+moveDistance));
+            canvas.drawLine(start_x, middle, end_x, middle, movePaint);
+            canvas.drawCircle(end_x, middle, 8 * metrics.density, movePaint);
         }
     }
 }

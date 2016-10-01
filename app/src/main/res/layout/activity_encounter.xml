@@ -6,27 +6,137 @@
     android:layout_height="match_parent"
     tools:context=".ui.encounter.EncounterActivity">
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/top_holder_fl"
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:background="@color/grey_850"
-        android:layout_height="0dp">
-        <!-- Combat log -->
-        <dk.bison.rpg.ui.encounter.combat_log.CombatLogView
-            android:id="@+id/log_clv"
-            android:orientation="vertical"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <dk.bison.rpg.ui.encounter.player_control.PlayerControlView
+            android:id="@+id/player_control_pcv"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:background="@color/grey_850"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!-- choose action view -->
+            <LinearLayout
+                android:id="@+id/pcv_action_view"
+                android:orientation="vertical"
+                tools:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/pcv_name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/activity_margin"
+                    android:textColor="@color/text_white"
+                    android:textSize="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="name wants to"/>
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/activity_margin">
+                        <Button
+                            android:id="@+id/pcv_attack_btn"
+                            style="@style/ButtonStyleAccentSquare"
+                            android:visibility="visible"
+                            android:text="Attack"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <Button
+                            android:id="@+id/pcv_move_btn"
+                            style="@style/ButtonStyleAccentSquare"
+                            android:layout_marginTop="8dp"
+                            android:visibility="visible"
+                            android:text="Move"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <Button
+                            android:id="@+id/pcv_do_nothing_btn"
+                            style="@style/ButtonStyleAccentSquare"
+                            android:layout_marginTop="8dp"
+                            android:visibility="visible"
+                            android:text="End turn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+            <!-- Move view -->
+            <LinearLayout
+                android:id="@+id/pcv_move_view"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/activity_margin">
+                        <TextView
+                            android:id="@+id/pcv_move_info_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:textColor="@color/text_white"
+                            android:textSize="16dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="Move"/>
+                        <SeekBar
+                            android:id="@+id/pcv_move_sb"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="32dp"
+                            android:max="40"/>
+                        <Button
+                            android:id="@+id/pcv_move_exec_btn"
+                            style="@style/ButtonStyleAccentSquare"
+                            android:layout_marginTop="32dp"
+                            android:text="Move"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </ScrollView>
+            </LinearLayout>
+        </dk.bison.rpg.ui.encounter.player_control.PlayerControlView>
+        <RelativeLayout
+            android:id="@+id/log_holder_rl"
+            android:visibility="visible"
+            tools:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/grey_850" />
-        <Button
-            android:id="@+id/next_round_btn"
-            style="@style/ButtonStyleAccentSquare"
-            android:visibility="visible"
-            android:text="Next Round"
-            android:layout_alignParentTop="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
+            android:background="@color/grey_850">
+            <!-- Combat log -->
+            <dk.bison.rpg.ui.encounter.combat_log.CombatLogView
+                android:id="@+id/log_clv"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_850" />
+            <Button
+                android:id="@+id/next_round_btn"
+                style="@style/ButtonStyleAccentSquare"
+                android:visibility="visible"
+                android:text="Next Round"
+                android:layout_alignParentTop="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"

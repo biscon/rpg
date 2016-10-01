@@ -37,7 +37,7 @@
         "text" : "#name# is everywhere at once but completely fails to even slightly hurt #enemy_name#"
       },
       {
-        "text" : "#name# loses #obj# balance and falls flat on #pos# ass"
+        "text" : "#name# loses #pos# balance and falls flat on #pos# ass"
       }
     ]
   },
@@ -48,7 +48,7 @@
         "death_postfix" : "#enemy_name# bleeds to death from #enemy_pos# wounds"
       },
       {
-        "text" : "#name# aims at #enemy_name# and put a cap in #enemy_pos# ass for #dmg# points of damage",
+        "text" : "#name# aims at #enemy_name# and put a cap in #enemy_obj# for #dmg# points of damage",
         "death_postfix" : "Erasing #enemy_name# from existence"
       }
     ],
@@ -89,7 +89,7 @@
     ],
     "fail" : [
       {
-        "text" : "#name# fumbles and drops #pos# weapon by accident, making #enemy_name#'s job easy"
+        "text" : "#name# fumbles and drops #pos# weapon by accident"
       }
     ]
   },
@@ -117,7 +117,7 @@
     ],
     "fail" : [
       {
-        "text" : "#name# stops to ponder at #pos# life for a moment and completely forget to attack before the opportunity is wasted"
+        "text" : "#name# stops to ponder at #pos# life for a moment and completely forget to attack"
       }
     ]
   },

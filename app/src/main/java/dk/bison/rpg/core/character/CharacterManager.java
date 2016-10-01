@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -97,14 +98,15 @@ public class CharacterManager {
             try {
                 long then = System.currentTimeMillis();
                 FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-                PrintStream os = new PrintStream(fos);
+                DataOutputStream dos = new DataOutputStream(fos);
+
                 JSONArray array = new JSONArray();
                 for(Character c : characters)
                 {
                     array.put(c.toJson());
                 }
-                os.append(array.toString(2));
-                os.close();
+                dos.writeUTF(array.toString(2));
+                dos.close();
                 fos.close();
                 long elapsed = System.currentTimeMillis() - then;
                 Log.i(TAG, "Saving took " + elapsed + " ms");
@@ -136,10 +138,10 @@ public class CharacterManager {
                 DataInputStream dataIO = new DataInputStream(fis);
                 String strLine = null;
                 StringBuffer content = new StringBuffer();
-                do {
-                    strLine = dataIO.readLine();
-                    content.append(strLine);
-                } while(strLine != null);
+
+                strLine = dataIO.readUTF();
+                content.append(strLine);
+
                 JSONArray array = new JSONArray(content.toString());
                 characters.clear();
                 for(int i = 0; i < array.length(); i++)

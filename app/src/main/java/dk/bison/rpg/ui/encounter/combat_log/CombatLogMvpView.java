@@ -10,4 +10,6 @@ import dk.bison.rpg.mvp.MvpView;
 public interface CombatLogMvpView extends MvpView {
     void postMessage(CombatLogMessage msg);
     void addDivider();
+    void show();
+    void hide();
 }

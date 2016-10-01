@@ -205,6 +205,15 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         super.onPause();
     }
 
+    @Override
+    public void onBackPressed() {
+        if(presenter.isWaitingOnInput())
+        {
+            PresentationManager.instance().publishEvent(new OnBackButtonEvent());
+        }
+        else
+            super.onBackPressed();
+    }
 
     @Override
     public void postShowNextRoundButton() {
@@ -234,5 +243,25 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
                 updateMapView(combatants);
             }
         });
+    }
+
+    @Override
+    public void gotoTab(int pos) {
+        TabLayout.Tab tab = tabsTl.getTabAt(pos);
+        tab.select();
+    }
+
+    @Override
+    public void showMoveInfoOnMap(Combatant c, int distance) {
+        //Log.e(TAG, "Showing gotoMove info on map");
+        if(c == null)
+            mapView.clearMove();
+        else
+            mapView.displayMove(c, distance);
+    }
+
+    @Override
+    public void clearMoveInfoOnMap() {
+        mapView.clearMove();
     }
 }

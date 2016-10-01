@@ -12,6 +12,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import dk.bison.rpg.mvp.BasePresenter;
 import dk.bison.rpg.mvp.MvpEvent;
+import dk.bison.rpg.ui.encounter.player_control.PlayerInputRequestEvent;
+import dk.bison.rpg.ui.encounter.player_control.PlayerInputResponseEvent;
 
 /**
  * Created by bison on 19-08-2016.
@@ -64,6 +66,16 @@ public class CombatLogPresenter extends BasePresenter<CombatLogMvpView> implemen
             if(isViewAttached())
                 getMvpView().postMessage((CombatLogMessage) event);
                 */
+        }
+        if(event instanceof PlayerInputRequestEvent)
+        {
+            if(isViewAttached())
+                getMvpView().hide();
+        }
+        if(event instanceof PlayerInputResponseEvent)
+        {
+            if(isViewAttached())
+                getMvpView().show();
         }
     }
 

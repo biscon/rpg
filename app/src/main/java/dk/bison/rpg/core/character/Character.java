@@ -59,7 +59,7 @@ public class Character implements Combatant {
     public Character() {
         grammar = GrammarFactory.make("MaleGrammar");
         faction = FactionFactory.makeFaction("Player");
-        ai = AIFactory.makeAI("ClosestEnemyAI");
+        ai = AIFactory.makeAI("PlayerControlAI");
         ai.setCombatant(this);
         attacks = new ArrayList<>();
         charClass = CharacterClassFactory.makeClass("FighterClass");

@@ -15,6 +15,7 @@ import dk.bison.rpg.AppState;
 import dk.bison.rpg.core.Dice;
 import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.ai.AI;
+import dk.bison.rpg.core.ai.PlayerControlAI;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.Encounter;
 import dk.bison.rpg.core.combat.InitiativeComparator;
@@ -27,6 +28,11 @@ import dk.bison.rpg.mvp.MvpEvent;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogIdleEvent;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
+import dk.bison.rpg.ui.encounter.player_control.PlayerControlPresenter;
+import dk.bison.rpg.ui.encounter.player_control.PlayerInputRequestEvent;
+import dk.bison.rpg.ui.encounter.player_control.PlayerInputResponseEvent;
+import dk.bison.rpg.ui.encounter.player_control.PlayerMoveInfoEvent;
+import dk.bison.rpg.ui.encounter.player_control.PlayerMoveStartedEvent;
 
 /**
  * Created by bison on 19-08-2016.
@@ -47,6 +53,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
     private TimerTask timerTask;
     private Timer timer;
     private int state = IDLE;
+    Combatant waitingOnChar = null;
 
     @Override
     public void onCreate(Context context) {
@@ -107,14 +114,27 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
     }
 
     private void runRound() {
-        Log.e(TAG, "Running state ROUND");
+        //Log.e(TAG, "Running state ROUND");
+        if(waitingOnChar != null)
+        {
+            return;
+        }
         if(curCombatant.hasNext())
         {
             Combatant c = curCombatant.next();
-            if(!c.isDead())
-            {
+            if (!c.isDead()) {
                 AI ai = c.getAI();
-                ai.performAction(this);
+                if(ai instanceof PlayerControlAI)
+                {
+                    Log.e(TAG, c.getName() + " is player controlled, waiting for input.");
+                    waitingOnChar = c;
+                    PresentationManager.instance().publishEvent(new PlayerInputRequestEvent(c));
+                    return;
+                }
+                else {
+                    Log.e(TAG, c.getName() + " is AI controlled, performing action.");
+                    ai.performAction(this);
+                }
             }
         }
         else // we have run trough all the combatants in this round
@@ -129,7 +149,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             else if(countLivingFactions() < 2)
             {
                 state = END_COMBAT;
-                emitMessage(CombatLogMessage.create().bold("Faction ").violent(winningFaction.getName()).bold(" won the battle!").effect(CombatLogMessage.ROTATE));
+                emitMessage(CombatLogMessage.create().bold("Faction " + winningFaction.getName() + " won the battle!").effect(CombatLogMessage.ROTATE));
                 Log.e(TAG, "Faction " + winningFaction.getName() + " won the battle!");
                 getMvpView().postHideNextRoundButton();
             }
@@ -241,6 +261,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         return combatants;
     }
 
+
     private int countLivingFactions()
     {
         List<Faction> factions = new ArrayList<>();
@@ -270,6 +291,14 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         return false;
     }
 
+    public boolean isWaitingOnInput()
+    {
+        if(waitingOnChar != null)
+            return true;
+        else
+            return false;
+    }
+
 
     @Override
     public void onEvent(MvpEvent event) {
@@ -283,9 +312,26 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             if(isViewAttached())
                 getMvpView().postUpdateMapView(combatants);
         }
+        if(event instanceof PlayerMoveInfoEvent)
+        {
+            PlayerMoveInfoEvent pmi_event = (PlayerMoveInfoEvent) event;
+            if(isViewAttached())
+                getMvpView().showMoveInfoOnMap(pmi_event.combatant, pmi_event.value);
+        }
         if(event instanceof CombatLogIdleEvent)
         {
             getMvpView().postShowNextRoundButton();
+        }
+        if(event instanceof PlayerInputResponseEvent)
+        {
+            if(isViewAttached())
+                getMvpView().clearMoveInfoOnMap();
+            waitingOnChar = null;
+        }
+        if(event instanceof PlayerMoveStartedEvent)
+        {
+            if(isViewAttached())
+                getMvpView().gotoTab(EncounterActivity.MAP_TAB);
         }
     }
 }

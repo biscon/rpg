@@ -126,9 +126,32 @@ public abstract class BaseAI extends AI {
         return target;
     }
 
+    @Override
+    public int getSpeed()
+    {
+        return CombatPosition.MOVE_PER_TURN + (2*combatant.getDEXBonus());
+    }
+
+    @Override
+    public void performMove(int distance)
+    {
+        int speed = getSpeed();
+        if(distance > speed)
+        {
+            Log.e(TAG, combatant.getName() + " cannot move that far!");
+            return;
+        }
+        String dist_str = "forwards";
+        if(distance < 0)
+            dist_str = "backwards";
+        combatant.setPosition(combatant.getPosition() + distance);
+        emitMessage(CombatLogMessage.create().bright(combatant.getName()).dark(" moved " + Math.abs(distance) + " meters " + dist_str + "."));
+        PresentationManager.instance().publishEvent(new MapUpdateEvent());
+    }
+
     protected void performMoveTowardsOpponent(Combatant opponent)
     {
-        int speed = CombatPosition.MOVE_PER_TURN + (2*combatant.getDEXBonus());
+        int speed = getSpeed();
         int diff = Math.abs(opponent.getPosition() - combatant.getPosition());
         Log.e(TAG, String.format(Locale.US, "%s speed = %d", combatant.getName(), speed));
         if(opponent.getPosition() > combatant.getPosition())

@@ -18,6 +18,8 @@ public abstract class AI {
     }
 
     public abstract void performAction(Encounter encounter);
+    public abstract void performMove(int distance);
 
     public abstract void reset();
+    public abstract int getSpeed();
 }

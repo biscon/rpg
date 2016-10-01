@@ -1,5 +1,7 @@
 package dk.bison.rpg.ui.encounter.combat_log;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
@@ -102,6 +104,32 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
 
     }
 
+    @Override
+    public void show() {
+        final View pv = (View) getParent();
+        pv.setAlpha(0);
+        pv.setVisibility(View.VISIBLE);
+        pv.animate().alpha(1).setDuration(1000).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                pv.setVisibility(View.VISIBLE);
+            }
+        }).start();
+    }
+
+    @Override
+    public void hide() {
+        final View pv = (View) getParent();
+        pv.setAlpha(1);
+        pv.setVisibility(View.VISIBLE);
+        pv.animate().alpha(0).setDuration(1000).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                pv.setVisibility(View.GONE);
+            }
+        }).start();
+    }
+
     private void addEntry(SpannableStringBuilder sb, int effect) {
         FrameLayout fl = new FrameLayout(getContext());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -117,7 +145,7 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
         FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tv.setLayoutParams(flp);
         tv.setText(sb);
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         tv.setTextColor(textColor);
         fl.addView(tv);
         contentLl.addView(fl);
