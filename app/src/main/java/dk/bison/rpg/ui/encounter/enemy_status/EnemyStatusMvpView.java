@@ -8,4 +8,5 @@ import dk.bison.rpg.mvp.MvpView;
  */
 public interface EnemyStatusMvpView extends MvpView {
     void showParty(Party party);
+    void clearSelection();
 }

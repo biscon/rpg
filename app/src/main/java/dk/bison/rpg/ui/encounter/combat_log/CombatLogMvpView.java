@@ -11,5 +11,7 @@ public interface CombatLogMvpView extends MvpView {
     void postMessage(CombatLogMessage msg);
     void addDivider();
     void show();
+    void showImmediately();
+    void showPeriod(int delay);
     void hide();
 }

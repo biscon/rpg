@@ -239,7 +239,8 @@ public abstract class BaseAI extends AI {
         }
     }
 
-    protected void attack(Combatant c, Combatant opponent, Attack attack)
+    @Override
+    public void attack(Combatant c, Combatant opponent, Attack attack)
     {
         if(opponent.isDead())
         {

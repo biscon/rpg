@@ -77,6 +77,11 @@ public class CombatLogPresenter extends BasePresenter<CombatLogMvpView> implemen
             if(isViewAttached())
                 getMvpView().show();
         }
+        if(event instanceof CombatLogShowPeriodEvent)
+        {
+            if(isViewAttached())
+                getMvpView().showPeriod(((CombatLogShowPeriodEvent) event).wait);
+        }
     }
 
     static long lastMsgTime = 0;

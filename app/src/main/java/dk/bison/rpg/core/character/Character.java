@@ -100,6 +100,7 @@ public class Character implements Combatant {
         if(mainHandWeapon != null) {
             Attack a = new Attack();
             a.name = mainHandWeapon.getName();
+            a.weapon = mainHandWeapon;
             a.damage = mainHandWeapon.getDamageDice();
             a.combatTextCategory = mainHandWeapon.getTemplate().getCategory();
             if(mainHandWeapon.getSize() == WeaponTemplate.SIZE_L)
@@ -119,6 +120,7 @@ public class Character implements Combatant {
         if(offHandWeapon != null) {
             Attack a = new Attack();
             a.name = offHandWeapon.getName();
+            a.weapon = offHandWeapon;
             a.damage = offHandWeapon.getDamageDice();
             a.type = Attack.OFF_HAND;
             a.combatTextCategory = offHandWeapon.getTemplate().getCategory();

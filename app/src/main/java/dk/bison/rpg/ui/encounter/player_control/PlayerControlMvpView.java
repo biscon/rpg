@@ -2,6 +2,7 @@ package dk.bison.rpg.ui.encounter.player_control;
 
 import java.util.List;
 
+import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.mvp.MvpView;
 
@@ -19,4 +20,5 @@ public interface PlayerControlMvpView extends MvpView {
     void setMoveEnabled(boolean enabled);
     void setAttackEnabled(boolean enabled);
     void setTarget(Combatant target);
+    void updateAttacks(List<Attack> attacks);
 }

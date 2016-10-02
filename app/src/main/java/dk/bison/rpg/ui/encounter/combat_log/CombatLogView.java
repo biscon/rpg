@@ -109,7 +109,7 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
         final View pv = (View) getParent();
         pv.setAlpha(0);
         pv.setVisibility(View.VISIBLE);
-        pv.animate().alpha(1).setDuration(1000).setListener(new AnimatorListenerAdapter() {
+        pv.animate().alpha(1).setDuration(500).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 pv.setVisibility(View.VISIBLE);
@@ -118,11 +118,29 @@ public class CombatLogView extends FrameLayout implements CombatLogMvpView {
     }
 
     @Override
+    public void showImmediately() {
+        final View pv = (View) getParent();
+        pv.setAlpha(1);
+        pv.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showPeriod(int delay) {
+        showImmediately();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hide();
+            }
+        }, delay);
+    }
+
+    @Override
     public void hide() {
         final View pv = (View) getParent();
         pv.setAlpha(1);
         pv.setVisibility(View.VISIBLE);
-        pv.animate().alpha(0).setDuration(1000).setListener(new AnimatorListenerAdapter() {
+        pv.animate().alpha(0).setDuration(500).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 pv.setVisibility(View.GONE);

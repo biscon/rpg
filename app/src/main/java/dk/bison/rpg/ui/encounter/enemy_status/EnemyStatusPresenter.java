@@ -43,5 +43,10 @@ public class EnemyStatusPresenter extends BasePresenter<EnemyStatusMvpView> {
             }
 
         }
+        if(event instanceof EnemySelectNoneEvent)
+        {
+            if(isViewAttached())
+                getMvpView().clearSelection();
+        }
     }
 }

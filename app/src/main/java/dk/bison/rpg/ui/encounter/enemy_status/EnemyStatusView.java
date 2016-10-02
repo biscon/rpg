@@ -81,6 +81,16 @@ public class EnemyStatusView extends FrameLayout implements EnemyStatusMvpView {
         }
     }
 
+    @Override
+    public void clearSelection() {
+        for(int i = 1; i < contentLl.getChildCount(); i++)
+        {
+            View v = contentLl.getChildAt(i);
+            v.setSelected(false);
+            v.setBackgroundResource(android.R.color.transparent);
+        }
+    }
+
     private void clearSelectedExcept(View sel_v)
     {
         boolean is_one_selected = false;

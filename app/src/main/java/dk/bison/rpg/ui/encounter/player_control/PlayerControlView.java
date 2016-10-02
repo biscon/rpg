@@ -6,6 +6,7 @@ import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.bison.rpg.R;
+import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.mvp.PresentationManager;
@@ -56,6 +58,8 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
     TextView moveInfoTv;
     @BindView(R.id.pcv_attack_target_tv)
     TextView targetTv;
+    @BindView(R.id.pcv_attack_list_ll)
+    LinearLayout attackListLl;
 
     Combatant combatant;
     Combatant target;
@@ -147,21 +151,47 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
         moveInfoTv.setText(String.format(Locale.US, "Move %dm %s", Math.abs(value), dir));
     }
 
+    @Override
+    public void updateAttacks(List<Attack> attacks) {
+        attackListLl.removeAllViews();
+        if(attacks == null)
+            return;
+        for(Attack atk : attacks)
+        {
+            View v = makeAttackView(atk);
+            attackListLl.addView(v);
+        }
+        if(attacks.isEmpty())
+        {
+            TextView tv = new TextView(getContext());
+            tv.setText(combatant.getName() + " has no more usable attacks against " + target.getName() + " at this range or in this round.");
+            tv.setTextColor(getResources().getColor(R.color.white));
+            //float size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics());
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            attackListLl.addView(tv);
+        }
+    }
 
-    private View makeHeaderView() {
-        View v = LayoutInflater.from(this.getContext()).inflate(R.layout.viewholder_char_status, this, false);
+    private View makeAttackView(Attack atk) {
+        View v = LayoutInflater.from(this.getContext()).inflate(R.layout.viewholder_attack, this, false);
         TextView name_tv = ButterKnife.findById(v, R.id.name_tv);
-        TextView level_tv = ButterKnife.findById(v, R.id.level_tv);
-        TextView ac_tv = ButterKnife.findById(v, R.id.ac_tv);
-        TextView hp_tv = ButterKnife.findById(v, R.id.hp_tv);
-        name_tv.setText("");
-        name_tv.setTypeface(null, Typeface.BOLD);
-        level_tv.setText("LVL");
-        level_tv.setTypeface(null, Typeface.BOLD);
-        ac_tv.setText("AC");
-        ac_tv.setTypeface(null, Typeface.BOLD);
-        hp_tv.setText("HP");
-        hp_tv.setTypeface(null, Typeface.BOLD);
+        TextView dmg_tv = ButterKnife.findById(v, R.id.dmg_tv);
+        TextView size_tv  = ButterKnife.findById(v, R.id.size_tv);
+        TextView dist_tv  = ButterKnife.findById(v, R.id.dist_tv);
+        LinearLayout weapon_ll = ButterKnife.findById(v, R.id.weapon_ll);
+
+        name_tv.setText(atk.name);
+        dmg_tv.setText(atk.damage);
+        //size_tv.setText(String.format(Locale.US, "s%", atk.getSizeAsString()));
+        dist_tv.setText(String.format(Locale.US, "Range %d", atk.range));
+        weapon_ll.setTag(atk);
+        weapon_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            presenter.performAttack((Attack) view.getTag());
+            }
+        });
+
         return v;
     }
 
@@ -245,10 +275,12 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
     @Override
     public void setTarget(Combatant target) {
         this.target = target;
-        if(target == null)
+        if(target == null) {
             targetTv.setText("Target: Please select from list");
-        else
+        }
+        else {
             targetTv.setText(String.format(Locale.US, "Target: %s (%d/%d HP) at %dm", target.getName(), target.getHP(), target.getMaxHP(), CombatPosition.distanceBetweenCombatants(combatant, target)));
+        }
     }
 
     @Override

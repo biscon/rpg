@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/pcv_move_view"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_margin">
+            <TextView
+                android:id="@+id/pcv_move_info_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/text_white"
+                android:textSize="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Move"/>
+            <SeekBar
+                android:id="@+id/pcv_move_sb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="32dp"
+                android:thumb="@drawable/thumb_image"
+                android:max="40"/>
+            <Button
+                android:id="@+id/pcv_move_exec_btn"
+                style="@style/ButtonStyleAccent"
+                android:layout_marginTop="32dp"
+                android:text="Move"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

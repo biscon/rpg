@@ -1,5 +1,6 @@
 package dk.bison.rpg.core.ai;
 
+import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.Encounter;
 
@@ -19,6 +20,7 @@ public abstract class AI {
 
     public abstract void performAction(Encounter encounter);
     public abstract void performMove(int distance);
+    public abstract void attack(Combatant c, Combatant opponent, Attack attack);
 
     public abstract void reset();
     public abstract int getSpeed();

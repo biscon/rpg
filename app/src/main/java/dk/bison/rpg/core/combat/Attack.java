@@ -1,5 +1,7 @@
 package dk.bison.rpg.core.combat;
 
+import dk.bison.rpg.core.weapon.Weapon;
+
 public class Attack
 {
     public static final int MAIN_HAND = 0;
@@ -13,6 +15,7 @@ public class Attack
     public boolean isRanged;
     public int range = 0;
     public String combatTextCategory = "unarmed";
+    public Weapon weapon;
 
     @Override
     public String toString() {

@@ -85,6 +85,7 @@ public class Monster implements Combatant {
                     attack.name = weapon.getName();
                     attack.damage = weapon.getDamageDice();
                     attack.range = weapon.getRange();
+                    attack.weapon = weapon;
                     attack.combatTextCategory = weapon.getTemplate().getCategory();
                     if(weapon.isRanged())
                         attack.isRanged = true;
