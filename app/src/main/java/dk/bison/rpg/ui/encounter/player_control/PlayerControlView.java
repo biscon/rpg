@@ -173,7 +173,7 @@ public class PlayerControlView extends FrameLayout implements PlayerControlMvpVi
     }
 
     private View makeAttackView(Attack atk) {
-        View v = LayoutInflater.from(this.getContext()).inflate(R.layout.viewholder_attack, this, false);
+        View v = LayoutInflater.from(this.getContext()).inflate(R.layout.viewholder_attack, attackListLl, false);
         TextView name_tv = ButterKnife.findById(v, R.id.name_tv);
         TextView dmg_tv = ButterKnife.findById(v, R.id.dmg_tv);
         TextView size_tv  = ButterKnife.findById(v, R.id.size_tv);

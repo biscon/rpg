@@ -56,13 +56,33 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
         PresentationManager.instance().publishEvent(new PlayerInputResponseEvent(combatant));
     }
 
+    private boolean areAnyAttacksPossible()
+    {
+        boolean possible = false;
+        for(Combatant enemy : encounter.getCombatants())
+        {
+            if(enemy.isDead())
+                continue;
+            if(enemy.getFaction().sameAs(combatant.getFaction()))
+                continue;
+            if(!filterAttacks(enemy).isEmpty())
+                return true;
+        }
+        return possible;
+    }
+
     public void gotoAction()
     {
         state = ACTION;
         Log.e(TAG, "setting state to ACTION");
-        PresentationManager.instance().publishEvent(new PlayerMoveStartedEvent(combatant));
-        if(isViewAttached())
+        //PresentationManager.instance().publishEvent(new PlayerMoveStartedEvent(combatant));
+        if(isViewAttached()) {
             getMvpView().showActionView();
+            if(areAnyAttacksPossible())
+                getMvpView().setAttackEnabled(true);
+            else
+                getMvpView().setAttackEnabled(false);
+        }
     }
 
     public void gotoMove()
@@ -92,8 +112,12 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
         PresentationManager.instance().publishEvent(new CombatLogShowPeriodEvent(3000));
         usedAttacks.add(atk);
         combatant.getAI().attack(combatant, currentTarget, atk);
-        if(isViewAttached())
-            getMvpView().updateAttacks(filterAttacks());
+        if(isViewAttached()) {
+            List<Attack> attacks = filterAttacks(currentTarget);
+            getMvpView().updateAttacks(attacks);
+            if(!areAnyAttacksPossible())
+                gotoAction();
+        }
     }
 
     public void performMove(int distance)
@@ -107,9 +131,9 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
         gotoAction();
     }
 
-    private List<Attack> filterAttacks()
+    private List<Attack> filterAttacks(Combatant target)
     {
-        int dist_enemy = CombatPosition.distanceBetweenCombatants(combatant, currentTarget);
+        int dist_enemy = CombatPosition.distanceBetweenCombatants(combatant, target);
         List<Attack> attacks_within_range = new ArrayList<>();
         for(Attack atk : combatant.getAttacks())
         {
@@ -144,6 +168,7 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
                 getMvpView().setTarget(null);
                 getMvpView().updateAttacks(null);
             }
+            gotoAction();
         }
         if(event instanceof OnBackButtonEvent)
         {
@@ -151,7 +176,8 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
             if(state != ACTION)
             {
                 Log.e(TAG, "showing action view");
-                getMvpView().showActionView();
+                //getMvpView().showActionView();
+                gotoAction();
             }
         }
         if(event instanceof EnemySelectedEvent && state == ATTACK)
@@ -168,7 +194,7 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
                     getMvpView().updateAttacks(null);
                 }
                 else {
-                    List<Attack> attacks = filterAttacks();
+                    List<Attack> attacks = filterAttacks(currentTarget);
                     getMvpView().updateAttacks(attacks);
                 }
             }
