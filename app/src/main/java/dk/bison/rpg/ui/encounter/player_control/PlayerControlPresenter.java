@@ -109,6 +109,9 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
 
     public void performAttack(Attack atk)
     {
+        hasMoved = true;
+        if(isViewAttached())
+            getMvpView().setMoveEnabled(false);
         PresentationManager.instance().publishEvent(new CombatLogShowPeriodEvent(3000));
         usedAttacks.add(atk);
         combatant.getAI().attack(combatant, currentTarget, atk);

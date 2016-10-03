@@ -6,49 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.encounter.EncounterActivity">
 
-    <FrameLayout
-        android:id="@+id/top_holder_fl"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <dk.bison.rpg.ui.encounter.player_control.PlayerControlView
-            android:id="@+id/player_control_pcv"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:background="@color/grey_850"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <!-- choose action view -->
-            <include layout="@layout/activity_encounter_action_view" />
-            <!-- Attack view -->
-            <include layout="@layout/activity_encounter_attack_view" />
-            <!-- Move view -->
-            <include layout="@layout/activity_encounter_move_view" />
-        </dk.bison.rpg.ui.encounter.player_control.PlayerControlView>
-        <RelativeLayout
-            android:id="@+id/log_holder_rl"
-            android:visibility="visible"
-            tools:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/grey_850">
-            <!-- Combat log -->
-            <dk.bison.rpg.ui.encounter.combat_log.CombatLogView
-                android:id="@+id/log_clv"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/grey_850" />
-            <Button
-                android:id="@+id/next_round_btn"
-                style="@style/ButtonStyleAccentSquare"
-                android:visibility="visible"
-                android:text="Next Round"
-                android:layout_alignParentTop="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-    </FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -108,4 +65,53 @@
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/top_holder_fl"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <dk.bison.rpg.ui.encounter.player_control.PlayerControlView
+            android:id="@+id/player_control_pcv"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:background="@color/grey_850"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <!-- choose action view -->
+            <include layout="@layout/activity_encounter_action_view" />
+            <!-- Attack view -->
+            <include layout="@layout/activity_encounter_attack_view" />
+            <!-- Move view -->
+            <include layout="@layout/activity_encounter_move_view" />
+        </dk.bison.rpg.ui.encounter.player_control.PlayerControlView>
+        <RelativeLayout
+            android:id="@+id/log_holder_rl"
+            android:visibility="visible"
+            tools:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_850">
+            <!-- Combat log -->
+            <dk.bison.rpg.ui.encounter.combat_log.CombatLogView
+                android:id="@+id/log_clv"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/grey_850" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/combat_log_shade" />
+            <Button
+                android:id="@+id/next_round_btn"
+                style="@style/ButtonStyleAccentSquare"
+                android:visibility="visible"
+                android:text="Next Round"
+                android:layout_alignParentTop="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </FrameLayout>
 </LinearLayout>
