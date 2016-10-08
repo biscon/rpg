@@ -2,7 +2,6 @@
 - skills, saving throws.
 - Threat based AI. Keep a table (sort desc) for each monster keeping track of total dmg per opponent,
   top of the list has aggro.
-- award xp upon kills
 
 Done
 ====
@@ -15,3 +14,4 @@ Done
 - Swearwolves (gotta have them)
 - Add human control (as AI class so some allies can be player controlled and some AI controlled).
 - BaseCombatant (make Character and Monster derive from it and remove duplicate functionality)
+- award xp upon kills

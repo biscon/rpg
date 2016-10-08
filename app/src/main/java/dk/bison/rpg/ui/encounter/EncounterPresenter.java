@@ -119,34 +119,42 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
 
     private void runRound() {
         //Log.e(TAG, "Running state ROUND");
+        // are we waiting on player input? do nothing
         if(waitingOnChar != null)
         {
             return;
         }
+        // process next combatant if any and check win condition after each
         if(curCombatant.hasNext())
         {
-            Combatant c = curCombatant.next();
-            if (!c.isDead()) {
-                AI ai = c.getAI();
-                if(ai instanceof PlayerControlAI)
-                {
-                    Log.e(TAG, c.getName() + " is player controlled, waiting for input.");
-                    waitingOnChar = c;
-                    PresentationManager.instance().publishEvent(new PlayerInputRequestEvent(c, this));
-                    return;
-                }
-                else {
-                    Log.e(TAG, c.getName() + " is AI controlled, performing action.");
-                    ai.performAction(this);
-                }
-            }
+            processCombatant();
             checkWinCondition();
         }
-        else // we have run trough all the combatants in this round
+        else // we have run trough all the combatants in this round, check win condition
         {
             checkWinCondition();
         }
+        // update map view for good measure
         getMvpView().postUpdateMapView(combatants);
+    }
+
+    private void processCombatant()
+    {
+        Combatant c = curCombatant.next();
+        if (!c.isDead()) {
+            AI ai = c.getAI();
+            if(ai instanceof PlayerControlAI)
+            {
+                Log.e(TAG, c.getName() + " is player controlled, waiting for input.");
+                waitingOnChar = c;
+                PresentationManager.instance().publishEvent(new PlayerInputRequestEvent(c, this));
+                return;
+            }
+            else {
+                Log.e(TAG, c.getName() + " is AI controlled, performing action.");
+                ai.performAction(this);
+            }
+        }
     }
 
     private void checkWinCondition()
