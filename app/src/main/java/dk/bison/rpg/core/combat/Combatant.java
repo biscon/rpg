@@ -48,4 +48,5 @@ public interface Combatant {
     boolean awardXp(int xp);
     void setXP(int xp);
     int getXP();
+    int getXPAward();
 }

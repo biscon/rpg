@@ -145,6 +145,7 @@ public class Character extends BaseCombatant {
         int n_xp = getXP();
         n_xp += xp;
         int lvl = charClass.calcLevel(n_xp);
+        setXP(n_xp);
         if(lvl > getLevel())
         {
             setLevel(getLevel()+1);
@@ -152,6 +153,11 @@ public class Character extends BaseCombatant {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public int getXPAward() {
+        return 0;
     }
 
     public void giveLevel()

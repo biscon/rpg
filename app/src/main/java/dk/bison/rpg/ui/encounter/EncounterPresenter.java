@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -16,6 +17,7 @@ import dk.bison.rpg.core.Dice;
 import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.ai.AI;
 import dk.bison.rpg.core.ai.PlayerControlAI;
+import dk.bison.rpg.core.character.CharacterManager;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.Encounter;
 import dk.bison.rpg.core.combat.InitiativeComparator;
@@ -50,6 +52,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
     List<Combatant> combatants;
     Dice dice = new Dice();
     Faction winningFaction;
+    Faction playerFaction;
     Iterator<Combatant> curCombatant;
     private TimerTask timerTask;
     private Timer timer;
@@ -137,29 +140,37 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
                     ai.performAction(this);
                 }
             }
+            checkWinCondition();
         }
         else // we have run trough all the combatants in this round
         {
-            if(countLivingFactions() == 0)
-            {
-                state = END_COMBAT;
-                emitMessage(CombatLogMessage.create().violent("All factions lost!").effect(CombatLogMessage.ROTATE));
-                Log.e(TAG, "All factions lost!");
-                getMvpView().postHideNextRoundButton();
-            }
-            else if(countLivingFactions() < 2)
-            {
-                state = END_COMBAT;
-                emitMessage(CombatLogMessage.create().bold("Faction " + winningFaction.getName() + " won the battle!").effect(CombatLogMessage.ROTATE));
-                Log.e(TAG, "Faction " + winningFaction.getName() + " won the battle!");
-                getMvpView().postHideNextRoundButton();
-            }
-            else {
-                state = END_ROUND;
-                PresentationManager.instance().publishEvent(new RoundDoneEvent());
-                emitMessage(CombatLogMessage.create().roundDone());
-            }
-            getMvpView().postUpdateMapView(combatants);
+            checkWinCondition();
+        }
+        getMvpView().postUpdateMapView(combatants);
+    }
+
+    private void checkWinCondition()
+    {
+        if(countLivingFactions() == 0)
+        {
+            state = END_COMBAT;
+            emitMessage(CombatLogMessage.create().violent("All factions lost!").effect(CombatLogMessage.ROTATE));
+            Log.e(TAG, "All factions lost!");
+            getMvpView().postHideNextRoundButton();
+            getMvpView().endOfCombat();
+        }
+        else if(countLivingFactions() < 2)
+        {
+            state = END_COMBAT;
+            emitMessage(CombatLogMessage.create().bold("Faction " + winningFaction.getName() + " won the battle!").effect(CombatLogMessage.ROTATE));
+            Log.e(TAG, "Faction " + winningFaction.getName() + " won the battle!");
+            getMvpView().postHideNextRoundButton();
+            getMvpView().endOfCombat();
+        }
+        else {
+            state = END_ROUND;
+            PresentationManager.instance().publishEvent(new RoundDoneEvent());
+            emitMessage(CombatLogMessage.create().roundDone());
         }
     }
 
@@ -209,26 +220,27 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         combatants = new LinkedList<>();
         Party party = new Party();
         Monster m1 = MonsterFactory.makeMonster("Cuddles", "Wolf", 2);
-        m1.setPosition(10);
+        m1.setPosition(5);
         Monster m2 = MonsterFactory.makeMonster(null, "Swearwolf", 2);
-        m2.setPosition(15);
+        m2.setPosition(6);
         Monster m3 = MonsterFactory.makeMonster("Scratchy", "Dire Wolf", 2);
-        m3.setPosition(20);
+        m3.setPosition(7);
         Monster m4 = MonsterFactory.makeMonster("Slikkefanden", "Wolf", 2);
         m4.setGender(Gender.MALE);
-        m4.setPosition(25);
+        m4.setPosition(12);
         party.add(m1);
         party.add(m2);
         party.add(m3);
         party.add(m4);
         AppState.enemyParty = party;
-        int pos = -30;
+        int pos = -5;
         for(Combatant c : AppState.currentParty) {
             c.setPosition(pos);
             pos -= 2;
         }
         addParty(AppState.currentParty);
         addParty(AppState.enemyParty);
+        playerFaction = AppState.currentParty.getCombatants().get(0).getFaction();
     }
 
     private void addParty(Party party)
@@ -300,6 +312,29 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             return false;
     }
 
+    /**
+     * Killer gets half of xp reward, rest is distributed among the player party
+     * @param event
+     */
+    private void awardXPForKill(CombatantDeathEvent event)
+    {
+        int xp_reward = event.victim.getXPAward();
+        int kill_reward = xp_reward / 2;
+        int ally_reward = xp_reward / AppState.currentParty.getCombatants().size();
+        for(Combatant c : AppState.currentParty.getCombatants())
+        {
+            if(c == event.killer)
+            {
+                c.awardXp(kill_reward);
+                emitMessage(CombatLogMessage.create().bright(c.getName()).normal(" is rewarded ").bold(String.format(Locale.US, "%d XP", kill_reward)).effect(CombatLogMessage.SLIDE_SCALE_FADE));
+            }
+            else
+            {
+                c.awardXp(ally_reward);
+                emitMessage(CombatLogMessage.create().bright(c.getName()).normal(" is rewarded ").bold(String.format(Locale.US, "%d XP", ally_reward)));
+            }
+        }
+    }
 
     @Override
     public void onEvent(MvpEvent event) {
@@ -339,6 +374,14 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         {
             if(isViewAttached())
                 getMvpView().gotoTab(EncounterActivity.STATUS_TAB);
+        }
+        if(event instanceof CombatantDeathEvent)
+        {
+            CombatantDeathEvent cde_event = (CombatantDeathEvent) event;
+            if(cde_event.killer.getFaction().sameAs(playerFaction))
+            {
+                awardXPForKill(cde_event);
+            }
         }
     }
 }

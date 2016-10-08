@@ -175,4 +175,9 @@ public class Monster extends BaseCombatant {
             return String.format(Locale.US, "%s (%s)", super.getName(), template.getName());
         }
     }
+
+    @Override
+    public int getXPAward() {
+        return template.XP;
+    }
 }

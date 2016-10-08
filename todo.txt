@@ -1,6 +1,5 @@
 - Implement another class.
 - skills, saving throws.
-- BaseCombatant (make Character and Monster derive from it and remove duplicate functionality)
 - Threat based AI. Keep a table (sort desc) for each monster keeping track of total dmg per opponent,
   top of the list has aggro.
 - award xp upon kills
@@ -15,3 +14,4 @@ Done
 - refactored character editor UI into tabs for less clutter
 - Swearwolves (gotta have them)
 - Add human control (as AI class so some allies can be player controlled and some AI controlled).
+- BaseCombatant (make Character and Monster derive from it and remove duplicate functionality)

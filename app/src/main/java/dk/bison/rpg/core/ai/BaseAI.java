@@ -21,6 +21,7 @@ import dk.bison.rpg.core.combat.HPComparator;
 import dk.bison.rpg.core.combat.HitInfo;
 import dk.bison.rpg.core.faction.Faction;
 import dk.bison.rpg.mvp.PresentationManager;
+import dk.bison.rpg.ui.encounter.CombatantDeathEvent;
 import dk.bison.rpg.ui.encounter.MapUpdateEvent;
 import dk.bison.rpg.ui.encounter.StatusUpdateEvent;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
@@ -268,6 +269,7 @@ public abstract class BaseAI extends AI {
             */
             if(opponent.isDead()) {
                 Log.e(TAG, opponent.getName() + " dies.");
+                PresentationManager.instance().publishEvent(new CombatantDeathEvent(opponent, c));
                 //emitMessage(CombatLogMessage.create().bright(opponent.getName()).violent(" dies!!!").effect(CombatLogMessage.BOUNCE));
             }
         }

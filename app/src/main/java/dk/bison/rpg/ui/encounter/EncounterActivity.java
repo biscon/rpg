@@ -23,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
+import dk.bison.rpg.core.character.CharacterManager;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogView;
@@ -263,5 +264,11 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
     @Override
     public void clearMoveInfoOnMap() {
         mapView.clearMove();
+    }
+
+    @Override
+    public void endOfCombat() {
+        // save characters
+        CharacterManager.instance().save(this);
     }
 }
