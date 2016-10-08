@@ -11,11 +11,14 @@ import dk.bison.rpg.core.grammar.Grammar;
  */
 public interface Combatant {
     String getName();
+    void setName(String name);
     int getLastInitiativeRolled();
     int rollInitiative();
     int getAC();
     int getHP();
+    void setHP(int hp);
     int getMaxHP();
+    void setMaxHP(int max_hp);
     void decreaseHP(int amount);
     void increaseHP(int amount);
     boolean isDead();
@@ -25,8 +28,11 @@ public interface Combatant {
     //String getDamageDice();
     List<Attack> getAttacks();
     Faction getFaction();
+    void setFaction(Faction faction);
     AI getAI();
+    void setAI(AI ai);
     int getLevel();
+    void setLevel(int level);
     void resetHealth();
     String getNameWithTemplateName();
     int getPosition();
@@ -36,6 +42,10 @@ public interface Combatant {
     List<Attack> getRangedAttacks(int distance);
     List<Attack> getMeleeAttacks();
     Grammar getGrammar();
+    void setGrammar(Grammar grammar);
     char getGender();
     void setGender(char gender);
+    boolean awardXp(int xp);
+    void setXP(int xp);
+    int getXP();
 }

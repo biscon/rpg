@@ -8,6 +8,7 @@ import java.util.Locale;
 
 import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.combat.Attack;
+import dk.bison.rpg.core.combat.BaseCombatant;
 import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.Dice;
@@ -24,34 +25,24 @@ import dk.bison.rpg.core.weapon.WeaponFactory;
 /**
  * Created by bison on 16-08-2016.
  */
-public class Monster implements Combatant {
+public class Monster extends BaseCombatant {
     public static final String TAG = Monster.class.getSimpleName();
     MonsterTemplate template;
-    int initiative;
-    int maxHP;
-    int HP;
-    int level = 1;
-    int position = CombatPosition.CENTER;
-    int distanceToCurrentTarget;
     Weapon weapon;
     List<Attack> attacks;
     Dice dice = new Dice();
-    Faction faction;
-    AI ai;
-    String name;
-    Grammar grammar;
-    char gender = Gender.NEUTRAL;
 
 
     public Monster(MonsterTemplate template, int level, String name) {
         this.template = template;
-        this.level = level;
-        this.name = name;
-        faction = FactionFactory.makeFaction(template.factionTemplate);
+        setLevel(level);
+        setName(name);
+        setFaction(FactionFactory.makeFaction(template.factionTemplate));
         parseAttacks();
         rollHP();
-        grammar = GrammarFactory.make(template.grammarClass);
-        ai = AIFactory.makeAI(template.aiClass);
+        setGrammar(GrammarFactory.make(template.grammarClass));
+        AI ai = AIFactory.makeAI(template.aiClass);
+        setAI(ai);
         ai.setCombatant(this);
         if(template.weaponTemplate != null)
             weapon = WeaponFactory.makeWeapon(template.weaponTemplate);
@@ -59,14 +50,15 @@ public class Monster implements Combatant {
 
     private void rollHP()
     {
-        maxHP = 0;
-        for(int i = 1; i <= level; i++)
+        int max_hp = 0;
+        for(int i = 1; i <= getLevel(); i++)
         {
-            int roll = dice.roll(template.getHitDice(level));
-            maxHP += roll;
+            int roll = dice.roll(template.getHitDice(i));
+            max_hp += roll;
         }
-        HP = maxHP;
-        Log.i(TAG, getName() + " rolled " + HP + " hitpoints");
+        setMaxHP(max_hp);
+        setHP(max_hp);
+        Log.i(TAG, getName() + " rolled " + getHP() + " hitpoints");
     }
 
     private void parseAttacks()
@@ -111,58 +103,21 @@ public class Monster implements Combatant {
 
     @Override
     public String getName() {
-        if(name == null)
+        if(super.getName() == null)
             return template.getName();
-        return name;
+        return super.getName();
     }
 
     @Override
-    public int getLastInitiativeRolled() {
-        return initiative;
-    }
-
-    @Override
-    public int rollInitiative() {
-
-        initiative = dice.roll("1d6");
-        initiative += getDEXBonus();
-        return initiative;
-    }
-
     public int getAC()
     {
         return template.AC;
     }
 
     @Override
-    public int getHP() {
-        return HP;
-    }
-
-    @Override
-    public int getMaxHP() {
-        return maxHP;
-    }
-
-    @Override
-    public void decreaseHP(int amount) {
-        HP -= amount;
-        if(HP < 0)
-            HP = 0;
-    }
-
-    @Override
-    public void increaseHP(int amount) {
-        HP += amount;
-    }
-
-    @Override
-    public boolean isDead()
+    public boolean awardXp(int xp)
     {
-        if(HP < 1)
-            return true;
-        else
-            return false;
+        return false;
     }
 
     @Override
@@ -177,7 +132,7 @@ public class Monster implements Combatant {
 
     @Override
     public int getAttackBonus() {
-        return template.getAttackBonus(level);
+        return template.getAttackBonus(getLevel());
     }
 
     @Override
@@ -212,79 +167,12 @@ public class Monster implements Combatant {
     }
 
     @Override
-    public Grammar getGrammar() {
-        return grammar;
-    }
-
-    @Override
-    public char getGender() {
-        return gender;
-    }
-
-    @Override
-    public void setGender(char gender) {
-        this.gender = gender;
-        switch(gender)
-        {
-            case Gender.MALE:
-                grammar = GrammarFactory.make("MaleGrammar");
-                break;
-            case Gender.FEMALE:
-                grammar = GrammarFactory.make("FemaleGrammar");
-                break;
-            case Gender.NEUTRAL:
-                grammar = GrammarFactory.make("CreatureGrammar");
-                break;
-        }
-    }
-
-    @Override
-    public Faction getFaction() {
-        return faction;
-    }
-
-    @Override
-    public AI getAI() {
-        return ai;
-    }
-
-    @Override
-    public int getLevel() {
-        return level;
-    }
-
-    @Override
-    public void resetHealth() {
-        HP = maxHP;
-    }
-
-    @Override
     public String getNameWithTemplateName() {
-        if(name == null) {
+        if(super.getName() == null) {
             return template.getName();
         }
         else {
-            return String.format(Locale.US, "%s (%s)", name, template.getName());
+            return String.format(Locale.US, "%s (%s)", super.getName(), template.getName());
         }
-    }
-
-    @Override
-    public int getPosition() {
-        return position;
-    }
-
-    @Override
-    public void setPosition(int pos) {
-        position = pos;
-    }
-
-    @Override
-    public void setDistanceToCurrentTarget(int distance) {
-        distanceToCurrentTarget = distance;
-    }
-
-    @Override
-    public int getDistanceToCurrentTarget() {
-        return distanceToCurrentTarget;
     }
 }

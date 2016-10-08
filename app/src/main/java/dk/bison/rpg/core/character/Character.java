@@ -17,6 +17,7 @@ import dk.bison.rpg.core.ai.AIFactory;
 import dk.bison.rpg.core.armor.Armor;
 import dk.bison.rpg.core.armor.ArmorFactory;
 import dk.bison.rpg.core.combat.Attack;
+import dk.bison.rpg.core.combat.BaseCombatant;
 import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.faction.Faction;
@@ -30,36 +31,26 @@ import dk.bison.rpg.core.weapon.WeaponTemplate;
 /**
  * Created by bison on 07-08-2016.
  */
-public class Character implements Combatant {
+public class Character extends BaseCombatant {
     public static final String TAG = Character.class.getSimpleName();
 
-    String name = "";
     CharacterStats stats;
     CharacterClass charClass;
-    int maxHP;
-    int HP;
-    int level = 1;
-    int XP = 0;
     int money;
-    int initiative;
-    int position = CombatPosition.CENTER;
-    int distanceToCurrentTarget;
+
     List<Attack> attacks;
-    Faction faction;
-    AI ai;
+
 
     private Armor armor;
     private Armor shield;
     private Weapon mainHandWeapon;
     private Weapon offHandWeapon;
-    Grammar grammar;
-
-    private char gender = Gender.MALE;
 
     public Character() {
-        grammar = GrammarFactory.make("MaleGrammar");
-        faction = FactionFactory.makeFaction("Player");
-        ai = AIFactory.makeAI("PlayerControlAI");
+        setGrammar(GrammarFactory.make("MaleGrammar"));
+        setFaction(FactionFactory.makeFaction("Player"));
+        AI ai = AIFactory.makeAI("PlayerControlAI");
+        setAI(ai);
         ai.setCombatant(this);
         attacks = new ArrayList<>();
         charClass = CharacterClassFactory.makeClass("FighterClass");
@@ -71,8 +62,8 @@ public class Character implements Combatant {
 
     public void rerollStats()
     {
-        level = 1;
-        XP = 0;
+        setLevel(1);
+        setXP(0);
         stats.roll();
         rollStartingMaxHP();
         rollStartingMoney();
@@ -137,37 +128,54 @@ public class Character implements Combatant {
     private void rollStartingMaxHP()
     {
         Dice d = new Dice();
-        String hit_dice = charClass.getHitDice(level);
+        String hit_dice = charClass.getHitDice(getLevel());
         int con_bonus = CharacterStats.calcStatBonusPenalty(stats.getCON());
-        maxHP = d.roll(hit_dice);
-        maxHP += con_bonus;
-        if(maxHP < 1)
-            maxHP = 1;
-        maxHP += 8;
-        HP = maxHP;
+        int max_hp = d.roll(hit_dice);
+        max_hp += con_bonus;
+        if(max_hp < 1)
+            max_hp = 1;
+        max_hp += 8;
+        setMaxHP(max_hp);
+        setHP(max_hp);
+    }
+
+    @Override
+    public boolean awardXp(int xp)
+    {
+        int n_xp = getXP();
+        n_xp += xp;
+        int lvl = charClass.calcLevel(n_xp);
+        if(lvl > getLevel())
+        {
+            setLevel(getLevel()+1);
+            rollLevelUpMaxHPBonus();
+            return true;
+        }
+        return false;
     }
 
     public void giveLevel()
     {
-        level++;
-        XP = charClass.getXPForLevel(level);
-        Log.i(TAG, name + " is now level " + level + " (XP = " + XP + ")");
+        setLevel(getLevel()+1);
+        setXP(charClass.getXPForLevel(getLevel()));
+        Log.i(TAG, getName() + " is now level " + getLevel() + " (XP = " + getXP() + ")");
         rollLevelUpMaxHPBonus();
-        Log.i(TAG, name + " has " + HP + " hitpoints");
+        Log.i(TAG, getName() + " has " + getHP() + " hitpoints");
     }
 
     private void rollLevelUpMaxHPBonus()
     {
         Dice d = new Dice();
-        String hit_dice = charClass.getHitDice(level);
+        String hit_dice = charClass.getHitDice(getLevel());
         int con_bonus = CharacterStats.calcStatBonusPenalty(stats.getCON());
         int bonus = d.roll(hit_dice);
         bonus+= con_bonus;
         if(bonus < 1)
             bonus = 1;
-        maxHP += bonus;
-        Log.i(TAG, name + " gains " + bonus + " points to maximum hitpoints");
-        HP = maxHP;
+        int max_hp = getMaxHP() + bonus;
+        setMaxHP(max_hp);
+        Log.i(TAG, getName() + " gains " + bonus + " points to maximum hitpoints");
+        setHP(max_hp);
     }
 
     private void rollStartingMoney()
@@ -179,7 +187,7 @@ public class Character implements Combatant {
     @Override
     public int getAttackBonus()
     {
-        return charClass.getAttackBonus(level);
+        return charClass.getAttackBonus(getLevel());
     }
 
     @Override
@@ -217,42 +225,7 @@ public class Character implements Combatant {
         return melee_attacks;
     }
 
-    @Override
-    public Grammar getGrammar() {
-        return grammar;
-    }
 
-    @Override
-    public char getGender() {
-        return gender;
-    }
-
-    @Override
-    public void setGender(char gender) {
-        this.gender = gender;
-        switch(gender)
-        {
-            case Gender.MALE:
-                grammar = GrammarFactory.make("MaleGrammar");
-                break;
-            case Gender.FEMALE:
-                grammar = GrammarFactory.make("FemaleGrammar");
-                break;
-            case Gender.NEUTRAL:
-                grammar = GrammarFactory.make("CreatureGrammar");
-                break;
-        }
-    }
-
-    @Override
-    public Faction getFaction() {
-        return faction;
-    }
-
-    @Override
-    public AI getAI() {
-        return ai;
-    }
 
     @Override
     public int getAC()
@@ -274,54 +247,7 @@ public class Character implements Combatant {
         return CharacterStats.calcStatBonusPenalty(stats.getSTR());
     }
 
-    public int getHP()
-    {
-        return HP;
-    }
 
-    @Override
-    public int getMaxHP() {
-        return maxHP;
-    }
-
-    public void decreaseHP(int amount)
-    {
-        HP -= amount;
-        if(HP < 0)
-            HP = 0;
-    }
-
-    @Override
-    public void increaseHP(int amount) {
-        HP += amount;
-    }
-
-    @Override
-    public boolean isDead()
-    {
-        if(HP < 1)
-            return true;
-        else
-            return false;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public int getLastInitiativeRolled() {
-        return initiative;
-    }
-
-    public int rollInitiative()
-    {
-        Dice d = new Dice();
-        initiative = d.roll("1d6",0);
-        initiative += getDEXBonus();
-        return initiative;
-    }
 
     public Armor getArmor() {
         return armor;
@@ -357,9 +283,7 @@ public class Character implements Combatant {
         return shield;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+
 
     public CharacterStats getStats() {
         return stats;
@@ -369,22 +293,10 @@ public class Character implements Combatant {
         return charClass;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    @Override
-    public void resetHealth() {
-        HP = maxHP;
-    }
 
     @Override
     public String getNameWithTemplateName() {
-        return String.format(Locale.US, "%s (%s)", name, charClass.getName());
-    }
-
-    public int getXP() {
-        return XP;
+        return String.format(Locale.US, "%s (%s)", getName(), charClass.getName());
     }
 
     public int getMoney() {
@@ -394,13 +306,13 @@ public class Character implements Combatant {
     @Override
     public String toString() {
         return "Character{" +
-                "name='" + name + '\'' +
+                "name='" + getName() + '\'' +
                 ", stats=" + stats +
                 ", charClass=" + charClass.getName() +
-                ", maxHP=" + maxHP +
-                ", HP=" + HP +
-                ", level=" + level +
-                ", XP=" + XP +
+                ", maxHP=" + getMaxHP() +
+                ", HP=" + getHP() +
+                ", level=" + getLevel() +
+                ", XP=" + getXP() +
                 ", money=" + money +
                 ", atk bonus=" + getAttackBonus() +
                 ", AC=" + getAC() +
@@ -409,13 +321,13 @@ public class Character implements Combatant {
 
     public JSONObject toJson() throws JSONException {
         JSONObject chr = new JSONObject();
-        chr.put("name", name);
-        String str_g = ""+gender;
+        chr.put("name", getName());
+        String str_g = ""+getGender();
         chr.put("gender", str_g);
-        chr.put("maxHP", maxHP);
-        chr.put("HP", HP);
-        chr.put("level", level);
-        chr.put("XP", XP);
+        chr.put("maxHP", getMaxHP());
+        chr.put("HP", getHP());
+        chr.put("level", getLevel());
+        chr.put("XP", getXP());
         chr.put("money", money);
         chr.put("charClass", charClass.getClassName());
         chr.put("stats", stats.toJson());
@@ -432,14 +344,14 @@ public class Character implements Combatant {
 
     public static Character fromJson(JSONObject chr) throws JSONException {
         Character c = new Character();
-        c.name = chr.getString("name");
+        c.setName(chr.getString("name"));
         char g = chr.getString("gender").charAt(0);
         Log.e(TAG, "Read gender as " + g + " from json");
         c.setGender(g);
-        c.maxHP = chr.getInt("maxHP");
-        c.HP = chr.getInt("HP");
-        c.level = chr.getInt("level");
-        c.XP = chr.getInt("XP");
+        c.setMaxHP(chr.getInt("maxHP"));
+        c.setHP(chr.getInt("HP"));
+        c.setLevel(chr.getInt("level"));
+        c.setXP(chr.getInt("XP"));
         c.money = chr.getInt("money");
         c.stats = CharacterStats.fromJson(chr.getJSONObject("stats"));
         String char_class = chr.getString("charClass");
@@ -461,25 +373,5 @@ public class Character implements Combatant {
             c.offHandWeapon = WeaponFactory.makeWeapon(chr.getString("offHandWeapon"));
         }
         return c;
-    }
-
-    @Override
-    public int getPosition() {
-        return position;
-    }
-
-    @Override
-    public void setPosition(int pos) {
-        position = pos;
-    }
-
-    @Override
-    public void setDistanceToCurrentTarget(int distance) {
-        distanceToCurrentTarget = distance;
-    }
-
-    @Override
-    public int getDistanceToCurrentTarget() {
-        return distanceToCurrentTarget;
     }
 }
