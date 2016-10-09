@@ -132,7 +132,11 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         }
         else // we have run trough all the combatants in this round, check win condition
         {
-            checkWinCondition();
+            if(!checkWinCondition()) {  // if no one won its the end of the round
+                state = END_ROUND;
+                PresentationManager.instance().publishEvent(new RoundDoneEvent());
+                emitMessage(CombatLogMessage.create().roundDone());
+            }
         }
         // update map view for good measure
         getMvpView().postUpdateMapView(combatants);
@@ -157,29 +161,29 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         }
     }
 
-    private void checkWinCondition()
+    private boolean checkWinCondition()
     {
         if(countLivingFactions() == 0)
         {
             state = END_COMBAT;
+            waitingOnChar = null;
             emitMessage(CombatLogMessage.create().violent("All factions lost!").effect(CombatLogMessage.ROTATE));
             Log.e(TAG, "All factions lost!");
             getMvpView().postHideNextRoundButton();
             getMvpView().endOfCombat();
+            return true;
         }
         else if(countLivingFactions() < 2)
         {
             state = END_COMBAT;
+            waitingOnChar = null;
             emitMessage(CombatLogMessage.create().bold("Faction " + winningFaction.getName() + " won the battle!").effect(CombatLogMessage.ROTATE));
             Log.e(TAG, "Faction " + winningFaction.getName() + " won the battle!");
             getMvpView().postHideNextRoundButton();
             getMvpView().endOfCombat();
+            return true;
         }
-        else {
-            state = END_ROUND;
-            PresentationManager.instance().publishEvent(new RoundDoneEvent());
-            emitMessage(CombatLogMessage.create().roundDone());
-        }
+        return false;
     }
 
     private void runStartRound() {
@@ -331,6 +335,8 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         int ally_reward = xp_reward / AppState.currentParty.getCombatants().size();
         for(Combatant c : AppState.currentParty.getCombatants())
         {
+            if(c.isDead())
+                continue;
             if(c == event.killer)
             {
                 c.awardXp(kill_reward);
@@ -390,6 +396,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             {
                 awardXPForKill(cde_event);
             }
+            checkWinCondition();
         }
     }
 }

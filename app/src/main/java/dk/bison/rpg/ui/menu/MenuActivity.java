@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dk.bison.rpg.App;
 import dk.bison.rpg.BaseActivity;
 import dk.bison.rpg.R;
 import dk.bison.rpg.mvp.MvpPendingEvent;
@@ -22,6 +23,11 @@ public class MenuActivity extends BaseActivity implements MenuMvpView {
     Button createCharBtn;
     @BindView(R.id.menu_random_enc_btn)
     Button randomEncBtn;
+    @BindView(R.id.menu_start_server_btn)
+    Button startServerBtn;
+    @BindView(R.id.menu_connect_server_btn)
+    Button connectServerBtn;
+
     MenuPresenter presenter;
 
     @Override
@@ -48,6 +54,20 @@ public class MenuActivity extends BaseActivity implements MenuMvpView {
             public void onClick(View view) {
                 Intent i = new Intent(MenuActivity.this, PartyActivity.class);
                 startActivity(i);
+            }
+        });
+
+        startServerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                App.instance().startDiscoveryThread();
+            }
+        });
+
+        connectServerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                App.instance().findServer();
             }
         });
     }

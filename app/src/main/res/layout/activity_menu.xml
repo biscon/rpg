@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        style="@style/ButtonStyleTransStroke"
+        style="@style/ButtonStyleAccent"
         android:text="Create New Character"/>
 
     <Button
@@ -35,4 +35,20 @@
         android:layout_marginTop="16dp"
         style="@style/ButtonStyleAccent"
         android:text="Random Encounter"/>
+
+    <Button
+        android:id="@+id/menu_start_server_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        style="@style/ButtonStyleAccent"
+        android:text="Start Server"/>
+
+    <Button
+        android:id="@+id/menu_connect_server_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        style="@style/ButtonStyleAccent"
+        android:text="Connect to Server"/>
 </LinearLayout>

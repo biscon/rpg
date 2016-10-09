@@ -9,6 +9,8 @@ import dk.bison.rpg.core.combat.CombatCategoryManager;
 import dk.bison.rpg.core.faction.FactionFactory;
 import dk.bison.rpg.core.monster.MonsterFactory;
 import dk.bison.rpg.core.weapon.WeaponFactory;
+import dk.bison.rpg.net.server.DiscoveryThread;
+import dk.bison.rpg.net.UDPClient;
 
 /**
  * Created by joso on 12/05/16.
@@ -16,6 +18,9 @@ import dk.bison.rpg.core.weapon.WeaponFactory;
 public class App extends Application {
     static App appInstance;
     public boolean DEBUG;
+    Thread discoveryThread;
+    Thread udpThread;
+    UDPClient udpClient;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -34,11 +39,24 @@ public class App extends Application {
         MonsterFactory.init();
         CharacterManager.instance().load(this);
         CombatCategoryManager.instance().load(this);
+        udpClient = new UDPClient();
     }
 
     public static App instance()
     {
         return appInstance;
+    }
+
+    public void startDiscoveryThread()
+    {
+        discoveryThread = new Thread(DiscoveryThread.getInstance());
+        discoveryThread.start();
+    }
+
+    public void findServer()
+    {
+        udpThread = new Thread(udpClient);
+        udpThread.start();
     }
 
 }
