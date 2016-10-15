@@ -35,7 +35,7 @@ public class WeakestPreyAI extends BaseAI {
         if(dist > CombatPosition.MELEE_DISTANCE)
         {
             Log.e(TAG, "Target is out of melee range, moving in for the kill");
-            performMoveTowardsOpponent(opponent);
+            performMoveTowardsOpponent(encounter, opponent);
         }
         /*
         else

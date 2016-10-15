@@ -2,17 +2,12 @@ package dk.bison.rpg.ui.encounter;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,6 +22,7 @@ import dk.bison.rpg.core.character.CharacterManager;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogView;
+import dk.bison.rpg.ui.encounter.combat_map.CombatMapView;
 
 public class EncounterActivity extends BaseActivity implements EncounterMvpView {
     public static final String TAG = EncounterActivity.class.getSimpleName();
@@ -46,7 +42,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
     @BindView(R.id.map_tab)
     LinearLayout mapTabLl;
     @BindView(R.id.map_view)
-    EncounterMapView mapView;
+    CombatMapView mapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,9 +186,6 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         animator.start();
     }
 
-    private void updateMapView(List<Combatant> combatants) {
-        mapView.drawMap(combatants);
-    }
 
     @Override
     protected void onResume() {
@@ -237,33 +230,9 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
     }
 
     @Override
-    public void postUpdateMapView(final List<Combatant> combatants) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                updateMapView(combatants);
-            }
-        });
-    }
-
-    @Override
     public void gotoTab(int pos) {
         TabLayout.Tab tab = tabsTl.getTabAt(pos);
         tab.select();
-    }
-
-    @Override
-    public void showMoveInfoOnMap(Combatant c, int distance) {
-        //Log.e(TAG, "Showing gotoMove info on map");
-        if(c == null)
-            mapView.clearMove();
-        else
-            mapView.displayMove(c, distance);
-    }
-
-    @Override
-    public void clearMoveInfoOnMap() {
-        mapView.clearMove();
     }
 
     @Override

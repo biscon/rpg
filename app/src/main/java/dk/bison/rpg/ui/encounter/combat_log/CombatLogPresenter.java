@@ -69,18 +69,24 @@ public class CombatLogPresenter extends BasePresenter<CombatLogMvpView> implemen
         }
         if(event instanceof PlayerInputRequestEvent)
         {
+
             if(isViewAttached())
                 getMvpView().hide();
+
         }
         if(event instanceof PlayerInputResponseEvent)
         {
+
             if(isViewAttached())
                 getMvpView().show();
+
         }
         if(event instanceof CombatLogShowPeriodEvent)
         {
+
             if(isViewAttached())
                 getMvpView().showPeriod(((CombatLogShowPeriodEvent) event).wait);
+
         }
     }
 

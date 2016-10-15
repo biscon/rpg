@@ -11,9 +11,6 @@ import dk.bison.rpg.mvp.MvpView;
 public interface EncounterMvpView extends MvpView {
     void postShowNextRoundButton();
     void postHideNextRoundButton();
-    void postUpdateMapView(List<Combatant> combatants);
     void gotoTab(int pos);
-    void showMoveInfoOnMap(Combatant c, int distance);
-    void clearMoveInfoOnMap();
     void endOfCombat();
 }

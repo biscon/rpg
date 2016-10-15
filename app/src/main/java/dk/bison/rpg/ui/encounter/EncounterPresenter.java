@@ -17,7 +17,6 @@ import dk.bison.rpg.core.Dice;
 import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.ai.AI;
 import dk.bison.rpg.core.ai.PlayerControlAI;
-import dk.bison.rpg.core.character.CharacterManager;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.Encounter;
 import dk.bison.rpg.core.combat.InitiativeComparator;
@@ -30,8 +29,8 @@ import dk.bison.rpg.mvp.MvpEvent;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogIdleEvent;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
+import dk.bison.rpg.ui.encounter.combat_map.MapUpdateEvent;
 import dk.bison.rpg.ui.encounter.player_control.PlayerAttackStartedEvent;
-import dk.bison.rpg.ui.encounter.player_control.PlayerControlPresenter;
 import dk.bison.rpg.ui.encounter.player_control.PlayerInputRequestEvent;
 import dk.bison.rpg.ui.encounter.player_control.PlayerInputResponseEvent;
 import dk.bison.rpg.ui.encounter.player_control.PlayerMoveInfoEvent;
@@ -139,7 +138,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             }
         }
         // update map view for good measure
-        getMvpView().postUpdateMapView(combatants);
+        PresentationManager.instance().publishEvent(new MapUpdateEvent(combatants));
     }
 
     private void processCombatant()
@@ -189,7 +188,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
     private void runStartRound() {
         Log.e(TAG, "Running state START_ROUND");
         getMvpView().postHideNextRoundButton();
-        getMvpView().postUpdateMapView(combatants);
+        PresentationManager.instance().publishEvent(new MapUpdateEvent(combatants));
         if(round > 1)
             emitMessage(CombatLogMessage.create().divider());
         Log.e(TAG, "Executing round " + round);
@@ -208,7 +207,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         curCombatant = combatants.iterator();
         state = ROUND;
         if(isViewAttached())
-            getMvpView().postUpdateMapView(combatants);
+            PresentationManager.instance().publishEvent(new MapUpdateEvent(combatants));
     }
 
     private void runIdle() {
@@ -357,17 +356,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
             //if(isViewAttached())
 
         }
-        if(event instanceof MapUpdateEvent)
-        {
-            if(isViewAttached())
-                getMvpView().postUpdateMapView(combatants);
-        }
-        if(event instanceof PlayerMoveInfoEvent)
-        {
-            PlayerMoveInfoEvent pmi_event = (PlayerMoveInfoEvent) event;
-            if(isViewAttached())
-                getMvpView().showMoveInfoOnMap(pmi_event.combatant, pmi_event.value);
-        }
+
         if(event instanceof CombatLogIdleEvent)
         {
             if(isViewAttached())
@@ -376,7 +365,7 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         if(event instanceof PlayerInputResponseEvent)
         {
             if(isViewAttached())
-                getMvpView().clearMoveInfoOnMap();
+                PresentationManager.instance().publishEvent(new PlayerMoveInfoEvent(null, 0));
             waitingOnChar = null;
         }
         if(event instanceof PlayerMoveStartedEvent)

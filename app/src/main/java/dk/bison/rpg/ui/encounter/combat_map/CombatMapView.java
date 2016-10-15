@@ -1,4 +1,4 @@
-package dk.bison.rpg.ui.encounter;
+package dk.bison.rpg.ui.encounter.combat_map;
 
 import android.animation.ArgbEvaluator;
 import android.content.Context;
@@ -13,14 +13,16 @@ import android.view.WindowManager;
 import java.util.List;
 
 import dk.bison.rpg.core.combat.Combatant;
+import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.util.Util;
 
 /**
  * Created by bison on 25-09-2016.
  */
 
-public class EncounterMapView extends View {
-    public static final String TAG = EncounterMapView.class.getSimpleName();
+public class CombatMapView extends View implements CombatMapMvpView {
+    public static final String TAG = CombatMapView.class.getSimpleName();
+    CombatMapPresenter presenter;
     Paint linePaint;
     Paint labelPaint;
     Paint labelPaint2;
@@ -39,17 +41,18 @@ public class EncounterMapView extends View {
     Combatant movingCombatant;
     int moveDistance;
 
-    public EncounterMapView(Context context) {
+    public CombatMapView(Context context) {
         super(context);
         init(context);
     }
 
-    public EncounterMapView(Context context, AttributeSet attrs) {
+    public CombatMapView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
     private void init(Context context) {
+        presenter = PresentationManager.instance().presenter(context, CombatMapPresenter.class);
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         metrics = new DisplayMetrics();
@@ -76,12 +79,14 @@ public class EncounterMapView extends View {
         movePaint.setColor(0xAAEF6C00);
     }
 
+    @Override
     public void drawMap(List<Combatant> combatants)
     {
         this.combatants = combatants;
         invalidate();
     }
 
+    @Override
     public void displayMove(Combatant c, int distance)
     {
         displayMove = true;
@@ -90,6 +95,7 @@ public class EncounterMapView extends View {
         postInvalidate();
     }
 
+    @Override
     public void clearMove()
     {
         displayMove = false;
@@ -163,5 +169,17 @@ public class EncounterMapView extends View {
             canvas.drawLine(start_x, middle, end_x, middle, movePaint);
             canvas.drawCircle(end_x, middle, 8 * metrics.density, movePaint);
         }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        presenter.attachView(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        presenter.detachView();
+        super.onDetachedFromWindow();
     }
 }

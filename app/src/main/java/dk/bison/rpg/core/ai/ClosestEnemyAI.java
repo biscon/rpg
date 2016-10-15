@@ -44,7 +44,7 @@ public class ClosestEnemyAI extends BaseAI {
             else {
                 Log.e(TAG, "Target is out of melee range, moving in for the kill");
                 moved = true;
-                performMoveTowardsOpponent(opponent);
+                performMoveTowardsOpponent(encounter, opponent);
             }
         }
         else {

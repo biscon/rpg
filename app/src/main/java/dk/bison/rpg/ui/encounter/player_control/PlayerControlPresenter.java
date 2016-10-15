@@ -13,9 +13,8 @@ import dk.bison.rpg.core.combat.Encounter;
 import dk.bison.rpg.mvp.BasePresenter;
 import dk.bison.rpg.mvp.MvpEvent;
 import dk.bison.rpg.mvp.PresentationManager;
-import dk.bison.rpg.ui.encounter.MapUpdateEvent;
+import dk.bison.rpg.ui.encounter.combat_map.MapUpdateEvent;
 import dk.bison.rpg.ui.encounter.OnBackButtonEvent;
-import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogShowPeriodEvent;
 import dk.bison.rpg.ui.encounter.enemy_status.EnemySelectNoneEvent;
 import dk.bison.rpg.ui.encounter.enemy_status.EnemySelectedEvent;
@@ -128,9 +127,9 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
         hasMoved = true;
         if(isViewAttached())
             getMvpView().setMoveEnabled(false);
-        combatant.getAI().performMove(distance);
+        combatant.getAI().performMove(encounter, distance);
         PresentationManager.instance().publishEvent(new PlayerMoveInfoEvent(null, 0));
-        PresentationManager.instance().publishEvent(new MapUpdateEvent());
+        PresentationManager.instance().publishEvent(new MapUpdateEvent(encounter.getCombatants()));
         gotoAction();
     }
 

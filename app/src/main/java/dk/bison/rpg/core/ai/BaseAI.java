@@ -22,7 +22,7 @@ import dk.bison.rpg.core.combat.HitInfo;
 import dk.bison.rpg.core.faction.Faction;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.CombatantDeathEvent;
-import dk.bison.rpg.ui.encounter.MapUpdateEvent;
+import dk.bison.rpg.ui.encounter.combat_map.MapUpdateEvent;
 import dk.bison.rpg.ui.encounter.StatusUpdateEvent;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
 
@@ -134,7 +134,7 @@ public abstract class BaseAI extends AI {
     }
 
     @Override
-    public void performMove(int distance)
+    public void performMove(Encounter encounter, int distance)
     {
         int speed = getSpeed();
         if(distance > speed)
@@ -147,10 +147,10 @@ public abstract class BaseAI extends AI {
             dist_str = "backwards";
         combatant.setPosition(combatant.getPosition() + distance);
         emitMessage(CombatLogMessage.create().bright(combatant.getName()).dark(" moved " + Math.abs(distance) + " meters " + dist_str + "."));
-        PresentationManager.instance().publishEvent(new MapUpdateEvent());
+        PresentationManager.instance().publishEvent(new MapUpdateEvent(encounter.getCombatants()));
     }
 
-    protected void performMoveTowardsOpponent(Combatant opponent)
+    protected void performMoveTowardsOpponent(Encounter encounter, Combatant opponent)
     {
         int speed = getSpeed();
         int diff = Math.abs(opponent.getPosition() - combatant.getPosition());
@@ -182,7 +182,7 @@ public abstract class BaseAI extends AI {
         if(diff < speed)
             meters = diff;
         emitMessage(CombatLogMessage.create().bright(combatant.getName()).dark(" moved " + meters + " meters towards ").normal(opponent.getName()).dark(String.format(Locale.US, " (%dm)", dist)));
-        PresentationManager.instance().publishEvent(new MapUpdateEvent());
+        PresentationManager.instance().publishEvent(new MapUpdateEvent(encounter.getCombatants()));
     }
 
     protected void emitCombatLogMessage(Combatant c, Combatant opponent, Attack attack, HitInfo hit, int dmg)

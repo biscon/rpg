@@ -19,7 +19,7 @@ public abstract class AI {
     }
 
     public abstract void performAction(Encounter encounter);
-    public abstract void performMove(int distance);
+    public abstract void performMove(Encounter encounter, int distance);
     public abstract void attack(Combatant c, Combatant opponent, Attack attack);
 
     public abstract void reset();

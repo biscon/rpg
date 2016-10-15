@@ -58,7 +58,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <dk.bison.rpg.ui.encounter.EncounterMapView
+                <dk.bison.rpg.ui.encounter.combat_map.CombatMapView
                     android:id="@+id/map_view"
                     android:layout_width="match_parent"
                     android:layout_height="256dp" />
