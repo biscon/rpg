@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.encounter.EncounterActivity">
 
+    <FrameLayout
+        android:id="@+id/top_holder_fl"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <dk.bison.rpg.ui.encounter.combat_view.CombatSurfaceView
+            android:id="@+id/combat_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <LinearLayout
         android:orientation="vertical"
@@ -24,94 +34,40 @@
         <FrameLayout
             android:id="@+id/tab_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="200dp">
             <!-- status tab -->
             <LinearLayout
                 android:id="@+id/status_tab"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <!-- Enemies list -->
-                <dk.bison.rpg.ui.encounter.enemy_status.EnemyStatusView
-                    android:orientation="vertical"
+                <dk.bison.rpg.ui.encounter.player_control.PlayerControlView
+                    android:id="@+id/player_control_pcv"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:background="@color/grey_850"
                     android:layout_width="match_parent"
-                    android:layout_height="128dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
-
-                <!-- Party list -->
-                <dk.bison.rpg.ui.encounter.party_status.PartyStatusView
-                    tools:context=".ui.encounter.party_status.PartyStatusView"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="128dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp" />
+                    android:layout_height="match_parent">
+                    <!-- choose action view -->
+                    <include layout="@layout/activity_encounter_action_view" />
+                    <!-- Attack view -->
+                    <include layout="@layout/activity_encounter_attack_view" />
+                    <!-- Move view -->
+                    <include layout="@layout/activity_encounter_move_view" />
+                </dk.bison.rpg.ui.encounter.player_control.PlayerControlView>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/map_tab"
                 android:visibility="gone"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <dk.bison.rpg.ui.encounter.combat_map.CombatMapView
-                    android:id="@+id/map_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="256dp" />
+                android:layout_height="match_parent">
+
             </LinearLayout>
+
         </FrameLayout>
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/top_holder_fl"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <dk.bison.rpg.ui.encounter.player_control.PlayerControlView
-            android:id="@+id/player_control_pcv"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:background="@color/grey_850"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <!-- choose action view -->
-            <include layout="@layout/activity_encounter_action_view" />
-            <!-- Attack view -->
-            <include layout="@layout/activity_encounter_attack_view" />
-            <!-- Move view -->
-            <include layout="@layout/activity_encounter_move_view" />
-        </dk.bison.rpg.ui.encounter.player_control.PlayerControlView>
-        <RelativeLayout
-            android:id="@+id/log_holder_rl"
-            android:visibility="visible"
-            tools:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/grey_850">
-            <!-- Combat log -->
-            <dk.bison.rpg.ui.encounter.combat_log.CombatLogView
-                android:id="@+id/log_clv"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/grey_850" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/combat_log_shade" />
-            <Button
-                android:id="@+id/next_round_btn"
-                style="@style/ButtonStyleAccentSquare"
-                android:visibility="visible"
-                android:text="Next Round"
-                android:layout_alignParentTop="true"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </RelativeLayout>
-    </FrameLayout>
+
 </LinearLayout>

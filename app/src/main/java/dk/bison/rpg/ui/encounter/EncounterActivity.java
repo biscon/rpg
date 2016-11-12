@@ -23,6 +23,7 @@ import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogView;
 import dk.bison.rpg.ui.encounter.combat_map.CombatMapView;
+import dk.bison.rpg.ui.encounter.combat_view.CombatSurfaceView;
 
 public class EncounterActivity extends BaseActivity implements EncounterMvpView {
     public static final String TAG = EncounterActivity.class.getSimpleName();
@@ -31,18 +32,24 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
     public static final int MAP_TAB = 1;
 
     EncounterPresenter presenter;
+    /*
     @BindView(R.id.next_round_btn)
     Button nextRoundBtn;
     @BindView(R.id.log_clv)
     CombatLogView logClv;
+    */
     @BindView(R.id.tabs_tl)
     TabLayout tabsTl;
     @BindView(R.id.status_tab)
     LinearLayout statusTabLl;
     @BindView(R.id.map_tab)
     LinearLayout mapTabLl;
+    /*
     @BindView(R.id.map_view)
     CombatMapView mapView;
+    */
+    @BindView(R.id.combat_view)
+    CombatSurfaceView combatView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +61,10 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         presenter = PresentationManager.instance().presenter(this, EncounterPresenter.class);
         presenter.setup();
 
+        /*
         nextRoundBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                CombatLogMessage msg = new CombatLogMessage();
-                msg.normal("normal").violent("violent").bold("bold").normal("normal").bright("bright");
-                PresentationManager.instance().publishEvent(msg);
-                */
                 presenter.startNextRound();
             }
         });
@@ -71,6 +74,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
                 nextRoundBtn.setVisibility(View.GONE);
             }
         });
+        */
 
         tabsTl.addTab(tabsTl.newTab().setText("Status"));
         tabsTl.addTab(tabsTl.newTab().setText("Map"));
@@ -106,6 +110,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         presenter.startCombat();
     }
 
+    /*
     private void showNextRoundButton()
     {
         if(nextRoundBtn.getVisibility() == View.VISIBLE)
@@ -185,16 +190,18 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         animator.setDuration(400);
         animator.start();
     }
-
+*/
 
     @Override
     protected void onResume() {
         super.onResume();
+        combatView.resume();
         presenter.attachView(this);
     }
 
     @Override
     protected void onPause() {
+        combatView.pause();
         presenter.detachView();
         super.onPause();
     }
@@ -214,7 +221,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                showNextRoundButton();
+                //showNextRoundButton();
             }
         });
     }
@@ -224,7 +231,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                hideNextRoundButton();
+                //hideNextRoundButton();
             }
         });
     }
