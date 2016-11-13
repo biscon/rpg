@@ -107,7 +107,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
             }
         });
 
-        presenter.startCombat();
+        //presenter.startCombat();
     }
 
     /*

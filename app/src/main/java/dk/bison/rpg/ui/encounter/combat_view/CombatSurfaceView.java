@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -35,6 +36,7 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
     // A Canvas and a Paint object
     Canvas canvas;
     Paint paint;
+    DisplayMetrics metrics;
 
     // This variable tracks the game frame rate
     long fps;
@@ -82,9 +84,11 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
 
     private void init(Context context)
     {
+        metrics = context.getResources().getDisplayMetrics();
         presenter = PresentationManager.instance().presenter(context, CombatSurfacePresenter.class);
         // Initialize ourHolder and paint objects
         surfaceHolder = getHolder();
+        //surfaceHolder.setFixedSize(512,512);
         paint = new Paint();
         try {
             InputStream ims = context.getAssets().open("desert.png");
@@ -95,9 +99,12 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
         }
         Log.e(TAG, "Background bitmap is " + bgBitmap.getWidth() + "x" + bgBitmap.getHeight());
         bgRect.set(0, 0, bgBitmap.getWidth(), bgBitmap.getHeight());
+        camMaxX = bgBitmap.getWidth();
+        camMaxY = bgBitmap.getHeight();
         matrix = new Matrix();
 
         strip = AnimationStrip.loadStrip(context, "walk_anim_32x64.png", 32, 64);
+        //strip.flip();
 
         //centerCamAt(512,256);
         //currentEffect = new ZoomCameraEffect(camX, camY, camW, camH, camMaxX, camMaxY, 115, 370, largeCamSize, smallCamSize);
@@ -120,6 +127,13 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
             if(diff == 0)
             {
                 Log.e(TAG, "Fuck diff is zero!!!!");
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                continue;
+                //diff = 1000000000/60;
             }
             lastTime = now;
             dT = (double) diff / 1000000000;
@@ -175,7 +189,7 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
         if (surfaceHolder.getSurface().isValid()) {
             // Lock the canvas ready to draw
             canvas = surfaceHolder.lockCanvas();
-            canvas.drawColor(Color.argb(255, 0, 0, 0));
+            //canvas.drawColor(Color.argb(255, 0, 0, 0));
 
             viewportRect.set(0, 0, canvas.getWidth(), canvas.getHeight());
             camRect.set((int) camX, (int) camY, (int) (camX + camW), (int) (camY + camH));
@@ -205,10 +219,10 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
             //canvas.drawColor(Color.argb(255, 26, 128, 182));
 
             // Choose the brush color for drawing
-            paint.setColor(Color.argb(255,  249, 129, 0));
+            paint.setColor(Color.argb(255,  255, 255, 255));
 
             // Make the text a bit bigger
-            paint.setTextSize(45);
+            paint.setTextSize(metrics.density * 10);
 
             // Display the current fps on the screen
             canvas.drawText(String.format(Locale.US, "FPS: %s %dx%d dT=%.2f", fps, canvas.getWidth(), canvas.getHeight(), dT), 20, 40, paint);

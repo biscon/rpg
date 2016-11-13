@@ -3,7 +3,9 @@ package dk.bison.rpg.ui.encounter.combat_view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.io.IOException;
@@ -67,5 +69,15 @@ public class AnimationStrip {
             setCurrentFrame(nf);
             timer = 0;
         }
+    }
+
+    void flip()
+    {
+        Matrix m = new Matrix();
+        m.preScale(-1, 1);
+
+        Bitmap dst = Bitmap.createBitmap(sheet, 0, 0, sheet.getWidth(), sheet.getHeight(), m, false);
+        dst.setDensity(DisplayMetrics.DENSITY_DEFAULT);
+        sheet = dst;
     }
 }

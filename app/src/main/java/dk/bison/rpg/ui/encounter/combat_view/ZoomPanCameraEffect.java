@@ -1,13 +1,8 @@
 package dk.bison.rpg.ui.encounter.combat_view;
 
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.CycleInterpolator;
-import android.view.animation.LinearInterpolator;
 
 /**
  * Created by bison on 06-11-2016.
