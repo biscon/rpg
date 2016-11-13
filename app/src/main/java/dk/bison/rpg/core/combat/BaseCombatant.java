@@ -23,6 +23,7 @@ public abstract class BaseCombatant implements Combatant {
 
     int initiative;
     int position = CombatPosition.CENTER;
+    int lane = 0;
     int distanceToCurrentTarget;
     Grammar grammar;
     private char gender = Gender.MALE;
@@ -196,5 +197,15 @@ public abstract class BaseCombatant implements Combatant {
     @Override
     public int getDistanceToCurrentTarget() {
         return distanceToCurrentTarget;
+    }
+
+    @Override
+    public int getLane() {
+        return lane;
+    }
+
+    @Override
+    public void setLane(int lane) {
+        this.lane = lane;
     }
 }

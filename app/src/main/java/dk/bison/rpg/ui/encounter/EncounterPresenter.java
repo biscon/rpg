@@ -5,10 +5,12 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,6 +32,8 @@ import dk.bison.rpg.mvp.PresentationManager;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogIdleEvent;
 import dk.bison.rpg.ui.encounter.combat_log.CombatLogMessage;
 import dk.bison.rpg.ui.encounter.combat_map.MapUpdateEvent;
+import dk.bison.rpg.ui.encounter.combat_view.AnimatedCombatant;
+import dk.bison.rpg.ui.encounter.combat_view.AnimationStrip;
 import dk.bison.rpg.ui.encounter.player_control.PlayerAttackStartedEvent;
 import dk.bison.rpg.ui.encounter.player_control.PlayerInputRequestEvent;
 import dk.bison.rpg.ui.encounter.player_control.PlayerInputResponseEvent;
@@ -226,32 +230,50 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         round++;
     }
 
-    public void setup()
+    public void setup(Context context)
     {
         combatants = new LinkedList<>();
         Party party = new Party();
         Monster m1 = MonsterFactory.makeMonster("Cuddles", "Wolf", 2);
-        m1.setPosition(5);
+        m1.setPosition(15);
+        m1.setLane(0);
         Monster m2 = MonsterFactory.makeMonster(null, "Swearwolf", 2);
-        m2.setPosition(6);
+        m2.setPosition(12);
+        m2.setLane(1);
         Monster m3 = MonsterFactory.makeMonster("Scratchy", "Dire Wolf", 2);
-        m3.setPosition(7);
+        m3.setPosition(14);
+        m3.setLane(2);
         Monster m4 = MonsterFactory.makeMonster("Slikkefanden", "Wolf", 2);
         m4.setGender(Gender.MALE);
-        m4.setPosition(12);
+        m4.setPosition(16);
+        m4.setLane(3);
         party.add(m1);
         party.add(m2);
         party.add(m3);
         party.add(m4);
         AppState.enemyParty = party;
-        int pos = -5;
+        int pos = -12;
+        int lane = 0;
         for(Combatant c : AppState.currentParty) {
             c.setPosition(pos);
+            c.setLane(lane);
+            lane++;
             pos -= 2;
         }
         addParty(AppState.currentParty);
         addParty(AppState.enemyParty);
         playerFaction = AppState.currentParty.getCombatants().get(0).getFaction();
+        Map<Combatant, AnimatedCombatant> animated_combatants = new HashMap<>();
+        for(Combatant c : combatants)
+        {
+            AnimatedCombatant ac = new AnimatedCombatant(c);
+            AnimationStrip strip = AnimationStrip.loadStrip(context, "idle_anim_32x64.png", 32, 64, 16, 61);
+            ac.walkStrip = strip;
+            animated_combatants.put(c, ac);
+            if(!c.getFaction().sameAs(playerFaction))
+                ac.walkStrip.flip();
+        }
+        PresentationManager.instance().publishEvent(new EncounterSetupEvent(combatants, animated_combatants, playerFaction));
     }
 
     private void addParty(Party party)

@@ -25,8 +25,9 @@ public class AnimationStrip {
     public Rect frameRect = new Rect();
     float frameDelay = 0.25f;
     float timer;
+    public int originX, originY;
 
-    public static AnimationStrip loadStrip(Context context, String filename, int fw, int fh)
+    public static AnimationStrip loadStrip(Context context, String filename, int fw, int fh, int ox, int oy)
     {
         AnimationStrip strip = new AnimationStrip();
         try {
@@ -34,6 +35,8 @@ public class AnimationStrip {
             strip.sheet = BitmapFactory.decodeStream(ims);
             strip.frameWidth = fw;
             strip.frameHeight = fh;
+            strip.originX = ox;
+            strip.originY = oy;
             strip.noFrames = strip.sheet.getWidth() / fw;
             strip.setCurrentFrame(0);
             ims.close();
@@ -71,7 +74,7 @@ public class AnimationStrip {
         }
     }
 
-    void flip()
+    public void flip()
     {
         Matrix m = new Matrix();
         m.preScale(-1, 1);

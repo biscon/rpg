@@ -37,6 +37,8 @@ public interface Combatant {
     String getNameWithTemplateName();
     int getPosition();
     void setPosition(int pos);
+    int getLane();
+    void setLane(int lane);
     void setDistanceToCurrentTarget(int distance);
     int getDistanceToCurrentTarget();
     List<Attack> getRangedAttacks(int distance);

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import dk.bison.rpg.mvp.PresentationManager;
+import dk.bison.rpg.util.Util;
 
 /**
  * Created by bison on 30-10-2016.
@@ -63,13 +64,17 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
     float camMaxY = 512;
     float camPanX = 0;
 
-    float smallCamSize = 64;
+    float laneStartY = 360;
+    float laneEndY = 512;
+
+    boolean drawLanes = true;
+
+    float smallCamSize = 128;
     float mediumCamSize = 256;
     float largeCamSize = 512;
     Matrix matrix;
-    AnimationStrip strip;
-    CameraEffect currentEffect;
 
+    CameraEffect currentEffect;
 
 
     public CombatSurfaceView(Context context) {
@@ -103,12 +108,13 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
         camMaxY = bgBitmap.getHeight();
         matrix = new Matrix();
 
-        strip = AnimationStrip.loadStrip(context, "walk_anim_32x64.png", 32, 64);
+        //strip = AnimationStrip.loadStrip(context, "walk_anim_32x64.png", 32, 64, 16, 61);
         //strip.flip();
 
         //centerCamAt(512,256);
         //currentEffect = new ZoomCameraEffect(camX, camY, camW, camH, camMaxX, camMaxY, 115, 370, largeCamSize, smallCamSize);
-        currentEffect = new ZoomPanCameraEffect(camX, camY, camW, camH, camMaxX, camMaxY, 115, 370, 917, 333, smallCamSize, largeCamSize);
+        //currentEffect = new ZoomPanCameraEffect(camX, camY, camW, camH, camMaxX, camMaxY, 115, 370, 917, 333, largeCamSize, largeCamSize);
+        currentEffect = new ZoomPanCameraEffect(camX, camY, camW, camH, camMaxX, camMaxY, smallCamSize/2, smallCamSize/2, camMaxX/2, camMaxY/2, smallCamSize, largeCamSize, false);
     }
 
 
@@ -170,7 +176,10 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
         //Log.e(TAG, "camW = " + camW + "camH = " + camH + " dT=" + dT);
 
         //camX = camPanX;
-        strip.update(dT);
+        for(AnimatedCombatant ac : presenter.animatedCombatants.values())
+        {
+            ac.update(dT);
+        }
         if(currentEffect != null) {
             currentEffect.update(dT);
             camX = currentEffect.camX;
@@ -179,8 +188,44 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
             camH = currentEffect.camH;
             //Log.e(TAG, "camW = " + camW + "camH = " + camH + " dT=" + dT);
         }
-        //centerCamAt(camPanX,256);
+        else
+            centerCamAt(camMaxX/2, camMaxY/2);
     }
+
+    public void drawLanes(Canvas canvas)
+    {
+        fRect.set(0, laneStartY, camMaxX, laneEndY);
+        matrix.mapRect(fRect);
+        paint.setColor(0x40000000);
+        paint.setStrokeWidth(metrics.density);
+        float lane_height = (fRect.bottom - fRect.top) / presenter.noLanes;
+        for(int i = 0; i < presenter.noLanes; i++) {
+            float y = i * lane_height;
+            canvas.drawLine(fRect.left, fRect.top + y, fRect.right, fRect.top + y, paint);
+        }
+    }
+
+    public void drawAnimatedStrip(Canvas canvas, AnimationStrip s, int chr_x, int chr_y)
+    {
+        chr_x -= s.originX;
+        chr_y -= s.originY;
+        fRect.set(chr_x, chr_y, chr_x + s.frameWidth, chr_y + s.frameHeight);
+        matrix.mapRect(fRect);
+        canvas.drawBitmap(s.sheet, s.frameRect, fRect, null);
+    }
+
+    void drawCombatants(Canvas canvas)
+    {
+        float lane_height = (laneEndY - laneStartY) / presenter.noLanes;
+        for(AnimatedCombatant ac : presenter.animatedCombatants.values())
+        {
+            int x = (int) Util.reMapDouble(-50, 50, 0, (double) camMaxX, (double) ac.combatant.getPosition());
+            int y = (int) (laneStartY + (ac.combatant.getLane() * lane_height) + (lane_height/2));
+            drawAnimatedStrip(canvas, ac.walkStrip, x, y);
+        }
+
+    }
+
 
     // Draw the newly updated scene
     public void draw() {
@@ -198,22 +243,19 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
             matrix.reset();
             float x_scale = (float) canvas.getWidth() / camW;
             float y_scale = (float) canvas.getHeight() / camH;
-
             matrix.setTranslate(-camX, -camY);
             matrix.postScale(x_scale, y_scale);
 
-            int chr_x = 100;
-            int chr_y = 350;
-            fRect.set(chr_x, chr_y, chr_x + strip.frameWidth, chr_y + strip.frameHeight);
-            matrix.mapRect(fRect);
-            canvas.drawBitmap(strip.sheet, strip.frameRect, fRect, null);
+            if(drawLanes)
+                drawLanes(canvas);
 
 
-            chr_x = 900;
-            chr_y = 300;
-            fRect.set(chr_x, chr_y, chr_x + strip.frameWidth, chr_y + strip.frameHeight);
-            matrix.mapRect(fRect);
-            canvas.drawBitmap(strip.sheet, strip.frameRect, fRect, null);
+            /*
+            drawAnimatedStrip(canvas, strip, 100, 350);
+            drawAnimatedStrip(canvas, strip, 900, 300);
+            */
+            drawCombatants(canvas);
+
 
             // Draw the background color
             //canvas.drawColor(Color.argb(255, 26, 128, 182));

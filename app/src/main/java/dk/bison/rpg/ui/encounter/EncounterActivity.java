@@ -59,7 +59,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
 
         // obtain instance to the presenter
         presenter = PresentationManager.instance().presenter(this, EncounterPresenter.class);
-        presenter.setup();
+        presenter.setup(this);
 
         /*
         nextRoundBtn.setOnClickListener(new View.OnClickListener() {

@@ -1,8 +1,13 @@
 package dk.bison.rpg.ui.encounter.combat_view;
 
+import android.animation.TimeInterpolator;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.CycleInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 
 /**
  * Created by bison on 06-11-2016.
@@ -17,11 +22,11 @@ public class ZoomPanCameraEffect extends CameraEffect {
     float targetY;
     float startX;
     float startY;
-    double duration = 15;
+    double duration = 10;
     double timer;
-    CycleInterpolator zoomInterpolator;
+    TimeInterpolator zoomInterpolator;
 
-    public ZoomPanCameraEffect(float camX, float camY, float camW, float camH, float camMaxX, float camMaxY, float sx, float sy, float x, float y, float start_cam, float end_cam) {
+    public ZoomPanCameraEffect(float camX, float camY, float camW, float camH, float camMaxX, float camMaxY, float sx, float sy, float x, float y, float start_cam, float end_cam, boolean cycle) {
         super(camX, camY, camW, camH, camMaxX, camMaxY);
         targetX = x;
         targetY = y;
@@ -30,10 +35,13 @@ public class ZoomPanCameraEffect extends CameraEffect {
         startCamSize = start_cam;
         endCamSize = end_cam;
         timer = 0;
-        interpolator = new AccelerateDecelerateInterpolator();
+        interpolator = new OvershootInterpolator();
         //interpolator = new AccelerateInterpolator();
         //interpolator = new FastOutSlowInInterpolator();
-        zoomInterpolator = new CycleInterpolator(.5f);
+        if(cycle)
+            zoomInterpolator = new CycleInterpolator(.5f);
+        else
+            zoomInterpolator = interpolator;
     }
 
     @Override
