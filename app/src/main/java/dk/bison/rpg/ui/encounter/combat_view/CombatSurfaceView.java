@@ -61,7 +61,7 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
     float camMaxY = 512;
     float camPanX = 0;
 
-    float smallCamSize = 128;
+    float smallCamSize = 64;
     float mediumCamSize = 256;
     float largeCamSize = 512;
     Matrix matrix;
@@ -100,7 +100,8 @@ public class CombatSurfaceView extends SurfaceView implements Runnable, CombatSu
         strip = AnimationStrip.loadStrip(context, "walk_anim_32x64.png", 32, 64);
 
         //centerCamAt(512,256);
-        currentEffect = new ZoomCameraEffect(camX, camY, camW, camH, camMaxX, camMaxY, 115, 370, largeCamSize, smallCamSize);
+        //currentEffect = new ZoomCameraEffect(camX, camY, camW, camH, camMaxX, camMaxY, 115, 370, largeCamSize, smallCamSize);
+        currentEffect = new ZoomPanCameraEffect(camX, camY, camW, camH, camMaxX, camMaxY, 115, 370, 917, 333, smallCamSize, largeCamSize);
     }
 
 
