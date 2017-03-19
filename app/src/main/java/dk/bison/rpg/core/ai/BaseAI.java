@@ -13,10 +13,10 @@ import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.CombatCategory;
 import dk.bison.rpg.core.combat.CombatCategoryManager;
 import dk.bison.rpg.core.combat.CombatPosition;
+import dk.bison.rpg.core.combat.sim.CombatSimulationInterface;
 import dk.bison.rpg.core.combat.CombatText;
 import dk.bison.rpg.core.combat.Combatant;
 import dk.bison.rpg.core.combat.DistanceComparator;
-import dk.bison.rpg.core.combat.Encounter;
 import dk.bison.rpg.core.combat.HPComparator;
 import dk.bison.rpg.core.combat.HitInfo;
 import dk.bison.rpg.core.faction.Faction;
@@ -35,9 +35,9 @@ public abstract class BaseAI extends AI {
     protected Dice dice = new Dice();
     static float critModifier = 1.5f;
 
-    protected Combatant selectRandomTarget(Encounter encounter)
+    protected Combatant selectRandomTarget(CombatSimulationInterface combatSimulationInterface)
     {
-        List<Combatant> combatants = encounter.getCombatants();
+        List<Combatant> combatants = combatSimulationInterface.getCombatants();
         List<Combatant> enemies = new ArrayList<>();
         Faction my_fac = combatant.getFaction();
         for(Combatant c : combatants)
@@ -55,9 +55,9 @@ public abstract class BaseAI extends AI {
         return target;
     }
 
-    protected Combatant selectWeakestTarget(Encounter encounter)
+    protected Combatant selectWeakestTarget(CombatSimulationInterface combatSimulationInterface)
     {
-        List<Combatant> combatants = encounter.getCombatants();
+        List<Combatant> combatants = combatSimulationInterface.getCombatants();
         List<Combatant> enemies = new ArrayList<>();
         Faction my_fac = combatant.getFaction();
         for(Combatant c : combatants)
@@ -76,9 +76,9 @@ public abstract class BaseAI extends AI {
         return target;
     }
 
-    protected Combatant selectClosestTarget(Encounter encounter)
+    protected Combatant selectClosestTarget(CombatSimulationInterface combatSimulationInterface)
     {
-        List<Combatant> combatants = encounter.getCombatants();
+        List<Combatant> combatants = combatSimulationInterface.getCombatants();
         List<Combatant> enemies = new ArrayList<>();
         Faction my_fac = combatant.getFaction();
         for(Combatant c : combatants)
@@ -99,9 +99,9 @@ public abstract class BaseAI extends AI {
         return target;
     }
 
-    protected Combatant selectClosestTargetWithin(Encounter encounter, int max_dist)
+    protected Combatant selectClosestTargetWithin(CombatSimulationInterface combatSimulationInterface, int max_dist)
     {
-        List<Combatant> combatants = encounter.getCombatants();
+        List<Combatant> combatants = combatSimulationInterface.getCombatants();
         List<Combatant> enemies = new ArrayList<>();
         Faction my_fac = combatant.getFaction();
         for(Combatant c : combatants)
@@ -134,7 +134,7 @@ public abstract class BaseAI extends AI {
     }
 
     @Override
-    public void performMove(Encounter encounter, int distance)
+    public void performMove(CombatSimulationInterface combatSimulationInterface, int distance)
     {
         int speed = getSpeed();
         if(distance > speed)
@@ -147,10 +147,10 @@ public abstract class BaseAI extends AI {
             dist_str = "backwards";
         combatant.setPosition(combatant.getPosition() + distance);
         emitMessage(CombatLogMessage.create().bright(combatant.getName()).dark(" moved " + Math.abs(distance) + " meters " + dist_str + "."));
-        PresentationManager.instance().publishEvent(new MapUpdateEvent(encounter.getCombatants()));
+        PresentationManager.instance().publishEvent(new MapUpdateEvent(combatSimulationInterface.getCombatants()));
     }
 
-    protected void performMoveTowardsOpponent(Encounter encounter, Combatant opponent)
+    protected void performMoveTowardsOpponent(CombatSimulationInterface combatSimulationInterface, Combatant opponent)
     {
         int speed = getSpeed();
         int diff = Math.abs(opponent.getPosition() - combatant.getPosition());
@@ -182,7 +182,7 @@ public abstract class BaseAI extends AI {
         if(diff < speed)
             meters = diff;
         emitMessage(CombatLogMessage.create().bright(combatant.getName()).dark(" moved " + meters + " meters towards ").normal(opponent.getName()).dark(String.format(Locale.US, " (%dm)", dist)));
-        PresentationManager.instance().publishEvent(new MapUpdateEvent(encounter.getCombatants()));
+        PresentationManager.instance().publishEvent(new MapUpdateEvent(combatSimulationInterface.getCombatants()));
     }
 
     protected void emitCombatLogMessage(Combatant c, Combatant opponent, Attack attack, HitInfo hit, int dmg)
@@ -241,7 +241,7 @@ public abstract class BaseAI extends AI {
     }
 
     @Override
-    public void attack(Combatant c, Combatant opponent, Attack attack)
+    public void attack( CombatSimulationInterface sim, Combatant c, Combatant opponent, Attack attack)
     {
         if(opponent.isDead())
         {
@@ -270,6 +270,7 @@ public abstract class BaseAI extends AI {
             if(opponent.isDead()) {
                 Log.e(TAG, opponent.getName() + " dies.");
                 PresentationManager.instance().publishEvent(new CombatantDeathEvent(opponent, c));
+                sim.combatantDied(opponent, c);
                 //emitMessage(CombatLogMessage.create().bright(opponent.getName()).violent(" dies!!!").effect(CombatLogMessage.BOUNCE));
             }
         }

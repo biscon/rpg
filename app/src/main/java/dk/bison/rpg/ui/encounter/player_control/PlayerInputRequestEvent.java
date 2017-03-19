@@ -1,7 +1,7 @@
 package dk.bison.rpg.ui.encounter.player_control;
 
+import dk.bison.rpg.core.combat.sim.CombatSimulationInterface;
 import dk.bison.rpg.core.combat.Combatant;
-import dk.bison.rpg.core.combat.Encounter;
 import dk.bison.rpg.mvp.MvpEvent;
 
 /**
@@ -9,11 +9,11 @@ import dk.bison.rpg.mvp.MvpEvent;
  */
 public class PlayerInputRequestEvent implements MvpEvent {
     public Combatant combatant;
-    public Encounter encounter;
+    public CombatSimulationInterface combatSimulationInterface;
 
-    public PlayerInputRequestEvent(Combatant c, Encounter e) {
+    public PlayerInputRequestEvent(Combatant c, CombatSimulationInterface e) {
         this.combatant = c;
-        this.encounter = e;
+        this.combatSimulationInterface = e;
     }
 
 }

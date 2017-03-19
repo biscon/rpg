@@ -9,7 +9,7 @@ import java.util.List;
 import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
-import dk.bison.rpg.core.combat.Encounter;
+import dk.bison.rpg.core.combat.sim.CombatSimulationInterface;
 import dk.bison.rpg.mvp.BasePresenter;
 import dk.bison.rpg.mvp.MvpEvent;
 import dk.bison.rpg.mvp.PresentationManager;
@@ -26,7 +26,7 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
     public static final String TAG = PlayerControlPresenter.class.getSimpleName();
     Combatant combatant;
     Combatant currentTarget;
-    Encounter encounter;
+    CombatSimulationInterface combatSimulationInterface;
     public static final int ACTION = 0;
     public static final int MOVE = 1;
     public static final int ATTACK = 2;
@@ -58,7 +58,7 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
     private boolean areAnyAttacksPossible()
     {
         boolean possible = false;
-        for(Combatant enemy : encounter.getCombatants())
+        for(Combatant enemy : combatSimulationInterface.getCombatants())
         {
             if(enemy.isDead())
                 continue;
@@ -113,7 +113,7 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
             getMvpView().setMoveEnabled(false);
         PresentationManager.instance().publishEvent(new CombatLogShowPeriodEvent(3000));
         usedAttacks.add(atk);
-        combatant.getAI().attack(combatant, currentTarget, atk);
+        combatant.getAI().attack(null, combatant, currentTarget, atk);
         if(isViewAttached()) {
             List<Attack> attacks = filterAttacks(currentTarget);
             getMvpView().updateAttacks(attacks);
@@ -127,9 +127,9 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
         hasMoved = true;
         if(isViewAttached())
             getMvpView().setMoveEnabled(false);
-        combatant.getAI().performMove(encounter, distance);
+        combatant.getAI().performMove(combatSimulationInterface, distance);
         PresentationManager.instance().publishEvent(new PlayerMoveInfoEvent(null, 0));
-        PresentationManager.instance().publishEvent(new MapUpdateEvent(encounter.getCombatants()));
+        PresentationManager.instance().publishEvent(new MapUpdateEvent(combatSimulationInterface.getCombatants()));
         gotoAction();
     }
 
@@ -158,7 +158,7 @@ public class PlayerControlPresenter extends BasePresenter<PlayerControlMvpView> 
             PresentationManager.instance().publishEvent(new EnemySelectNoneEvent());
             PlayerInputRequestEvent pir_event = (PlayerInputRequestEvent) event;
             combatant = pir_event.combatant;
-            encounter = pir_event.encounter;
+            combatSimulationInterface = pir_event.combatSimulationInterface;
             currentTarget = null;
             state = ACTION;
             hasMoved = false;

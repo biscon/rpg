@@ -48,8 +48,8 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
     @BindView(R.id.map_view)
     CombatMapView mapView;
     */
-    @BindView(R.id.combat_view)
-    CombatSurfaceView combatView;
+    //@BindView(R.id.combat_view)
+    //CombatSurfaceView combatView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
 
         // obtain instance to the presenter
         presenter = PresentationManager.instance().presenter(this, EncounterPresenter.class);
-        presenter.setup(this);
+        //presenter.setup(this);
 
         /*
         nextRoundBtn.setOnClickListener(new View.OnClickListener() {
@@ -195,13 +195,13 @@ public class EncounterActivity extends BaseActivity implements EncounterMvpView 
     @Override
     protected void onResume() {
         super.onResume();
-        combatView.resume();
+        //combatView.resume();
         presenter.attachView(this);
     }
 
     @Override
     protected void onPause() {
-        combatView.pause();
+        //combatView.pause();
         presenter.detachView();
         super.onPause();
     }

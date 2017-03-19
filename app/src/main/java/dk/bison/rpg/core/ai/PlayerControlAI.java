@@ -6,8 +6,8 @@ import java.util.List;
 
 import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.CombatPosition;
+import dk.bison.rpg.core.combat.sim.CombatSimulationInterface;
 import dk.bison.rpg.core.combat.Combatant;
-import dk.bison.rpg.core.combat.Encounter;
 
 /**
  * Created by bison on 18-08-2016.
@@ -17,7 +17,7 @@ public class PlayerControlAI extends BaseAI {
     Combatant opponent;
 
     @Override
-    public void performAction(Encounter encounter) {
+    public void performAction(CombatSimulationInterface combatSimulationInterface) {
 
     }
 
@@ -26,17 +26,17 @@ public class PlayerControlAI extends BaseAI {
         opponent = null;
     }
 
-    protected void performMeleeAttacks(Encounter encounter, Combatant c)
+    protected void performMeleeAttacks(CombatSimulationInterface sim, Combatant c)
     {
         List<Attack> attacks = c.getMeleeAttacks();
         for(int i=0; i < attacks.size(); i++)
         {
             Attack attack = attacks.get(i);
-            attack(c, opponent, attack);
+            attack(sim, c, opponent, attack);
             if(opponent.isDead() && i < attacks.size()-1)
             {
                 Log.e(TAG, "opponent died while attacking, selecting closest target within melee distance for remaining attacks");
-                opponent = selectClosestTargetWithin(encounter, CombatPosition.MELEE_DISTANCE);
+                opponent = selectClosestTargetWithin(sim, CombatPosition.MELEE_DISTANCE);
                 if(opponent == null)
                 {
                     Log.e(TAG, "No valid enemies found within melee distance, doing nothing this round");
@@ -46,17 +46,17 @@ public class PlayerControlAI extends BaseAI {
         }
     }
 
-    protected void performRangedAttacks(Encounter encounter, Combatant c, int distance)
+    protected void performRangedAttacks(CombatSimulationInterface sim, Combatant c, int distance)
     {
         List<Attack> attacks = c.getRangedAttacks(distance);
         for(int i=0; i < attacks.size(); i++)
         {
             Attack attack = attacks.get(i);
-            attack(c, opponent, attack);
+            attack(sim, c, opponent, attack);
             if(opponent.isDead() && i < attacks.size()-1)
             {
                 Log.e(TAG, "opponent died while attacking, selecting closest target within melee distance for remaining attacks");
-                opponent = selectClosestTargetWithin(encounter, distance);
+                opponent = selectClosestTargetWithin(sim, distance);
                 if(opponent == null)
                 {
                     Log.e(TAG, "No valid enemies found within melee distance, doing nothing this round");

@@ -49,7 +49,8 @@ public class Character extends BaseCombatant {
     public Character() {
         setGrammar(GrammarFactory.make("MaleGrammar"));
         setFaction(FactionFactory.makeFaction("Player"));
-        AI ai = AIFactory.makeAI("PlayerControlAI");
+        //AI ai = AIFactory.makeAI("PlayerControlAI");
+        AI ai = AIFactory.makeAI("ClosestEnemyAI");
         setAI(ai);
         ai.setCombatant(this);
         attacks = new ArrayList<>();

@@ -19,10 +19,11 @@ import dk.bison.rpg.core.Dice;
 import dk.bison.rpg.core.Gender;
 import dk.bison.rpg.core.ai.AI;
 import dk.bison.rpg.core.ai.PlayerControlAI;
+import dk.bison.rpg.core.combat.sim.CombatSimulationInterface;
 import dk.bison.rpg.core.combat.Combatant;
-import dk.bison.rpg.core.combat.Encounter;
 import dk.bison.rpg.core.combat.InitiativeComparator;
 import dk.bison.rpg.core.combat.Party;
+import dk.bison.rpg.core.combat.sim.CombatSimulation;
 import dk.bison.rpg.core.faction.Faction;
 import dk.bison.rpg.core.monster.Monster;
 import dk.bison.rpg.core.monster.MonsterFactory;
@@ -43,7 +44,7 @@ import dk.bison.rpg.ui.encounter.player_control.PlayerMoveStartedEvent;
 /**
  * Created by bison on 19-08-2016.
  */
-public class EncounterPresenter extends BasePresenter<EncounterMvpView> implements Encounter {
+public class EncounterPresenter extends BasePresenter<EncounterMvpView> implements CombatSimulationInterface {
     public static final String TAG = EncounterPresenter.class.getSimpleName();
     public static final int IDLE = 0;
     public static final int START_ROUND = 1;
@@ -53,72 +54,32 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
 
     int round;
     List<Combatant> combatants;
-    Dice dice = new Dice();
     Faction winningFaction;
     Faction playerFaction;
     Iterator<Combatant> curCombatant;
-    private TimerTask timerTask;
-    private Timer timer;
     private int state = IDLE;
     Combatant waitingOnChar = null;
 
+    CombatSimulation simulation;
+
+
     @Override
     public void onCreate(Context context) {
+        simulation = new CombatSimulation();
     }
 
     @Override
     public void attachView(EncounterMvpView mvpView) {
         super.attachView(mvpView);
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                //Log.i(TAG, "timer task running");
-                runTick();
-            }
-        };
-        timer = new Timer(true);
-        timer.scheduleAtFixedRate(timerTask, 0, 750);
+        simulation.start();
     }
 
     @Override
     public void detachView() {
-        timer.cancel();
-        timer.purge();
+        simulation.stop();
         super.detachView();
     }
 
-    /**
-     * This runs on the timer thread, remember when calling back into the view
-     */
-    public void runTick()
-    {
-        switch (state)
-        {
-            case IDLE:
-                runIdle();
-                break;
-            case START_ROUND:
-                runStartRound();
-                break;
-            case ROUND:
-                runRound();
-                break;
-            case END_ROUND:
-                runEndRound();
-                break;
-            case END_COMBAT:
-                runEndCombat();
-                break;
-        }
-    }
-
-    private void runEndCombat() {
-        //Log.e(TAG, "Running state END_COMBAT");
-    }
-
-    private void runEndRound() {
-        //Log.e(TAG, "Running state END_RUN");
-    }
 
     private void runRound() {
         //Log.e(TAG, "Running state ROUND");
@@ -307,6 +268,16 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         return combatants;
     }
 
+    @Override
+    public void combatantDied(Combatant victim, Combatant killer) {
+
+    }
+
+    @Override
+    public void turnDone() {
+
+    }
+
 
     private int countLivingFactions()
     {
@@ -402,12 +373,18 @@ public class EncounterPresenter extends BasePresenter<EncounterMvpView> implemen
         }
         if(event instanceof CombatantDeathEvent)
         {
+            /*
             CombatantDeathEvent cde_event = (CombatantDeathEvent) event;
             if(cde_event.killer.getFaction().sameAs(playerFaction))
             {
                 awardXPForKill(cde_event);
             }
             checkWinCondition();
+            */
+        }
+        if(event instanceof CombatLogMessage)
+        {
+            Log.d(TAG, ((CombatLogMessage) event).getSb().toString());
         }
     }
 }

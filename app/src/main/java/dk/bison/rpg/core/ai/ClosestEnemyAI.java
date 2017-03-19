@@ -7,7 +7,7 @@ import java.util.List;
 import dk.bison.rpg.core.combat.Attack;
 import dk.bison.rpg.core.combat.CombatPosition;
 import dk.bison.rpg.core.combat.Combatant;
-import dk.bison.rpg.core.combat.Encounter;
+import dk.bison.rpg.core.combat.sim.CombatSimulationInterface;
 
 /**
  * Created by bison on 18-08-2016.
@@ -17,15 +17,16 @@ public class ClosestEnemyAI extends BaseAI {
     Combatant opponent;
 
     @Override
-    public void performAction(Encounter encounter) {
+    public void performAction(CombatSimulationInterface sim) {
         if(opponent == null)
-            opponent = selectClosestTarget(encounter);
+            opponent = selectClosestTarget(sim);
         if(opponent.isDead())
-            opponent = selectClosestTarget(encounter);
+            opponent = selectClosestTarget(sim);
 
         if(opponent == null)
         {
             Log.i(TAG, combatant.getName() + " does nothing this round.");
+            sim.turnDone();
             return;
         }
         List<Attack> melee_attacks = combatant.getMeleeAttacks();
@@ -39,20 +40,20 @@ public class ClosestEnemyAI extends BaseAI {
             if(!ranged_attacks.isEmpty())
             {
                 Log.e(TAG, "Target is within ranged range.");
-                performRangedAttacks(encounter, combatant, dist);
+                performRangedAttacks(sim, combatant, dist);
             }
             else {
                 Log.e(TAG, "Target is out of melee range, moving in for the kill");
                 moved = true;
-                performMoveTowardsOpponent(encounter, opponent);
+                performMoveTowardsOpponent(sim, opponent);
             }
         }
         else {
             Log.e(TAG, "Target is within melee range.");
             if(!melee_attacks.isEmpty())
-                performMeleeAttacks(encounter, combatant);
+                performMeleeAttacks(sim, combatant);
             else
-                performRangedAttacks(encounter, combatant, dist);
+                performRangedAttacks(sim, combatant, dist);
         }
 
         if(moved) {
@@ -60,9 +61,9 @@ public class ClosestEnemyAI extends BaseAI {
             if (dist <= CombatPosition.MELEE_DISTANCE) {
                 Log.e(TAG, "Target is within melee range.");
                 if(!melee_attacks.isEmpty())
-                    performMeleeAttacks(encounter, combatant);
+                    performMeleeAttacks(sim, combatant);
                 else
-                    performRangedAttacks(encounter, combatant, dist);
+                    performRangedAttacks(sim, combatant, dist);
             }
             else
             {
@@ -70,10 +71,11 @@ public class ClosestEnemyAI extends BaseAI {
                 if(!ranged_attacks.isEmpty())
                 {
                     Log.e(TAG, "Target is within ranged range.");
-                    performRangedAttacks(encounter, combatant, dist);
+                    performRangedAttacks(sim, combatant, dist);
                 }
             }
         }
+        sim.turnDone();
     }
 
     @Override
@@ -81,17 +83,17 @@ public class ClosestEnemyAI extends BaseAI {
         opponent = null;
     }
 
-    protected void performMeleeAttacks(Encounter encounter, Combatant c)
+    protected void performMeleeAttacks(CombatSimulationInterface sim, Combatant c)
     {
         List<Attack> attacks = c.getMeleeAttacks();
         for(int i=0; i < attacks.size(); i++)
         {
             Attack attack = attacks.get(i);
-            attack(c, opponent, attack);
+            attack(sim, c, opponent, attack);
             if(opponent.isDead() && i < attacks.size()-1)
             {
                 Log.e(TAG, "opponent died while attacking, selecting closest target within melee distance for remaining attacks");
-                opponent = selectClosestTargetWithin(encounter, CombatPosition.MELEE_DISTANCE);
+                opponent = selectClosestTargetWithin(sim, CombatPosition.MELEE_DISTANCE);
                 if(opponent == null)
                 {
                     Log.e(TAG, "No valid enemies found within melee distance, doing nothing this round");
@@ -101,17 +103,17 @@ public class ClosestEnemyAI extends BaseAI {
         }
     }
 
-    protected void performRangedAttacks(Encounter encounter, Combatant c, int distance)
+    protected void performRangedAttacks(CombatSimulationInterface sim, Combatant c, int distance)
     {
         List<Attack> attacks = c.getRangedAttacks(distance);
         for(int i=0; i < attacks.size(); i++)
         {
             Attack attack = attacks.get(i);
-            attack(c, opponent, attack);
+            attack(sim, c, opponent, attack);
             if(opponent.isDead() && i < attacks.size()-1)
             {
                 Log.e(TAG, "opponent died while attacking, selecting closest target within melee distance for remaining attacks");
-                opponent = selectClosestTargetWithin(encounter, distance);
+                opponent = selectClosestTargetWithin(sim, distance);
                 if(opponent == null)
                 {
                     Log.e(TAG, "No valid enemies found within melee distance, doing nothing this round");
